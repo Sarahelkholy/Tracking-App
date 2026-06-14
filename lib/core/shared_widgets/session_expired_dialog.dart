@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/route_manager/routes.dart';
+import '../localization/l10n/app_localizations.dart';
 import '../utils/app_constants.dart';
-import '../values/app_strings.dart';
 import 'custom_button.dart';
 
 class SessionExpiredDialog extends StatelessWidget {
@@ -9,15 +9,16 @@ class SessionExpiredDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text(AppStrings.sessionExpired),
-      content: const Text(AppStrings.pleaseLoginAgain),
+      title: Text(localizations.sessionExpired),
+      content: Text(localizations.pleaseLoginAgain),
       actions: [
         CustomButton(
           onPressed: () {
             AppConstants.navigatorKey.currentState!.pushNamedAndRemoveUntil(Routes.loginRoute, (route) => false,);
           },
-          title: AppStrings.login,
+          title: localizations.login,
         ),
       ],
     );

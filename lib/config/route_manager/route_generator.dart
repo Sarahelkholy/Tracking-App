@@ -1,6 +1,8 @@
 import 'package:flower_driver/config/route_manager/routes.dart';
+import 'package:flower_driver/core/helpers/custom_logger.dart';
+import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import '../../core/values/app_strings.dart';
+import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/splash/splash_screen.dart';
 
 abstract class RouteGenerator {
@@ -16,8 +18,8 @@ abstract class RouteGenerator {
           return _errorRoute();
       }
     } catch (e, stackTrace) {
-      debugPrint("Route error: $e");
-      debugPrint("$stackTrace");
+      CustomLogger.bgRed("Route error: $e");
+      CustomLogger.bgRed("$stackTrace");
 
       return _errorRoute();
     }
@@ -25,9 +27,12 @@ abstract class RouteGenerator {
 
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(
-      builder: (_) => const Scaffold(
+      builder: (context) => Scaffold(
         body: Center(
-          child: Text(AppStrings.pageNotFound, style: TextStyle(fontSize: 18)),
+          child: Text(
+            AppLocalizations.of(context)!.pageNotFound,
+            style: AppTextStyles.bold20(context),
+          ),
         ),
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../localization/l10n/app_localizations.dart';
 import '../utils/app_text_styles.dart';
-import '../values/app_strings.dart';
 import 'custom_button.dart';
 
 class CustomErrorWidget extends StatelessWidget {
@@ -17,6 +17,7 @@ class CustomErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -29,7 +30,7 @@ class CustomErrorWidget extends StatelessWidget {
           ),
           if (haveTryAgain) ...[
             const SizedBox(height: 32),
-            CustomButton(onPressed: onPressed, title: AppStrings.tryAgain),
+            CustomButton(onPressed: onPressed, title: localizations.tryAgain),
           ],
         ],
       ),

@@ -1,37 +1,36 @@
 import 'package:dio/dio.dart';
-
-import '../../core/values/app_response_error_messages.dart';
+import 'package:flower_driver/core/values/app_strings.dart';
 
 class NetworkException {
   static String getMessageError(Exception exception) {
     if (exception is DioException) {
       switch (exception.type) {
         case DioExceptionType.connectionTimeout:
-          return AppResponseErrorMessages.connectionTimeoutMessage;
+          return AppStrings.current.connectionTimeoutMessage;
 
         case DioExceptionType.sendTimeout:
-          return AppResponseErrorMessages.sendTimeoutMessage;
+          return AppStrings.current.sendTimeoutMessage;
 
         case DioExceptionType.receiveTimeout:
-          return AppResponseErrorMessages.receiveTimeoutMessage;
+          return AppStrings.current.receiveTimeoutMessage;
 
         case DioExceptionType.badCertificate:
-          return AppResponseErrorMessages.badCertificateMessage;
+          return AppStrings.current.badCertificateMessage;
 
         case DioExceptionType.badResponse:
           return _handleMessageResponse(exception);
 
         case DioExceptionType.cancel:
-          return AppResponseErrorMessages.requestCancelledMessage;
+          return AppStrings.current.requestCancelledMessage;
 
         case DioExceptionType.connectionError:
-          return AppResponseErrorMessages.connectionErrorMessage;
+          return AppStrings.current.connectionErrorMessage;
 
         case DioExceptionType.unknown:
-          return AppResponseErrorMessages.unknownErrorMessage;
+          return AppStrings.current.unknownErrorMessage;
       }
     } else {
-      return AppResponseErrorMessages.unexpectedErrorMessage;
+      return AppStrings.current.unexpectedErrorMessage;
     }
   }
 
@@ -51,30 +50,30 @@ class NetworkException {
 
       switch (statusCode) {
         case 400:
-          return AppResponseErrorMessages.error400;
+          return AppStrings.current.error400;
         case 401:
-          return AppResponseErrorMessages.error401;
+          return AppStrings.current.error401;
         case 403:
-          return AppResponseErrorMessages.error403;
+          return AppStrings.current.error403;
         case 404:
-          return AppResponseErrorMessages.error404;
+          return AppStrings.current.error404;
         case 408:
-          return AppResponseErrorMessages.error408;
+          return AppStrings.current.error408;
         case 429:
-          return AppResponseErrorMessages.error429;
+          return AppStrings.current.error429;
         case 500:
-          return AppResponseErrorMessages.error500;
+          return AppStrings.current.error500;
         case 502:
-          return AppResponseErrorMessages.error502;
+          return AppStrings.current.error502;
         case 503:
-          return AppResponseErrorMessages.error503;
+          return AppStrings.current.error503;
         case 504:
-          return AppResponseErrorMessages.error504;
+          return AppStrings.current.error504;
         default:
           return 'Server error (${statusCode ?? 'unknown'}). Please try again.';
       }
     }
 
-    return AppResponseErrorMessages.defaultError;
+    return AppStrings.current.defaultError;
   }
 }

@@ -12,6 +12,7 @@ import 'core/local_cubit/locale_cubit.dart';
 import 'core/localization/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_constants.dart';
+import 'core/values/app_strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +59,8 @@ class _MyAppState extends State<MyApp> {
             supportedLocales: AppLocalizations.supportedLocales,
 
             builder: (context, child) {
+              AppStrings.current = AppLocalizations.of(context)!;
+
               return BlocListener<DriverCubit, DriverState>(
                 listener: (context, state) {
                   if (state.isUnauthorized) {
