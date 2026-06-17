@@ -18,10 +18,8 @@ abstract class RouteGenerator {
           final args = settings.arguments as Map<String, dynamic>?;
 
           return MaterialPageRoute(
-            builder: (_) => CustomBottomNavBar(
-              initialIndex: args?['initialIndex'] ?? 0,
-              categoryIndex: args?['categoryIndex'] ?? 0,
-            ),
+            builder: (_) =>
+                CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
 
         /// Default
