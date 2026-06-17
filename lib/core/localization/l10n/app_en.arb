@@ -33,5 +33,7 @@
   "error502": "Bad Gateway",
   "error503": "Service Unavailable",
   "error504": "Gateway Timeout",
-  "defaultError": "An error occurred"
+  "defaultError": "An error occurred",
+  "onboardingText":"Welcome to\nFlowery rider app",
+  "applyNow":"Apply now"
 }
