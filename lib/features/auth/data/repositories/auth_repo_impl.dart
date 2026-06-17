@@ -7,4 +7,5 @@ class AuthRepoImpl implements AuthRepo {
   final AuthRemoteDataSource _authRemoteDataSource;
 
   const AuthRepoImpl(this._authRemoteDataSource);
+  
 }
