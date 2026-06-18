@@ -3,7 +3,7 @@ import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import '../../core/localization/l10n/app_localizations.dart';
-import '../../features/auth/presentation/pages/splash/splash_screen.dart';
+import '../../features/auth/presentation/apply/view/pages/splash/splash_screen.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
