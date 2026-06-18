@@ -1,5 +1,4 @@
 import 'package:flower_driver/features/auth/api/auth_api_client.dart';
-import 'package:injectable/injectable.dart';
 
 import '../../../../../config/error_handling/execute_api.dart';
 import '../../../../../config/error_handling/result.dart';

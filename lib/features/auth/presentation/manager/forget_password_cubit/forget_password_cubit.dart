@@ -128,7 +128,7 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
     );
 
     final result = await _addNewPasswordUseCase.call(
-      email: state.email!,
+      email: event.email,
       newPassword: event.newPassword,
     );
 

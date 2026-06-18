@@ -19,7 +19,8 @@ class ResendOtpEvent extends ForgetPasswordEvents {
 }
 
 class ResetPasswordEvent extends ForgetPasswordEvents {
+  final String email;
   final String newPassword;
 
-  ResetPasswordEvent({required this.newPassword});
+  ResetPasswordEvent({required this.newPassword, required this.email});
 }

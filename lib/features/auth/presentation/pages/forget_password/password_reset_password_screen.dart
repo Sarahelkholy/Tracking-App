@@ -205,6 +205,7 @@ class _PasswordResetPasswordScreenState
                               _cubit.doEvents(
                                 ResetPasswordEvent(
                                   newPassword: newPasswordController.text,
+                                  email: state.email!,
                                 ),
                               );
                             },
