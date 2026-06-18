@@ -6,6 +6,7 @@ class ForgetPasswordState extends Equatable {
   final BaseState<void> sendEmailState;
   final BaseState<void> verifyOtpState;
   final BaseState<void> resetPasswordState;
+  final int resendSeconds;
 
   final String? email;
 
@@ -13,6 +14,7 @@ class ForgetPasswordState extends Equatable {
     this.sendEmailState = const BaseState(),
     this.verifyOtpState = const BaseState(),
     this.resetPasswordState = const BaseState(),
+    this.resendSeconds = 0,
     this.email,
   });
 
@@ -20,12 +22,14 @@ class ForgetPasswordState extends Equatable {
     BaseState<void>? sendEmailStateParam,
     BaseState<void>? verifyOtpStateParam,
     BaseState<void>? resetPasswordStateParam,
+    int? resendSecondsParam,
     String? emailParam,
   }) {
     return ForgetPasswordState(
       sendEmailState: sendEmailStateParam ?? sendEmailState,
       verifyOtpState: verifyOtpStateParam ?? verifyOtpState,
       resetPasswordState: resetPasswordStateParam ?? resetPasswordState,
+      resendSeconds: resendSecondsParam ?? resendSeconds,
       email: emailParam ?? email,
     );
   }
@@ -35,6 +39,7 @@ class ForgetPasswordState extends Equatable {
     sendEmailState,
     verifyOtpState,
     resetPasswordState,
+    resendSeconds,
     email,
   ];
 }

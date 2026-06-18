@@ -37,9 +37,9 @@ dependencies:
   dio: ^5.9.2
   injectable:
   get_it:
-  retrofit: ^4.9.2
   logger:
   json_annotation:
+  retrofit: ^4.9.2
   pretty_dio_logger: ^1.4.0
   flutter_bloc:
   equatable: ^2.0.8
@@ -69,7 +69,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   injectable_generator:
   build_runner:
-  retrofit_generator: ^10.0.1
+  retrofit_generator: ^10.2.6
   json_serializable:
   hive_ce_generator:
   flutter_launcher_icons:

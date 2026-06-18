@@ -12,6 +12,12 @@ class VerifyOtpEvent extends ForgetPasswordEvents {
   VerifyOtpEvent({required this.otp});
 }
 
+class ResendOtpEvent extends ForgetPasswordEvents {
+  final String email;
+
+  ResendOtpEvent({required this.email});
+}
+
 class ResetPasswordEvent extends ForgetPasswordEvents {
   final String newPassword;
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flower_driver/config/base_cubit/base_cubit.dart';
 import 'package:flower_driver/config/base_cubit/base_event.dart';
 import 'package:flower_driver/config/base_state/base_state.dart';
@@ -23,6 +25,8 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
   final VerifyOtpUseCase _verifyOtpUseCase;
   final AddNewPasswordUseCase _addNewPasswordUseCase;
 
+  Timer? _resendTimer;
+
   void doEvents(ForgetPasswordEvents event) {
     switch (event) {
       case SendEmailEvent():
@@ -30,6 +34,9 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
 
       case VerifyOtpEvent():
         _verifyOtp(event);
+
+      case ResendOtpEvent():
+        _resendOtp(event);
 
       case ResetPasswordEvent():
         _resetPassword(event);
@@ -48,6 +55,7 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
 
     switch (result) {
       case Success():
+        startResendTimer();
         emit(
           state.copyWith(sendEmailStateParam: const BaseState(isSuccess: true)),
         );
@@ -81,6 +89,33 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
         emit(
           state.copyWith(
             verifyOtpStateParam: BaseState(errorMessage: result.errorMessage),
+          ),
+        );
+        emitEvent(DisplayErrorEvent(errorMsg: result.errorMessage));
+    }
+  }
+
+  Future<void> _resendOtp(ResendOtpEvent event) async {
+    emit(
+      state.copyWith(
+        sendEmailStateParam: const BaseState(isLoading: true),
+        emailParam: event.email,
+      ),
+    );
+
+    final result = await _enterEmailUseCase.call(email: event.email);
+
+    switch (result) {
+      case Success():
+        startResendTimer();
+        emit(
+          state.copyWith(sendEmailStateParam: const BaseState(isSuccess: true)),
+        );
+
+      case Failure():
+        emit(
+          state.copyWith(
+            sendEmailStateParam: BaseState(errorMessage: result.errorMessage),
           ),
         );
         emitEvent(DisplayErrorEvent(errorMsg: result.errorMessage));
@@ -121,5 +156,29 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
         );
         emitEvent(DisplayErrorEvent(errorMsg: result.errorMessage));
     }
+  }
+
+  void startResendTimer() {
+    _resendTimer?.cancel();
+
+    emit(state.copyWith(resendSecondsParam: 30));
+
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.resendSeconds <= 1) {
+        timer.cancel();
+
+        emit(state.copyWith(resendSecondsParam: 0));
+
+        return;
+      }
+
+      emit(state.copyWith(resendSecondsParam: state.resendSeconds - 1));
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _resendTimer?.cancel();
+    return super.close();
   }
 }
