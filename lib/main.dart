@@ -1,5 +1,4 @@
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
-import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,8 +39,6 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => getIt<DriverCubit>()),
 
         BlocProvider(create: (_) => getIt<LocaleCubit>()..loadSavedLanguage()),
-
-        BlocProvider(create: (_) => getIt<ForgetPasswordCubit>()),
       ],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {

@@ -5,8 +5,11 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_reset_password_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/localization/l10n/app_localizations.dart';
+import '../../features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
+import '../di/di.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -19,19 +22,32 @@ abstract class RouteGenerator {
         /// Forget Password - Enter Email
         case Routes.forgetPasswordRoute:
           return MaterialPageRoute(
-            builder: (_) => const PasswordEnterEmailScreen(),
+            builder: (_) => BlocProvider(
+              create: (_) => getIt<ForgetPasswordCubit>(),
+              child: const PasswordEnterEmailScreen(),
+            ),
           );
 
         /// OTP View
         case Routes.passwordVerifyOtpRoute:
+          final cubit = settings.arguments as ForgetPasswordCubit;
+
           return MaterialPageRoute(
-            builder: (_) => const PasswordVerifyOtpScreen(),
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: const PasswordVerifyOtpScreen(),
+            ),
           );
 
         /// New Password View
         case Routes.resetPasswordRoute:
+          final cubit = settings.arguments as ForgetPasswordCubit;
+
           return MaterialPageRoute(
-            builder: (_) => const PasswordResetPasswordScreen(),
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: const PasswordResetPasswordScreen(),
+            ),
           );
 
         /// Default

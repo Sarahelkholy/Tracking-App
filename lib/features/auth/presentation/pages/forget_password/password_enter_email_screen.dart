@@ -54,7 +54,11 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
 
         case NavigationEvent():
           if (!mounted) return;
-          Navigator.pushNamed(context, event.routeName);
+          Navigator.pushNamed(
+            context,
+            event.routeName,
+            arguments: context.read<ForgetPasswordCubit>(),
+          );
       }
     });
     super.initState();
