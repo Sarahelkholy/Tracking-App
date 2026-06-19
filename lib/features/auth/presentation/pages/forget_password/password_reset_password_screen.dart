@@ -74,21 +74,16 @@ class _PasswordResetPasswordScreenState
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          Routes.loginRoute,
-          (route) => false,
-        );
+        Navigator.popUntil(context, ModalRoute.withName(Routes.loginRoute));
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(localizations.password),
           leading: IconButton(
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
+              Navigator.popUntil(
                 context,
-                Routes.loginRoute,
-                (route) => false,
+                ModalRoute.withName(Routes.loginRoute),
               );
             },
             icon: const Icon(Icons.arrow_back_ios_new),
@@ -117,7 +112,16 @@ class _PasswordResetPasswordScreenState
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
+                BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
+                  listener: (context, state) {
+                    if (state.resetPasswordState.isSuccess) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        Routes.onboardingRoute,
+                        (route) => false,
+                      );
+                    }
+                  },
                   buildWhen: (previous, current) {
                     return previous.resetPasswordState !=
                         current.resetPasswordState;

@@ -2,6 +2,7 @@ abstract class Routes {
   static const String splashRoute = "/splash";
   static const String loginRoute = "/login";
   static const String applyRoute = "/apply";
+  static const String applySuccessScreen = "/applySuccessScreen";
 
   static const String forgetPasswordRoute = "/forgetPassword";
   static const String passwordVerifyOtpRoute = "/passwordVerifyOtp";

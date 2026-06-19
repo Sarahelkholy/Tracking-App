@@ -1,4 +1,4 @@
-
+import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/l10n/app_localizations.dart';
@@ -38,10 +38,7 @@ class RememberMe extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-         /*   Navigator.pushNamed(
-              context,
-              Routes.forgetPasswordEnterEmailViewRoute,
-            );*/
+            Navigator.pushNamed(context, Routes.forgetPasswordRoute);
           },
           child: Text(
             local.forgetPassword,

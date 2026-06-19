@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../../../config/base_cubit/base_event.dart';
-import '../../../../../config/route_manager/routes.dart';
 import '../../../../../core/helpers/app_snack_bar.dart';
 import '../../../../../core/helpers/validator.dart';
 import '../../../../../core/utils/app_constants.dart';
@@ -85,11 +84,7 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
         leading: IconButton(
           key: const Key(KeysStrings.backButton),
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              Routes.loginRoute,
-              (route) => false,
-            );
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios_new),
         ),

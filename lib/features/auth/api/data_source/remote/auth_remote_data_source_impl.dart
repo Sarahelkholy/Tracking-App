@@ -7,7 +7,6 @@ import 'package:flower_driver/features/auth/data/models/responses/apply_response
 import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/logout_response.dart';
-import 'package:injectable/injectable.dart';
 
 import '../../../data/data_source/remote/auth_remote_data_source.dart';
 import '../../../data/models/requests/enter_email_request.dart';

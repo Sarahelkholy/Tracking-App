@@ -144,7 +144,7 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
             successMsg: "Password Changed Successfully",
           ),
         );
-        emitEvent(const NavigationEvent(routeName: Routes.loginRoute));
+        // emitEvent(const NavigationEvent(routeName: Routes.loginRoute));
 
       case Failure():
         emit(
