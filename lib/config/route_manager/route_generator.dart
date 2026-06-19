@@ -21,8 +21,8 @@ abstract class RouteGenerator {
         /// Login
         case Routes.loginRoute:
           return MaterialPageRoute(
-            builder: (_) => BlocProvider<LoginCubit>.value(
-              value: getIt<LoginCubit>(),
+            builder: (_) => BlocProvider<LoginCubit>(
+              create: (context) => getIt<LoginCubit>(),
               child: const LoginScreen(),
             ),
           );
