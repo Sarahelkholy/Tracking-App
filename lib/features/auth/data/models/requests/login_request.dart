@@ -7,14 +7,10 @@ class LoginRequest {
   final String email;
   final String password;
 
-  const LoginRequest({
-    required this.email,
-    required this.password,
-  });
+  const LoginRequest({required this.email, required this.password});
 
   factory LoginRequest.fromJson(Map<String, dynamic> json) =>
       _$LoginRequestFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      _$LoginRequestToJson(this);
+  Map<String, dynamic> toJson() => _$LoginRequestToJson(this);
 }
