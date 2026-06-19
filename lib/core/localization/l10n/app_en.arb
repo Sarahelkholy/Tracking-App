@@ -36,7 +36,10 @@
   "defaultError": "An error occurred",
     "logout": "Logout",
    "confirmLogout": "Confirm Logout",
-   "cancel": "Cancel"
+   "cancel": "Cancel",
   "onboardingText":"Welcome to\nFlowery rider app",
-  "applyNow":"Apply now"
+  "applyNow":"Apply now",
+  "home":"Home",
+  "orders":"Orders",
+  "profile":"Profile"
 }
