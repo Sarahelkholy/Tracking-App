@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flower_driver/core/shared_widgets/custom_loading_indicator.dart';
+import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -96,11 +97,13 @@ class _PasswordVerifyOtpScreenState extends State<PasswordVerifyOtpScreen> {
               children: [
                 const SizedBox(height: 40),
                 Text(
+                  key: const Key(KeysStrings.verifyOtpTitle),
                   localizations.emailVerification,
                   style: AppTextStyles.medium18(context),
                 ),
                 const SizedBox(height: 16),
                 Text(
+                  key: const Key(KeysStrings.verifyOtpSubtitle),
                   localizations.verifyOtpSubTitle,
                   style: AppTextStyles.regular14(
                     context,
@@ -179,6 +182,7 @@ class _PasswordVerifyOtpScreenState extends State<PasswordVerifyOtpScreen> {
 
                         if (state.resendSeconds > 0) {
                           return Text(
+                            key: const Key(KeysStrings.timerText),
                             "00:${state.resendSeconds.toString().padLeft(2, '0')}",
                             style: AppTextStyles.regular16(
                               context,
@@ -187,6 +191,7 @@ class _PasswordVerifyOtpScreenState extends State<PasswordVerifyOtpScreen> {
                         }
 
                         return GestureDetector(
+                          key: const Key(KeysStrings.resendText),
                           onTap: state.verifyOtpState.isLoading
                               ? null
                               : () {
