@@ -2,6 +2,7 @@ import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
+import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
 import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_event.dart';
 import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_state.dart';
@@ -75,8 +76,10 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: const Key(KeysStrings.enterEmailAppBar),
         title: Text(localizations.password),
         leading: IconButton(
+          key: const Key(KeysStrings.backButton),
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -96,11 +99,13 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
             children: [
               const SizedBox(height: 40),
               Text(
+                key: const Key(KeysStrings.titleText),
                 localizations.forgetPassword,
                 style: AppTextStyles.medium18(context),
               ),
               const SizedBox(height: 16),
               Text(
+                key: const Key(KeysStrings.subtitleText),
                 localizations.enterEmailSubTitle,
                 style: AppTextStyles.regular14(
                   context,
@@ -119,6 +124,7 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
                     child: Column(
                       children: [
                         TextFormField(
+                          key: const Key(KeysStrings.emailTextField),
                           controller: emailController,
                           enabled: !state.sendEmailState.isLoading,
                           validator: Validator.email,
@@ -133,6 +139,7 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
                         ),
                         const SizedBox(height: 48),
                         CustomButton(
+                          key: const Key(KeysStrings.confirmButton),
                           title: localizations.confirm,
                           isLoading: state.sendEmailState.isLoading,
                           onPressed: () {

@@ -102,12 +102,12 @@ class _PasswordResetPasswordScreenState
               children: [
                 const SizedBox(height: 40),
                 Text(
-                  localizations.forgetPassword,
+                  localizations.resetPassword,
                   style: AppTextStyles.medium18(context),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  localizations.enterEmailSubTitle,
+                  localizations.resetPasswordSubTitle,
                   style: AppTextStyles.regular14(
                     context,
                   ).copyWith(color: AppColors.grayDark),
