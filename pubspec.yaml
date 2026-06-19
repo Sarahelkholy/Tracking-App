@@ -72,7 +72,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   injectable_generator:
   build_runner:
-  retrofit_generator:
+  retrofit_generator: ^10.2.6
   json_serializable:
   hive_ce_generator:
   flutter_launcher_icons:
