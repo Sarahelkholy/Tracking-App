@@ -15,18 +15,4 @@ class BaseState<T> extends Equatable {
 
   @override
   List<Object?> get props => [isLoading, errorMessage, isSuccess, data];
-
-  // BaseState<T> copyWith({
-  //   bool? isLoadingParam,
-  //   bool? isSuccessParam,
-  //   String? errorMessageParam,
-  //   T? dataParam,
-  // }) {
-  //   return BaseState<T>(
-  //     isLoading: isLoadingParam ?? isLoading,
-  //     isSuccess: isSuccessParam ?? isSuccess,
-  //     errorMessage: errorMessageParam,
-  //     data: dataParam ?? data,
-  //   );
-  // }
 }

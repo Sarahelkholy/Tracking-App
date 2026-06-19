@@ -184,7 +184,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
         rePassword: _confirmPasswordController.text,
-        gender: state.selectedGender?.toLowerCase(),
+        gender: state.selectedGender.toLowerCase(),
         phone: _formatPhone(state.selectedCountry, _phoneController.text.trim()),
       );
 

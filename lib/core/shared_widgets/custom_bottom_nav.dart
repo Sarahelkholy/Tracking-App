@@ -46,7 +46,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           });
         },
 
-        destinations: [
+        destinations: const [
           // NavigationDestination(
           //   icon: const _BottomNavIcon(
           //     path: AppAssets.homeIcon,

@@ -43,7 +43,7 @@ class AppTheme {
         hintStyle: AppTextStyles.regular14(
           context,
         ).copyWith(color: AppColors.grayMedium),
-        contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: const BorderSide(color: AppColors.grayDark),
@@ -75,11 +75,11 @@ class AppTheme {
         ),
         backgroundColor: WidgetStateProperty.all(AppColors.background),
         elevation: WidgetStateProperty.all(0),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16)),
+        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16)),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: AppColors.textHint, width: 1.5),
+            side: const BorderSide(color: AppColors.textHint, width: 1.5),
           ),
         ),
       ),
@@ -89,7 +89,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           disabledForegroundColor: AppColors.background,
-          minimumSize: Size(double.infinity, 48),
+          minimumSize: const Size(double.infinity, 48),
           textStyle: AppTextStyles.medium16(context),
           foregroundColor: AppColors.background,
           backgroundColor: AppColors.primaryColor,
