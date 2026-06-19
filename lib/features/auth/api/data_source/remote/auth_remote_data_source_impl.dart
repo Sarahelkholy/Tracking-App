@@ -1,6 +1,8 @@
 import 'package:flower_driver/config/error_handling/execute_api.dart';
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/auth/api/auth_api_client.dart';
+import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
+import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/logout_response.dart';
 import 'package:injectable/injectable.dart';
 
@@ -17,5 +19,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return executeApi<LogoutResponse>(() {
       return _apiClient.logout();
     });
+  }
+
+  @override
+  Future<Result<AuthResponse>> signIn(LoginRequest loginRequest) {
+    return executeApi(() => _apiClient.signIn(loginRequest));
   }
 }
