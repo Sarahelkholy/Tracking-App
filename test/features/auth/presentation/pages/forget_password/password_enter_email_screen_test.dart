@@ -70,7 +70,7 @@ void main() {
 
       expect(find.byKey(const Key(KeysStrings.emailTextField)), findsOneWidget);
 
-      expect(find.byKey(const Key(KeysStrings.confirmButton)), findsOneWidget);
+      expect(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)), findsOneWidget);
     });
 
     testWidgets('should not show loading indicator initially', (tester) async {
@@ -92,7 +92,7 @@ void main() {
     testWidgets('should show email required validation', (tester) async {
       await pumpScreen(tester);
 
-      await tester.tap(find.byKey(const Key(KeysStrings.confirmButton)));
+      await tester.tap(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)));
 
       await tester.pump();
 
@@ -107,7 +107,7 @@ void main() {
         'invalid-email',
       );
 
-      await tester.tap(find.byKey(const Key(KeysStrings.confirmButton)));
+      await tester.tap(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)));
 
       await tester.pump();
 
@@ -119,7 +119,7 @@ void main() {
     ) async {
       await pumpScreen(tester);
 
-      await tester.tap(find.byKey(const Key(KeysStrings.confirmButton)));
+      await tester.tap(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)));
 
       await tester.pump();
 

@@ -11,9 +11,7 @@ abstract class KeysStrings {
 
   static const emailTextField = 'password_enter_email_text_field';
 
-  static const confirmButton = 'password_enter_email_confirm_button';
-
-  static const emailForm = 'password_enter_email_form';
+  static const confirmButtonEnterEmail = 'password_enter_email_confirm_button';
 
   // Password Verify Otp Screen
 
@@ -26,4 +24,19 @@ abstract class KeysStrings {
   static const timerText = 'password_verify_otp_timer';
 
   static const otpField = 'password_verify_otp_field';
+
+  // reset password screen
+
+  static const newPasswordField = 'new_password_field';
+  static const confirmPasswordField = 'confirm_password_field';
+
+  static const newPasswordVisibility = 'new_password_visibility';
+
+  static const confirmPasswordVisibility = 'confirm_password_visibility';
+
+  static const confirmButtonResetPassword = 'reset_password_confirm_button';
+
+  static const resetPasswordTitle = 'reset_password_title';
+
+  static const resetPasswordSubtitle = 'reset_password_subtitle';
 }

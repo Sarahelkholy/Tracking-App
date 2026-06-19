@@ -1,3 +1,4 @@
+import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -102,11 +103,13 @@ class _PasswordResetPasswordScreenState
               children: [
                 const SizedBox(height: 40),
                 Text(
+                  key: const Key(KeysStrings.resetPasswordTitle),
                   localizations.resetPassword,
                   style: AppTextStyles.medium18(context),
                 ),
                 const SizedBox(height: 16),
                 Text(
+                  key: const Key(KeysStrings.resetPasswordSubtitle),
                   localizations.resetPasswordSubTitle,
                   style: AppTextStyles.regular14(
                     context,
@@ -126,6 +129,7 @@ class _PasswordResetPasswordScreenState
                       child: Column(
                         children: [
                           TextFormField(
+                            key: const Key(KeysStrings.newPasswordField),
                             controller: newPasswordController,
                             obscureText: isPasswordHidden,
                             enabled: !state.resetPasswordState.isLoading,
@@ -145,6 +149,9 @@ class _PasswordResetPasswordScreenState
                               labelText: localizations.newPassword,
                               hintText: localizations.enterYourPassword,
                               suffixIcon: IconButton(
+                                key: const Key(
+                                  KeysStrings.newPasswordVisibility,
+                                ),
                                 icon: Icon(
                                   isPasswordHidden
                                       ? Icons.visibility
@@ -161,6 +168,7 @@ class _PasswordResetPasswordScreenState
                           ),
                           const SizedBox(height: 24),
                           TextFormField(
+                            key: const Key(KeysStrings.confirmPasswordField),
                             controller: confirmPasswordController,
                             obscureText: isConfirmPasswordHidden,
                             enabled: !state.resetPasswordState.isLoading,
@@ -178,6 +186,9 @@ class _PasswordResetPasswordScreenState
                               labelText: localizations.confirmPassword,
                               hintText: localizations.enterConfirmPassword,
                               suffixIcon: IconButton(
+                                key: const Key(
+                                  KeysStrings.confirmPasswordVisibility,
+                                ),
                                 icon: Icon(
                                   isConfirmPasswordHidden
                                       ? Icons.visibility
@@ -195,6 +206,9 @@ class _PasswordResetPasswordScreenState
                           ),
                           const SizedBox(height: 48),
                           CustomButton(
+                            key: const Key(
+                              KeysStrings.confirmButtonResetPassword,
+                            ),
                             title: localizations.confirm,
                             isLoading: state.resetPasswordState.isLoading,
                             onPressed: () {

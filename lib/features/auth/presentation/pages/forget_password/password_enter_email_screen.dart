@@ -139,7 +139,7 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
                         ),
                         const SizedBox(height: 48),
                         CustomButton(
-                          key: const Key(KeysStrings.confirmButton),
+                          key: const Key(KeysStrings.confirmButtonEnterEmail),
                           title: localizations.confirm,
                           isLoading: state.sendEmailState.isLoading,
                           onPressed: () {
