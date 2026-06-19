@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../shared_widgets/svg_wrapper.dart';
-import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {

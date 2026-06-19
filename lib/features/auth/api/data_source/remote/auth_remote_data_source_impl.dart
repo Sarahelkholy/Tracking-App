@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flower_driver/config/error_handling/execute_api.dart';
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/auth/api/auth_api_client.dart';
@@ -15,7 +16,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Result<ApplyResponse>> apply(ApplyRequest applyRequest) {
     return executeApi(() async {
-      return _apiClient.apply(applyRequest);
+      final licenseFile = await MultipartFile.fromFile(
+        applyRequest.vehicleLicense!,
+        filename: applyRequest.vehicleLicense!.split('/').last,
+      );
+      final nidFile = await MultipartFile.fromFile(
+        applyRequest.nidImg!,
+        filename: applyRequest.nidImg!.split('/').last,
+      );
+
+      return _apiClient.apply(
+        applyRequest.country ?? '',
+        applyRequest.firstName ?? '',
+        applyRequest.lastName ?? '',
+        applyRequest.vehicleType ?? '',
+        applyRequest.vehicleNumber ?? '',
+        licenseFile,
+        applyRequest.nid ?? '',
+        nidFile,
+        applyRequest.email ?? '',
+        applyRequest.password ?? '',
+        applyRequest.rePassword ?? '',
+        applyRequest.gender ?? '',
+        applyRequest.phone ?? '',
+      );
     });
   }
 }

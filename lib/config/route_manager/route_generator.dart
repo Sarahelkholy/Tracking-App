@@ -4,6 +4,8 @@ import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/apply/view/pages/splash/splash_screen.dart';
+import '../../features/auth/presentation/apply/view/pages/register/apply_page.dart';
+import '../../features/auth/presentation/apply/view/pages/login/login_page.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -12,6 +14,14 @@ abstract class RouteGenerator {
         /// Splash Screen
         case Routes.splashRoute:
           return MaterialPageRoute(builder: (_) => const SplashScreen());
+
+        /// Apply Screen
+        case Routes.applyRoute:
+          return MaterialPageRoute(builder: (_) => const ApplyPage());
+
+        /// Login Screen
+        case Routes.loginRoute:
+          return MaterialPageRoute(builder: (_) => const LoginPage());
 
         /// Default
         default:
