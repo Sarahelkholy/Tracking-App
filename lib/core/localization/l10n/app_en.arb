@@ -33,5 +33,8 @@
   "error502": "Bad Gateway",
   "error503": "Service Unavailable",
   "error504": "Gateway Timeout",
-  "defaultError": "An error occurred"
+  "defaultError": "An error occurred",
+    "logout": "Logout",
+   "confirmLogout": "Confirm Logout",
+   "cancel": "Cancel"
 }
