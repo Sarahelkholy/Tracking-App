@@ -25,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   final Completer<void> _animationDone = Completer<void>();
   final Completer<bool> _dataResult = Completer<bool>();
+  final Completer<bool> _onboardingResult = Completer<bool>();
 
   bool _stopNavigation = false;
 
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _setupAnimation();
-    _checkDriver();
+    _checkDriverAndOnboarding();
     _waitAndNavigate();
   }
 
@@ -53,9 +54,21 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  void _checkDriver() async {
+  void _checkDriverAndOnboarding() async {
     final cubit = context.read<DriverCubit>();
     final secureCache = getIt<SecureCache>();
+
+    final hasSeenOnboarding = await secureCache.getData(
+      key: CacheKeys.hasSeenOnboarding,
+    );
+
+    if (hasSeenOnboarding != 'true') {
+      _onboardingResult.complete(false);
+      _dataResult.complete(false);
+      return;
+    } else {
+      _onboardingResult.complete(true);
+    }
 
     final token = await secureCache.getData(key: CacheKeys.token);
     final rememberMe = await secureCache.getData(key: CacheKeys.rememberMe);
@@ -75,13 +88,17 @@ class _SplashScreenState extends State<SplashScreen>
     final results = await Future.wait([
       _animationDone.future,
       _dataResult.future,
+      _onboardingResult.future,
     ]);
 
     if (!mounted || _stopNavigation) return;
 
     final isSuccess = results[1] as bool;
+    final hasSeenOnboarding = results[2] as bool;
 
-    if (isSuccess) {
+    if (!hasSeenOnboarding) {
+      _replaceTo(Routes.onboardingRoute);
+    } else if (isSuccess) {
       _replaceTo(Routes.bottomNavBarRoute);
     } else {
       _replaceTo(Routes.loginRoute);

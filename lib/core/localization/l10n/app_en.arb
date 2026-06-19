@@ -37,4 +37,6 @@
     "logout": "Logout",
    "confirmLogout": "Confirm Logout",
    "cancel": "Cancel"
+  "onboardingText":"Welcome to\nFlowery rider app",
+  "applyNow":"Apply now"
 }

@@ -1,6 +1,7 @@
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
+import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
@@ -12,6 +13,9 @@ abstract class RouteGenerator {
         /// Splash Screen
         case Routes.splashRoute:
           return MaterialPageRoute(builder: (_) => const SplashScreen());
+
+        case Routes.onboardingRoute:
+          return MaterialPageRoute(builder: (_) => const OnboardingScreen());
 
         /// Default
         default:
