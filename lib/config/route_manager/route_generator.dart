@@ -12,14 +12,10 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/apply/view/pages/splash/splash_screen.dart';
 import '../../features/auth/presentation/apply/view/pages/register/apply_page.dart';
-import '../../features/auth/presentation/apply/view/pages/login/login_page.dart';
 import '../../features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
-import '../../features/auth/presentation/pages/splash/splash_screen.dart';
-import '../di/di.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -29,23 +25,13 @@ abstract class RouteGenerator {
         case Routes.splashRoute:
           return MaterialPageRoute(builder: (_) => const SplashScreen());
 
+        /// onboarding screen
+        case Routes.onboardingRoute:
+          return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+
         /// Apply Screen
         case Routes.applyRoute:
           return MaterialPageRoute(builder: (_) => const ApplyPage());
-
-        /// Login Screen
-        case Routes.loginRoute:
-          return MaterialPageRoute(builder: (_) => const LoginPage());
-        case Routes.bottomNavBarRoute:
-          final args = settings.arguments as Map<String, dynamic>?;
-
-          return MaterialPageRoute(
-            builder: (_) =>
-                CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
-          );
-
-        case Routes.onboardingRoute:
-          return MaterialPageRoute(builder: (_) => const OnboardingScreen());
 
         /// Login
         case Routes.loginRoute:
@@ -85,6 +71,15 @@ abstract class RouteGenerator {
               value: cubit,
               child: const PasswordResetPasswordScreen(),
             ),
+          );
+
+        /// bottom navBar
+        case Routes.bottomNavBarRoute:
+          final args = settings.arguments as Map<String, dynamic>?;
+
+          return MaterialPageRoute(
+            builder: (_) =>
+                CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
 
         /// Default

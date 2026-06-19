@@ -1,4 +1,5 @@
 import 'package:flower_driver/config/error_handling/result.dart';
+import 'package:flower_driver/config/secure_cache/secure_cache/secure_cache.dart';
 import 'package:flower_driver/features/auth/data/data_source/remote/auth_remote_data_source.dart';
 import 'package:flower_driver/features/auth/data/models/responses/enter_email_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/new_password_response.dart';
@@ -10,11 +11,11 @@ import 'package:mockito/mockito.dart';
 
 import 'auth_repo_impl_test.mocks.dart';
 
-@GenerateMocks([AuthRemoteDataSource])
+@GenerateMocks([AuthRemoteDataSource, SecureCache])
 void main() {
   late AuthRepoImpl repo;
   late MockAuthRemoteDataSource mockRemote;
-
+  late MockSecureCache mockSecureCache;
   late String errorMessage;
 
   setUpAll(() {
@@ -33,7 +34,8 @@ void main() {
 
   setUp(() {
     mockRemote = MockAuthRemoteDataSource();
-    repo = AuthRepoImpl(mockRemote);
+    mockSecureCache = MockSecureCache();
+    repo = AuthRepoImpl(mockRemote, mockSecureCache);
   });
 
   group("Enter Email Tests", () {

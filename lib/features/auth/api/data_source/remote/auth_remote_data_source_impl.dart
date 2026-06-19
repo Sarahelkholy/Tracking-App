@@ -17,11 +17,12 @@ import '../../../data/models/responses/enter_email_response.dart';
 import '../../../data/models/responses/new_password_response.dart';
 import '../../../data/models/responses/verify_otp_response.dart';
 
-@Injectable(as: AuthRemoteDataSource)
+// @Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final AuthApiClient _apiClient;
 
   const AuthRemoteDataSourceImpl(this._apiClient);
+
   @override
   Future<Result<ApplyResponse>> apply(ApplyRequest applyRequest) {
     return executeApi(() async {
