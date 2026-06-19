@@ -4,6 +4,9 @@ import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/auth/api/auth_api_client.dart';
 import 'package:flower_driver/features/auth/data/models/requests/apply_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
+import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
+import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
+import 'package:flower_driver/features/auth/data/models/responses/logout_response.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../data/data_source/remote/auth_remote_data_source.dart';
@@ -26,20 +29,32 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       return _apiClient.apply(
-        applyRequest.country ?? '',
-        applyRequest.firstName ?? '',
-        applyRequest.lastName ?? '',
-        applyRequest.vehicleType ?? '',
-        applyRequest.vehicleNumber ?? '',
-        licenseFile,
-        applyRequest.nid ?? '',
-        nidFile,
-        applyRequest.email ?? '',
-        applyRequest.password ?? '',
-        applyRequest.rePassword ?? '',
-        applyRequest.gender ?? '',
-        applyRequest.phone ?? '',
+        country: applyRequest.country ?? '',
+        firstName: applyRequest.firstName ?? '',
+        lastName: applyRequest.lastName ?? '',
+        vehicleType: applyRequest.vehicleType ?? '',
+        vehicleNumber: applyRequest.vehicleNumber ?? '',
+        vehicleLicense: licenseFile,
+        nid: applyRequest.nid ?? '',
+        nidImg: nidFile,
+        email: applyRequest.email ?? '',
+        password: applyRequest.password ?? '',
+        rePassword: applyRequest.rePassword ?? '',
+        gender: applyRequest.gender ?? '',
+        phone: applyRequest.phone ?? '',
       );
     });
+  }
+
+  @override
+  Future<Result<LogoutResponse>> logout() {
+    return executeApi<LogoutResponse>(() {
+      return _apiClient.logout();
+    });
+  }
+
+  @override
+  Future<Result<AuthResponse>> signIn(LoginRequest loginRequest) {
+    return executeApi(() => _apiClient.signIn(loginRequest));
   }
 }

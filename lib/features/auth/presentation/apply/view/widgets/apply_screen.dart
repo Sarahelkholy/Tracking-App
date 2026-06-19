@@ -78,8 +78,8 @@ class _ApplyScreenState extends State<ApplyScreen> {
         if (sizeInMb <= 3) {
           if (mounted) {
             context.read<ApplyCubit>().handleIntent(
-                  UploadDocumentIntent(docType, image.path),
-                );
+              UploadDocumentIntent(docType, image.path),
+            );
           }
         } else {
           if (mounted) {
@@ -114,7 +114,10 @@ class _ApplyScreenState extends State<ApplyScreen> {
                 ),
                 const SizedBox(height: 16),
                 ListTile(
-                  leading: const Icon(Icons.camera_alt, color: AppColors.primaryColor),
+                  leading: const Icon(
+                    Icons.camera_alt,
+                    color: AppColors.primaryColor,
+                  ),
                   title: Text(AppStrings.current.takePhoto),
                   onTap: () {
                     Navigator.pop(sheetContext);
@@ -122,7 +125,10 @@ class _ApplyScreenState extends State<ApplyScreen> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.photo_library, color: AppColors.primaryColor),
+                  leading: const Icon(
+                    Icons.photo_library,
+                    color: AppColors.primaryColor,
+                  ),
                   title: Text(AppStrings.current.chooseGallery),
                   onTap: () {
                     Navigator.pop(sheetContext);
@@ -185,7 +191,10 @@ class _ApplyScreenState extends State<ApplyScreen> {
         password: _passwordController.text,
         rePassword: _confirmPasswordController.text,
         gender: state.selectedGender.toLowerCase(),
-        phone: _formatPhone(state.selectedCountry, _phoneController.text.trim()),
+        phone: _formatPhone(
+          state.selectedCountry,
+          _phoneController.text.trim(),
+        ),
       );
 
       context.read<ApplyCubit>().handleIntent(SubmitApplyIntent(request));
@@ -220,7 +229,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () {
-            Navigator.maybePop(context);
+            Navigator.pushReplacementNamed(context, Routes.loginRoute);
           },
         ),
       ),
@@ -234,17 +243,16 @@ class _ApplyScreenState extends State<ApplyScreen> {
               children: [
                 Text(
                   AppStrings.current.welcome,
-                  style: AppTextStyles.bold24(context).copyWith(
-                    color: AppColors.black100,
-                  ),
+                  style: AppTextStyles.bold24(
+                    context,
+                  ).copyWith(color: AppColors.black100),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   AppStrings.current.joinTeam,
-                  style: AppTextStyles.regular14(context).copyWith(
-                    color: AppColors.grayDark,
-                    height: 1.3,
-                  ),
+                  style: AppTextStyles.regular14(
+                    context,
+                  ).copyWith(color: AppColors.grayDark, height: 1.3),
                 ),
                 const SizedBox(height: 24),
 
@@ -271,7 +279,9 @@ class _ApplyScreenState extends State<ApplyScreen> {
                   }).toList(),
                   onChanged: (val) {
                     if (val != null) {
-                      context.read<ApplyCubit>().handleIntent(SelectCountryIntent(val));
+                      context.read<ApplyCubit>().handleIntent(
+                        SelectCountryIntent(val),
+                      );
                     }
                   },
                 ),
@@ -313,7 +323,9 @@ class _ApplyScreenState extends State<ApplyScreen> {
                   }).toList(),
                   onChanged: (val) {
                     if (val != null) {
-                      context.read<ApplyCubit>().handleIntent(SelectVehicleTypeIntent(val));
+                      context.read<ApplyCubit>().handleIntent(
+                        SelectVehicleTypeIntent(val),
+                      );
                     }
                   },
                 ),
@@ -332,7 +344,8 @@ class _ApplyScreenState extends State<ApplyScreen> {
 
                 // Vehicle License Upload Picker
                 InkWell(
-                  onTap: () => _showImagePicker(context, DocumentType.vehicleLicense),
+                  onTap: () =>
+                      _showImagePicker(context, DocumentType.vehicleLicense),
                   child: InputDecorator(
                     decoration: InputDecoration(
                       labelText: AppStrings.current.vehicleLicense,
@@ -447,7 +460,9 @@ class _ApplyScreenState extends State<ApplyScreen> {
                           hintText: AppStrings.current.enterPassword,
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               size: 18,
                               color: AppColors.grayDark,
                             ),
@@ -471,19 +486,24 @@ class _ApplyScreenState extends State<ApplyScreen> {
                           hintText: AppStrings.current.confirmPassword,
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                              _obscureConfirmPassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               size: 18,
                               color: AppColors.grayDark,
                             ),
                             onPressed: () {
                               setState(() {
-                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                                _obscureConfirmPassword =
+                                    !_obscureConfirmPassword;
                               });
                             },
                           ),
                         ),
-                        validator: (val) =>
-                            Validator.confirmPassword(val, _passwordController.text),
+                        validator: (val) => Validator.confirmPassword(
+                          val,
+                          _passwordController.text,
+                        ),
                       ),
                     ),
                   ],
@@ -495,9 +515,9 @@ class _ApplyScreenState extends State<ApplyScreen> {
                   children: [
                     Text(
                       AppStrings.current.gender,
-                      style: AppTextStyles.semiBold14(context).copyWith(
-                        color: AppColors.black100,
-                      ),
+                      style: AppTextStyles.semiBold14(
+                        context,
+                      ).copyWith(color: AppColors.black100),
                     ),
                     const SizedBox(width: 20),
                     Expanded(
@@ -509,15 +529,17 @@ class _ApplyScreenState extends State<ApplyScreen> {
                             activeColor: AppColors.primaryColor,
                             onChanged: (val) {
                               if (val != null) {
-                                context.read<ApplyCubit>().handleIntent(SelectGenderIntent(val));
+                                context.read<ApplyCubit>().handleIntent(
+                                  SelectGenderIntent(val),
+                                );
                               }
                             },
                           ),
                           Text(
                             AppStrings.current.female,
-                            style: AppTextStyles.regular14(context).copyWith(
-                              color: AppColors.black100,
-                            ),
+                            style: AppTextStyles.regular14(
+                              context,
+                            ).copyWith(color: AppColors.black100),
                           ),
                           const SizedBox(width: 20),
                           Radio<String>(
@@ -526,15 +548,17 @@ class _ApplyScreenState extends State<ApplyScreen> {
                             activeColor: AppColors.primaryColor,
                             onChanged: (val) {
                               if (val != null) {
-                                context.read<ApplyCubit>().handleIntent(SelectGenderIntent(val));
+                                context.read<ApplyCubit>().handleIntent(
+                                  SelectGenderIntent(val),
+                                );
                               }
                             },
                           ),
                           Text(
                             AppStrings.current.male,
-                            style: AppTextStyles.regular14(context).copyWith(
-                              color: AppColors.black100,
-                            ),
+                            style: AppTextStyles.regular14(
+                              context,
+                            ).copyWith(color: AppColors.black100),
                           ),
                         ],
                       ),
@@ -571,9 +595,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
             child: SizedBox(
               height: 220,
               width: double.infinity,
-              child: CustomPaint(
-                painter: BottomWavesPainter(),
-              ),
+              child: CustomPaint(painter: BottomWavesPainter()),
             ),
           ),
           SafeArea(
@@ -608,20 +630,18 @@ class _ApplyScreenState extends State<ApplyScreen> {
                     Text(
                       AppStrings.current.applicationSubmitted,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.bold20(context).copyWith(
-                        color: AppColors.black100,
-                        height: 1.3,
-                      ),
+                      style: AppTextStyles.bold20(
+                        context,
+                      ).copyWith(color: AppColors.black100, height: 1.3),
                     ),
                     const SizedBox(height: 16),
                     // Subtitle text
                     Text(
                       AppStrings.current.reviewApplication,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.regular14(context).copyWith(
-                        color: AppColors.grayNeutral,
-                        height: 1.4,
-                      ),
+                      style: AppTextStyles.regular14(
+                        context,
+                      ).copyWith(color: AppColors.grayNeutral, height: 1.4),
                     ),
                     const SizedBox(height: 40),
                     // Login redirect button
