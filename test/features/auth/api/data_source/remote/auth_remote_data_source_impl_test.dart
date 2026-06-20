@@ -10,6 +10,9 @@ import 'package:flower_driver/features/auth/data/models/requests/login_request.d
 import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/logout_response.dart';
+import 'package:flower_driver/features/auth/data/models/responses/enter_email_response.dart';
+import 'package:flower_driver/features/auth/data/models/responses/new_password_response.dart';
+import 'package:flower_driver/features/auth/data/models/responses/verify_otp_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -303,6 +306,99 @@ void main() {
         gender: anyNamed('gender'),
         phone: anyNamed('phone'),
       ));
+    });
+  });
+
+  group("Enter Email Tests", () {
+    test("should return success", () async {
+      final response = EnterEmailResponse(
+        message: "Success",
+        info: "Email sent",
+      );
+
+      when(apiClient.enterEmail(any)).thenAnswer((_) async => response);
+
+      final result = await remoteDataSource.enterEmail(email: "test@test.com");
+
+      expect(result, isA<Success<EnterEmailResponse>>());
+      expect(
+        (result as Success<EnterEmailResponse>).data.message,
+        response.message,
+      );
+
+      verify(apiClient.enterEmail(any)).called(1);
+    });
+
+    test("should return failure", () async {
+      when(apiClient.enterEmail(any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.enterEmail(email: "test@test.com");
+
+      expect(result, isA<Failure<EnterEmailResponse>>());
+      verify(apiClient.enterEmail(any)).called(1);
+    });
+  });
+
+  group("Verify OTP Tests", () {
+    test("should return success", () async {
+      final response = VerifyOtpResponse(status: "Success");
+
+      when(apiClient.verifyOtp(any)).thenAnswer((_) async => response);
+
+      final result = await remoteDataSource.verifyOtp(otp: "123456");
+
+      expect(result, isA<Success<VerifyOtpResponse>>());
+      expect(
+        (result as Success<VerifyOtpResponse>).data.status,
+        response.status,
+      );
+
+      verify(apiClient.verifyOtp(any)).called(1);
+    });
+
+    test("should return failure", () async {
+      when(apiClient.verifyOtp(any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.verifyOtp(otp: "123456");
+
+      expect(result, isA<Failure<VerifyOtpResponse>>());
+      verify(apiClient.verifyOtp(any)).called(1);
+    });
+  });
+
+  group("Add New Password Tests", () {
+    test("should return success", () async {
+      final response = NewPasswordResponse(
+        message: "Success",
+        token: "token_123",
+      );
+
+      when(apiClient.addNewPassword(any)).thenAnswer((_) async => response);
+
+      final result = await remoteDataSource.addNewPassword(
+        email: "test@test.com",
+        newPassword: "12345678",
+      );
+
+      expect(result, isA<Success<NewPasswordResponse>>());
+      expect(
+        (result as Success<NewPasswordResponse>).data.token,
+        response.token,
+      );
+
+      verify(apiClient.addNewPassword(any)).called(1);
+    });
+
+    test("should return failure", () async {
+      when(apiClient.addNewPassword(any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.addNewPassword(
+        email: "test@test.com",
+        newPassword: "12345678",
+      );
+
+      expect(result, isA<Failure<NewPasswordResponse>>());
+      verify(apiClient.addNewPassword(any)).called(1);
     });
   });
 }

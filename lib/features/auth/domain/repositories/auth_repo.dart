@@ -17,4 +17,13 @@ abstract class AuthRepo {
 
   /// Logout the current user.
   Future<Result<LogoutResponseEntity>> logout();
+
+  Future<Result<bool>> enterEmail({required String email});
+
+  Future<Result<bool>> verifyOtp({required String otp});
+
+  Future<Result<bool>> addNewPassword({
+    required String email,
+    required String newPassword,
+  });
 }

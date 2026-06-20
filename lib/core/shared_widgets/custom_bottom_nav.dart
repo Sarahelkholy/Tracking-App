@@ -1,11 +1,11 @@
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
-import 'package:flower_driver/core/utils/app_assets.dart';
 import 'package:flower_driver/features/oders/presentation/pages/home_screen.dart';
 import 'package:flower_driver/features/oders/presentation/pages/orders_screen.dart';
 import 'package:flower_driver/features/oders/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../shared_widgets/svg_wrapper.dart';
+import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {

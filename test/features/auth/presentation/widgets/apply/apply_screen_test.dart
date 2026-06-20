@@ -1,10 +1,10 @@
+import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_cubit.dart';
+import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:flower_driver/features/auth/presentation/apply/manager/apply_cubit.dart';
-import 'package:flower_driver/features/auth/presentation/apply/view/widgets/apply_screen.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations_en.dart';

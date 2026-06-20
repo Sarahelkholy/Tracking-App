@@ -7,25 +7,10 @@ import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-// بنستدعي الـ imports الخاصة بالـ Cache والـ Routes
-import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/config/route_manager/routes.dart';
-import 'package:flower_driver/config/secure_cache/secure_cache/cache_keys.dart';
-import 'package:flower_driver/config/secure_cache/secure_cache/secure_cache.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
-
-  Future<void> _completeOnboarding(
-    BuildContext context,
-    String targetRoute,
-  ) async {
-    final secureCache = getIt<SecureCache>();
-    await secureCache.saveData(key: CacheKeys.hasSeenOnboarding, value: 'true');
-
-    if (!context.mounted) return;
-    Navigator.pushReplacementNamed(context, targetRoute);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +50,7 @@ class OnboardingScreen extends StatelessWidget {
                 child: CustomButton(
                   title: local.login,
                   onPressed: () {
-                    _completeOnboarding(context, Routes.loginRoute);
+                    Navigator.pushNamed(context, Routes.loginRoute);
                   },
                 ),
               ),
@@ -81,7 +66,7 @@ class OnboardingScreen extends StatelessWidget {
                   backgroundColor: AppColors.baseWhite,
                   borderColor: AppColors.primaryColor,
                   onPressed: () {
-                    _completeOnboarding(context, Routes.applyRoute);
+                    Navigator.pushNamed(context, Routes.applyRoute);
                   },
                 ),
               ),

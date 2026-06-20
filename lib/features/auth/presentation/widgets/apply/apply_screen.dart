@@ -13,8 +13,9 @@ import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/features/auth/data/models/requests/apply_request.dart';
-import 'package:flower_driver/features/auth/presentation/apply/manager/apply_cubit.dart';
-import 'package:flower_driver/features/auth/presentation/apply/manager/apply_intents.dart';
+
+import '../../manager/apply_cubit/apply_cubit.dart';
+import '../../manager/apply_cubit/apply_intents.dart';
 
 class ApplyScreen extends StatefulWidget {
   const ApplyScreen({super.key});
@@ -649,10 +650,9 @@ class _ApplyScreenState extends State<ApplyScreen> {
                       title: AppStrings.current.login,
                       onPressed: () {
                         // Redirect to Login Route
-                        Navigator.pushNamedAndRemoveUntil(
+                        Navigator.pushReplacementNamed(
                           context,
-                          Routes.loginRoute,
-                          (route) => false,
+                          Routes.applySuccessScreen,
                         );
                       },
                     ),

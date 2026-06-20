@@ -1,11 +1,11 @@
+import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_cubit.dart';
+import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_intents.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
 import 'package:flower_driver/features/auth/domain/use_case/apply_use_case.dart';
-import 'package:flower_driver/features/auth/presentation/apply/manager/apply_cubit.dart';
-import 'package:flower_driver/features/auth/presentation/apply/manager/apply_intents.dart';
 import 'package:flower_driver/features/auth/data/models/requests/apply_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
 import 'package:flower_driver/config/error_handling/result.dart';

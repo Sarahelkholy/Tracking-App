@@ -71,6 +71,7 @@ void main() {
     expect(find.text('Home'), findsOneWidget);
     expect(find.text('Orders'), findsOneWidget);
     expect(find.text('Profile'), findsOneWidget);
-    expect(find.text('Profile Screen'), findsOneWidget);
+    expect(find.text('logout'), findsOneWidget);
+    expect(find.byType(ElevatedButton), findsOneWidget);
   });
 }

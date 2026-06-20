@@ -64,7 +64,7 @@ class ApplySuccessScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      Routes.loginRoute,
+                      Routes.onboardingRoute,
                       (route) => false,
                     );
                   },
