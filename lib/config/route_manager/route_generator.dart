@@ -34,13 +34,14 @@ abstract class RouteGenerator {
         case Routes.applyRoute:
           return MaterialPageRoute(builder: (_) => const ApplyPage());
 
-          /// Apply Success Screen
+        /// Apply Success Screen
         case Routes.applySuccessScreen:
           return MaterialPageRoute(builder: (_) => const ApplySuccessScreen());
 
         /// Login
         case Routes.loginRoute:
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.loginRoute),
             builder: (_) => BlocProvider<LoginCubit>(
               create: (context) => getIt<LoginCubit>(),
               child: const LoginScreen(),

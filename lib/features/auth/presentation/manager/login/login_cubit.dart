@@ -8,7 +8,7 @@ import '../../../domain/use_case/login_use_case.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
-@LazySingleton()
+@injectable
 class LoginCubit extends Cubit<LoginState> {
   final LoginUseCase _loginUseCase;
 
