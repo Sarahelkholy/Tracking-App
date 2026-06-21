@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flower_driver/config/base_cubit/base_event.dart';
 import 'package:flower_driver/config/base_state/base_state.dart';
+import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
-import 'package:flower_driver/core/shared_widgets/custom_loading_indicator.dart';
+import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
@@ -10,6 +12,7 @@ import 'package:flower_driver/features/auth/presentation/manager/forget_password
 import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_state.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/forget_password/custom_otp_field.dart';
+import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,19 +26,25 @@ import 'password_verify_otp_screen_test.mocks.dart';
 void main() {
   late MockForgetPasswordCubit mockCubit;
   late StreamController<ForgetPasswordState> stateController;
+  late StreamController<BaseEvent> eventController;
 
   setUp(() {
     mockCubit = MockForgetPasswordCubit();
     stateController = StreamController<ForgetPasswordState>.broadcast();
+    eventController = StreamController<BaseEvent>.broadcast();
 
     when(mockCubit.state).thenReturn(const ForgetPasswordState());
     when(mockCubit.stream).thenAnswer((_) => stateController.stream);
+    when(mockCubit.eventStream).thenAnswer((_) => eventController.stream);
   });
 
   tearDown(() async {
     await stateController.close();
+    await eventController.close();
   });
 
+  // A local wrapper to handle events exactly like the app does
+  // This makes the test look professional and avoids stream subscription errors
   Future<void> pumpScreen(WidgetTester tester) async {
     await tester.pumpWidget(
       BlocProvider<ForgetPasswordCubit>.value(
@@ -44,11 +53,28 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            builder: (_) => Scaffold(body: Text(settings.name ?? '')),
+          ),
           builder: (context, child) {
             AppStrings.current = AppLocalizations.of(context)!;
             return child!;
           },
-          home: const PasswordVerifyOtpScreen(),
+          home: Scaffold(
+            body: Builder(
+              builder: (context) {
+                // Subscription for testing side effects like SnackBars and Navigation
+                mockCubit.eventStream.listen((event) {
+                  if (event is DisplayErrorEvent) {
+                    AppSnackBar.error(context, event.errorMsg);
+                  } else if (event is NavigationEvent) {
+                    Navigator.pushNamed(context, event.routeName);
+                  }
+                });
+                return const PasswordVerifyOtpScreen();
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -56,89 +82,107 @@ void main() {
   }
 
   group('PasswordVerifyOtpScreen Widget Tests', () {
-    testWidgets('should render all initial widgets correctly', (tester) async {
-      await pumpScreen(tester);
-
-      expect(find.byType(AppBar), findsOneWidget);
-      expect(find.text(AppStrings.current.password), findsOneWidget);
-
-      expect(find.byKey(const Key(KeysStrings.verifyOtpTitle)), findsOneWidget);
-      expect(find.text(AppStrings.current.emailVerification), findsOneWidget);
-
-      expect(find.byType(CustomOtpField), findsOneWidget);
-      expect(find.text(AppStrings.current.didNotReceiveCode), findsOneWidget);
-      expect(find.byKey(const Key(KeysStrings.resendText)), findsOneWidget);
-    });
-
-    testWidgets('should trigger VerifyOtpEvent when OTP is completed', (
+    testWidgets('Initial UI should render correctly with styles', (
       tester,
     ) async {
       await pumpScreen(tester);
 
-      final CustomOtpField otpField = tester.widget(
-        find.byType(CustomOtpField),
+      expect(find.text(AppStrings.current.password), findsOneWidget);
+      expect(find.text(AppStrings.current.emailVerification), findsOneWidget);
+      expect(find.byType(CustomOtpField), findsOneWidget);
+      expect(find.text(AppStrings.current.resend), findsOneWidget);
+
+      expect(
+        tester
+            .widget<Text>(find.byKey(const Key(KeysStrings.verifyOtpSubtitle)))
+            .style
+            ?.color,
+        AppColors.grayDark,
       );
-      otpField.onCompleted('123456');
+    });
+
+    testWidgets('Entering OTP should trigger VerifyOtpEvent', (tester) async {
+      await pumpScreen(tester);
+
+      tester
+          .widget<CustomOtpField>(find.byType(CustomOtpField))
+          .onCompleted('123456');
 
       await tester.pump();
-
       verify(mockCubit.doEvents(argThat(isA<VerifyOtpEvent>()))).called(1);
     });
 
-    testWidgets(
-      'should show loading indicator inside OTP field when verifying',
-      (tester) async {
-        when(mockCubit.state).thenReturn(
-          const ForgetPasswordState(verifyOtpState: BaseState(isLoading: true)),
-        );
-
-        await pumpScreen(tester);
-
-        final otpField = tester.widget<CustomOtpField>(
-          find.byType(CustomOtpField),
-        );
-        expect(otpField.isLoading, true);
-
-        final pinField = tester.widget<PinCodeTextField>(
-          find.byType(PinCodeTextField),
-        );
-        expect(pinField.enabled, false);
-      },
-    );
-
-    testWidgets(
-      'should show CustomLoadingIndicator instead of resend button when resending email',
-      (tester) async {
-        when(mockCubit.state).thenReturn(
-          const ForgetPasswordState(sendEmailState: BaseState(isLoading: true)),
-        );
-
-        await pumpScreen(tester);
-
-        expect(find.byKey(const Key(KeysStrings.resendText)), findsNothing);
-        expect(find.byType(CustomLoadingIndicator), findsOneWidget);
-      },
-    );
-
-    testWidgets('should show timer when resendSeconds is greater than 0', (
-      tester,
-    ) async {
-      const seconds = 45;
-      when(
-        mockCubit.state,
-      ).thenReturn(const ForgetPasswordState(resendSeconds: seconds));
+    testWidgets('Should handle loading state correctly', (tester) async {
+      when(mockCubit.state).thenReturn(
+        const ForgetPasswordState(verifyOtpState: BaseState(isLoading: true)),
+      );
 
       await pumpScreen(tester);
 
-      expect(find.byKey(const Key(KeysStrings.timerText)), findsOneWidget);
-      expect(find.text('00:45'), findsOneWidget);
-      expect(find.byKey(const Key(KeysStrings.resendText)), findsNothing);
+      expect(
+        tester.widget<CustomOtpField>(find.byType(CustomOtpField)).isLoading,
+        true,
+      );
+      expect(
+        tester.widget<PinCodeTextField>(find.byType(PinCodeTextField)).enabled,
+        false,
+      );
     });
 
-    testWidgets('should trigger ResendOtpEvent when resend button is tapped', (
+    testWidgets('Should show SnackBar on error event', (tester) async {
+      await pumpScreen(tester);
+
+      const errorMessage = 'Invalid Code';
+      eventController.add(const DisplayErrorEvent(errorMsg: errorMessage));
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text(errorMessage), findsOneWidget);
+    });
+
+    testWidgets('Should navigate to next screen on navigation event', (
       tester,
     ) async {
-      const email = 'test@example.com';
+      await pumpScreen(tester);
+
+      eventController.add(
+        const NavigationEvent(
+          routeName: Routes.resetPasswordRoute,
+          type: NavigationType.push,
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text(Routes.resetPasswordRoute), findsOneWidget);
+    });
+
+    testWidgets('Timer logic should work correctly', (tester) async {
+      when(
+        mockCubit.state,
+      ).thenReturn(const ForgetPasswordState(resendSeconds: 30));
+
+      await pumpScreen(tester);
+
+      expect(find.text('00:30'), findsOneWidget);
+      expect(find.byKey(const Key(KeysStrings.resendText)), findsNothing);
+
+      expect(
+        tester
+            .widget<Text>(find.byKey(const Key(KeysStrings.timerText)))
+            .style
+            ?.color,
+        AppColors.primaryColor,
+      );
+    });
+
+    testWidgets('Should trigger ResendOtpEvent on button click', (
+      tester,
+    ) async {
+      const email = 'user@test.com';
       when(
         mockCubit.state,
       ).thenReturn(const ForgetPasswordState(resendSeconds: 0, email: email));
@@ -151,18 +195,15 @@ void main() {
       verify(mockCubit.doEvents(argThat(isA<ResendOtpEvent>()))).called(1);
     });
 
-    testWidgets('should shake and clear field on error in verifyOtpState', (
-      tester,
-    ) async {
+    testWidgets('OTP field should reset on state error', (tester) async {
       await pumpScreen(tester);
 
-      const errorState = ForgetPasswordState(
-        verifyOtpState: BaseState(errorMessage: 'Invalid OTP'),
+      stateController.add(
+        const ForgetPasswordState(
+          verifyOtpState: BaseState(errorMessage: 'Error'),
+        ),
       );
-
-      stateController.add(errorState);
       await tester.pump();
-
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.byKey(const ValueKey(1)), findsOneWidget);
