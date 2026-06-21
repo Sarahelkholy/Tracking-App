@@ -74,21 +74,18 @@ class _PasswordResetPasswordScreenState
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          Routes.loginRoute,
-          (route) => false,
-        );
+        if (didPop) return;
+
+        Navigator.popUntil(context, ModalRoute.withName(Routes.loginRoute));
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(localizations.password),
           leading: IconButton(
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
+              Navigator.popUntil(
                 context,
-                Routes.loginRoute,
-                (route) => false,
+                ModalRoute.withName(Routes.loginRoute),
               );
             },
             icon: const Icon(Icons.arrow_back_ios_new),
