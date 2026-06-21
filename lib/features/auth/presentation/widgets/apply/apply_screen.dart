@@ -161,6 +161,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
 
   void _submitForm(ApplyState state) {
     if (_formKey.currentState!.validate()) {
+
       if (state.vehicleLicensePath == null) {
         AppSnackBar.error(context, AppStrings.current.errorUploadLicense);
         return;
@@ -238,6 +239,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

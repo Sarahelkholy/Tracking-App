@@ -3,6 +3,7 @@ import 'package:flower_driver/features/auth/data/models/requests/apply_request.d
 import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
+import 'package:flower_driver/features/auth/data/models/responses/country_model.dart';
 import 'package:flower_driver/features/auth/domain/entities/logout_response_entity.dart';
 
 abstract class AuthRepo {
@@ -26,4 +27,6 @@ abstract class AuthRepo {
     required String email,
     required String newPassword,
   });
+
+  Future<Result<List<CountryModel>>> getCountries();
 }

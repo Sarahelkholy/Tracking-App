@@ -25,7 +25,7 @@ class ApplySuccessScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: SvgPicture.asset(
-                    "assets/images/Vector.svg",
+                    "assets/images/check-circle.svg",
                     width: 120,
                     height: 120,
                   ),

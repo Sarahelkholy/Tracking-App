@@ -1,9 +1,11 @@
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/auth/data/data_source/remote/auth_remote_data_source.dart';
+import 'package:flower_driver/features/auth/data/data_source/remote/country_local_data_source.dart';
 import 'package:flower_driver/features/auth/data/models/requests/apply_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
 import 'package:flower_driver/config/secure_cache/secure_cache/cache_keys.dart';
 import 'package:flower_driver/config/secure_cache/secure_cache/secure_cache.dart';
+import 'package:flower_driver/features/auth/data/models/responses/country_model.dart';
 import 'package:flower_driver/features/auth/data/models/responses/logout_response.dart';
 import 'package:flower_driver/features/auth/domain/entities/logout_response_entity.dart';
 import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
@@ -18,9 +20,14 @@ import '../models/responses/verify_otp_response.dart';
 @Injectable(as: AuthRepo)
 class AuthRepoImpl implements AuthRepo {
   final AuthRemoteDataSource _authRemoteDataSource;
+  final CountryLocalDataSource _countryLocalDataSource;
   final SecureCache _secureCache;
 
-  const AuthRepoImpl(this._authRemoteDataSource, this._secureCache);
+  const AuthRepoImpl(
+    this._authRemoteDataSource,
+    this._countryLocalDataSource,
+    this._secureCache,
+  );
 
   @override
   Future<Result<ApplyResponse>> apply(ApplyRequest applyRequest) {
@@ -124,5 +131,10 @@ class AuthRepoImpl implements AuthRepo {
           return Failure(errorMessage: response.errorMessage);
         }
     }
+  }
+
+  @override
+  Future<Result<List<CountryModel>>> getCountries() {
+    return _countryLocalDataSource.getCountries();
   }
 }
