@@ -1,0 +1,1 @@
+extension ChangePasswordResponseMapper on int{}
