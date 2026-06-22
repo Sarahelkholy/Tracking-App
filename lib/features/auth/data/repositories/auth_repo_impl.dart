@@ -4,18 +4,16 @@ import 'package:flower_driver/features/auth/data/models/requests/login_request.d
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../config/di/di.dart';
 import '../../../../config/secure_cache/secure_cache/cache_keys.dart';
-import '../../../../config/secure_cache/secure_cache/secure_cache.dart';
 import '../../domain/repositories/auth_repo.dart';
 
 @Injectable(as: AuthRepo)
 class AuthRepoImpl implements AuthRepo {
   final AuthRemoteDataSource _authRemoteDataSource;
 
-  AuthRepoImpl(this._authRemoteDataSource);
+  AuthRepoImpl(this._authRemoteDataSource, this.secureCache);
 
-  final secureCache = getIt<SecureCache>();
+  final secureCache;
 
   @override
   Future<Result<AuthResponse>> signIn(
