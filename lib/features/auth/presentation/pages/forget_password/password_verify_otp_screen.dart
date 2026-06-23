@@ -68,6 +68,8 @@ class _PasswordVerifyOtpScreenState extends State<PasswordVerifyOtpScreen> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+
         Navigator.popUntil(context, ModalRoute.withName(Routes.loginRoute));
       },
       child: Scaffold(
@@ -119,7 +121,6 @@ class _PasswordVerifyOtpScreenState extends State<PasswordVerifyOtpScreen> {
 
                         setState(() {
                           _otpController.clear();
-                          _otpController = TextEditingController();
                           _otpFieldKey++;
                         });
                       });
