@@ -70,7 +70,10 @@ void main() {
 
       expect(find.byKey(const Key(KeysStrings.emailTextField)), findsOneWidget);
 
-      expect(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)), findsOneWidget);
+      expect(
+        find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should not show loading indicator initially', (tester) async {
@@ -92,7 +95,9 @@ void main() {
     testWidgets('should show email required validation', (tester) async {
       await pumpScreen(tester);
 
-      await tester.tap(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)));
+      await tester.tap(
+        find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)),
+      );
 
       await tester.pump();
 
@@ -107,7 +112,9 @@ void main() {
         'invalid-email',
       );
 
-      await tester.tap(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)));
+      await tester.tap(
+        find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)),
+      );
 
       await tester.pump();
 
@@ -119,7 +126,9 @@ void main() {
     ) async {
       await pumpScreen(tester);
 
-      await tester.tap(find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)));
+      await tester.tap(
+        find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)),
+      );
 
       await tester.pump();
 
@@ -157,6 +166,40 @@ void main() {
       );
 
       expect(textField.enabled, false);
+    });
+
+    testWidgets('should disable button while loading', (tester) async {
+      when(mockCubit.state).thenReturn(
+        const ForgetPasswordState(sendEmailState: BaseState(isLoading: true)),
+      );
+
+      await pumpScreen(tester);
+
+      final button = tester.widget<ElevatedButton>(
+        find.descendant(
+          of: find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)),
+          matching: find.byType(ElevatedButton),
+        ),
+      );
+
+      expect(button.enabled, isFalse);
+    });
+
+    testWidgets('should disable button while loading', (tester) async {
+      when(mockCubit.state).thenReturn(
+        const ForgetPasswordState(sendEmailState: BaseState(isLoading: true)),
+      );
+
+      await pumpScreen(tester);
+
+      final button = tester.widget<ElevatedButton>(
+        find.descendant(
+          of: find.byKey(const Key(KeysStrings.confirmButtonEnterEmail)),
+          matching: find.byType(ElevatedButton),
+        ),
+      );
+
+      expect(button.enabled, isFalse);
     });
 
     testWidgets(

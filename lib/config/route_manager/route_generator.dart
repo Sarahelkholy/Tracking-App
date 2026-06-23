@@ -24,7 +24,10 @@ abstract class RouteGenerator {
       switch (settings.name) {
         /// Splash Screen
         case Routes.splashRoute:
-          return MaterialPageRoute(builder: (_) => const SplashScreen());
+          return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.splashRoute),
+            builder: (_) => const SplashScreen(),
+          );
 
         /// onboarding screen
         case Routes.onboardingRoute:
@@ -51,6 +54,7 @@ abstract class RouteGenerator {
         /// Forget Password - Enter Email
         case Routes.forgetPasswordRoute:
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.forgetPasswordRoute),
             builder: (_) => BlocProvider(
               create: (_) => getIt<ForgetPasswordCubit>(),
               child: const PasswordEnterEmailScreen(),
@@ -62,6 +66,7 @@ abstract class RouteGenerator {
           final cubit = settings.arguments as ForgetPasswordCubit;
 
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.passwordVerifyOtpRoute),
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const PasswordVerifyOtpScreen(),
@@ -73,6 +78,7 @@ abstract class RouteGenerator {
           final cubit = settings.arguments as ForgetPasswordCubit;
 
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.resetPasswordRoute),
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const PasswordResetPasswordScreen(),

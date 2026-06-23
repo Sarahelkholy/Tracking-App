@@ -74,6 +74,8 @@ class _PasswordResetPasswordScreenState
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+
         Navigator.popUntil(context, ModalRoute.withName(Routes.loginRoute));
       },
       child: Scaffold(
@@ -112,16 +114,7 @@ class _PasswordResetPasswordScreenState
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                BlocConsumer<ForgetPasswordCubit, ForgetPasswordState>(
-                  listener: (context, state) {
-                    if (state.resetPasswordState.isSuccess) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        Routes.onboardingRoute,
-                        (route) => false,
-                      );
-                    }
-                  },
+                BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
                   buildWhen: (previous, current) {
                     return previous.resetPasswordState !=
                         current.resetPasswordState;
