@@ -13,11 +13,9 @@ class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({
     super.key,
     this.initialIndex = 0,
-    this.categoryIndex = 0,
   });
 
   final int initialIndex;
-  final int categoryIndex;
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
