@@ -6,26 +6,43 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
 import 'package:flower_driver/features/auth/domain/use_case/apply_use_case.dart';
+import 'package:flower_driver/features/auth/domain/use_case/get_all_countries_use_case.dart';
 import 'package:flower_driver/features/auth/data/models/requests/apply_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
+import 'package:flower_driver/features/auth/data/models/responses/country_model.dart';
 import 'package:flower_driver/config/error_handling/result.dart';
 
 import 'apply_cubit_test.mocks.dart';
 
-@GenerateMocks([ApplyUseCase])
+@GenerateMocks([ApplyUseCase, GetAllCountriesUseCase])
 void main() {
   late ApplyCubit applyCubit;
   late MockApplyUseCase mockApplyUseCase;
+  late MockGetAllCountriesUseCase mockGetAllCountriesUseCase;
 
   setUpAll(() {
     provideDummy<Result<ApplyResponse>>(
       Success<ApplyResponse>(data: ApplyResponse()),
     );
+    provideDummy<Result<List<CountryModel>>>(
+      Success<List<CountryModel>>(data: const []),
+    );
   });
 
   setUp(() {
     mockApplyUseCase = MockApplyUseCase();
-    applyCubit = ApplyCubit(mockApplyUseCase);
+    mockGetAllCountriesUseCase = MockGetAllCountriesUseCase();
+    when(mockGetAllCountriesUseCase()).thenAnswer(
+      (_) async => Success<List<CountryModel>>(
+        data: [
+          CountryModel(name: 'Egypt'),
+          CountryModel(name: 'UAE'),
+          CountryModel(name: 'Saudi Arabia'),
+          CountryModel(name: 'Kuwait'),
+        ],
+      ),
+    );
+    applyCubit = ApplyCubit(mockApplyUseCase, mockGetAllCountriesUseCase);
   });
 
   tearDown(() {
@@ -64,8 +81,9 @@ void main() {
     });
 
     test('clearError=true sets errorMessage to null', () {
-      final stateWithError =
-          ApplyState.initial().copyWith(errorMessage: 'some error');
+      final stateWithError = ApplyState.initial().copyWith(
+        errorMessage: 'some error',
+      );
       expect(stateWithError.errorMessage, 'some error');
 
       final cleared = stateWithError.copyWith(clearError: true);
@@ -73,8 +91,9 @@ void main() {
     });
 
     test('clearError=false keeps errorMessage intact', () {
-      final stateWithError =
-          ApplyState.initial().copyWith(errorMessage: 'some error');
+      final stateWithError = ApplyState.initial().copyWith(
+        errorMessage: 'some error',
+      );
       final unchanged = stateWithError.copyWith(isLoading: true);
       expect(unchanged.errorMessage, 'some error');
     });
@@ -100,18 +119,38 @@ void main() {
 
   group('SelectCountryIntent -', () {
     blocTest<ApplyCubit, ApplyState>(
-      'emits updated selectedCountry',
-      build: () => applyCubit,
+      'emits updated selectedCountry when country exists',
+      build: () {
+        when(mockGetAllCountriesUseCase()).thenAnswer(
+          (_) async => Success<List<CountryModel>>(
+            data: [
+              CountryModel(name: 'Egypt'),
+              CountryModel(name: 'UAE'),
+            ],
+          ),
+        );
+        return applyCubit;
+      },
       act: (cubit) => cubit.handleIntent(SelectCountryIntent('Egypt')),
       expect: () => [ApplyState.initial().copyWith(selectedCountry: 'Egypt')],
     );
 
     blocTest<ApplyCubit, ApplyState>(
       'can switch countries sequentially',
-      build: () => applyCubit,
-      act: (cubit) {
-        cubit.handleIntent(SelectCountryIntent('Egypt'));
-        cubit.handleIntent(SelectCountryIntent('UAE'));
+      build: () {
+        when(mockGetAllCountriesUseCase()).thenAnswer(
+          (_) async => Success<List<CountryModel>>(
+            data: [
+              CountryModel(name: 'Egypt'),
+              CountryModel(name: 'UAE'),
+            ],
+          ),
+        );
+        return applyCubit;
+      },
+      act: (cubit) async {
+        await cubit.handleIntent(SelectCountryIntent('Egypt'));
+        await cubit.handleIntent(SelectCountryIntent('UAE'));
       },
       expect: () => [
         ApplyState.initial().copyWith(selectedCountry: 'Egypt'),
@@ -127,15 +166,13 @@ void main() {
       'emits updated selectedVehicleType',
       build: () => applyCubit,
       act: (cubit) => cubit.handleIntent(SelectVehicleTypeIntent('Car')),
-      expect: () =>
-          [ApplyState.initial().copyWith(selectedVehicleType: 'Car')],
+      expect: () => [ApplyState.initial().copyWith(selectedVehicleType: 'Car')],
     );
 
     blocTest<ApplyCubit, ApplyState>(
       'can switch to Motorbike',
       build: () => applyCubit,
-      act: (cubit) =>
-          cubit.handleIntent(SelectVehicleTypeIntent('Motorbike')),
+      act: (cubit) => cubit.handleIntent(SelectVehicleTypeIntent('Motorbike')),
       expect: () => [
         ApplyState.initial().copyWith(selectedVehicleType: 'Motorbike'),
       ],
@@ -144,8 +181,7 @@ void main() {
     blocTest<ApplyCubit, ApplyState>(
       'can switch to Bicycle',
       build: () => applyCubit,
-      act: (cubit) =>
-          cubit.handleIntent(SelectVehicleTypeIntent('Bicycle')),
+      act: (cubit) => cubit.handleIntent(SelectVehicleTypeIntent('Bicycle')),
       expect: () => [
         ApplyState.initial().copyWith(selectedVehicleType: 'Bicycle'),
       ],
@@ -166,8 +202,7 @@ void main() {
       'emits Female gender',
       build: () => applyCubit,
       act: (cubit) => cubit.handleIntent(SelectGenderIntent('Female')),
-      expect: () =>
-          [ApplyState.initial().copyWith(selectedGender: 'Female')],
+      expect: () => [ApplyState.initial().copyWith(selectedGender: 'Female')],
     );
   });
 
@@ -179,11 +214,14 @@ void main() {
       build: () => applyCubit,
       act: (cubit) => cubit.handleIntent(
         UploadDocumentIntent(
-            DocumentType.vehicleLicense, 'path/to/license.jpg'),
+          DocumentType.vehicleLicense,
+          'path/to/license.jpg',
+        ),
       ),
       expect: () => [
-        ApplyState.initial()
-            .copyWith(vehicleLicensePath: 'path/to/license.jpg'),
+        ApplyState.initial().copyWith(
+          vehicleLicensePath: 'path/to/license.jpg',
+        ),
       ],
     );
 
@@ -367,8 +405,8 @@ void main() {
     blocTest<ApplyCubit, ApplyState>(
       'country + gender accumulates without resetting each other',
       build: () => applyCubit,
-      act: (cubit) {
-        cubit.handleIntent(SelectCountryIntent('Saudi Arabia'));
+      act: (cubit) async {
+        await cubit.handleIntent(SelectCountryIntent('Saudi Arabia'));
         cubit.handleIntent(SelectGenderIntent('Female'));
       },
       expect: () => [
@@ -383,8 +421,8 @@ void main() {
     blocTest<ApplyCubit, ApplyState>(
       'all five selection intents accumulate correctly',
       build: () => applyCubit,
-      act: (cubit) {
-        cubit.handleIntent(SelectCountryIntent('Kuwait'));
+      act: (cubit) async {
+        await cubit.handleIntent(SelectCountryIntent('Kuwait'));
         cubit.handleIntent(SelectVehicleTypeIntent('Bicycle'));
         cubit.handleIntent(SelectGenderIntent('Female'));
         cubit.handleIntent(

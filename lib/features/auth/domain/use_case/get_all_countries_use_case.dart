@@ -1,7 +1,9 @@
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/auth/data/models/responses/country_model.dart';
 import 'package:flower_driver/features/auth/domain/repositories/auth_repo.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class GetAllCountriesUseCase {
   final AuthRepo _authRepo;
 

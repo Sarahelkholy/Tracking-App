@@ -1,3 +1,5 @@
+import 'package:flower_driver/features/auth/data/models/responses/country_model.dart';
+import 'package:flower_driver/features/auth/domain/use_case/get_all_countries_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
@@ -12,13 +14,15 @@ part 'apply_state.dart';
 @injectable
 class ApplyCubit extends Cubit<ApplyState> {
   final ApplyUseCase _applyUseCase;
+  final GetAllCountriesUseCase _getCountriesUseCase;
 
-  ApplyCubit(this._applyUseCase) : super(ApplyState.initial());
+  ApplyCubit(this._applyUseCase, this._getCountriesUseCase)
+    : super(ApplyState.initial());
 
-  void handleIntent(ApplyIntents intent) {
+  Future<void> handleIntent(ApplyIntents intent) async {
     switch (intent) {
       case SelectCountryIntent selectCountryIntent:
-        _onSelectCountry(selectCountryIntent);
+        await _onSelectCountry(selectCountryIntent);
         break;
       case SelectVehicleTypeIntent selectVehicleTypeIntent:
         _onSelectVehicleType(selectVehicleTypeIntent);
@@ -30,13 +34,26 @@ class ApplyCubit extends Cubit<ApplyState> {
         _onUploadDocument(uploadDocumentIntent);
         break;
       case SubmitApplyIntent submitApplyIntent:
-        _onSubmitApply(submitApplyIntent);
+        await _onSubmitApply(submitApplyIntent);
         break;
     }
   }
 
-  void _onSelectCountry(SelectCountryIntent intent) {
-    emit(state.copyWith(selectedCountry: intent.country));
+  Future<void> _onSelectCountry(SelectCountryIntent intent) async {
+    final result = await _getCountriesUseCase();
+
+    switch (result) {
+      case Success<List<CountryModel>>():
+        final country = result.data.firstWhere(
+          (country) => country.name == intent.country,
+          orElse: () => CountryModel(name: intent.country),
+        );
+        emit(state.copyWith(selectedCountry: country.name ?? intent.country));
+        break;
+      case Failure<List<CountryModel>>():
+        emit(state.copyWith(errorMessage: result.errorMessage));
+        break;
+    }
   }
 
   void _onSelectVehicleType(SelectVehicleTypeIntent intent) {
