@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flower_driver/config/base_cubit/base_event.dart';
 import 'package:flower_driver/config/base_state/base_state.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
+import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flower_driver/features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
@@ -57,7 +58,20 @@ void main() {
           builder: (context, child) {
             AppStrings.current = AppLocalizations.of(context)!;
 
-            return child!;
+            return Scaffold(
+              body: Builder(
+                builder: (context) {
+                  mockCubit.eventStream.listen((event) {
+                    if (event is DisplayErrorEvent) {
+                      AppSnackBar.error(context, event.errorMsg);
+                    } else if (event is DisplaySuccessEvent) {
+                      AppSnackBar.success(context, event.successMsg);
+                    }
+                  });
+                  return child!;
+                },
+              ),
+            );
           },
           home: const PasswordResetPasswordScreen(),
         ),
@@ -188,6 +202,49 @@ void main() {
       for (final field in fields) {
         expect(field.enabled, false);
       }
+    });
+
+    testWidgets('should disable button while loading', (tester) async {
+      await pumpScreen(
+        tester,
+        state: const ForgetPasswordState(
+          email: 'test@test.com',
+          resetPasswordState: BaseState(isLoading: true),
+        ),
+      );
+
+      final button = tester.widget<ElevatedButton>(
+        find.descendant(
+          of: find.byKey(const Key(KeysStrings.confirmButtonResetPassword)),
+          matching: find.byType(ElevatedButton),
+        ),
+      );
+
+      expect(button.enabled, isFalse);
+    });
+
+    testWidgets('should show error snackbar', (tester) async {
+      await pumpScreen(tester);
+
+      eventController.add(
+        const DisplayErrorEvent(errorMsg: 'Something went wrong'),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Something went wrong'), findsOneWidget);
+    });
+
+    testWidgets('should show success snackbar', (tester) async {
+      await pumpScreen(tester);
+
+      eventController.add(const DisplaySuccessEvent(successMsg: 'Success'));
+
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Success'), findsOneWidget);
     });
 
     testWidgets('should toggle new password visibility', (tester) async {

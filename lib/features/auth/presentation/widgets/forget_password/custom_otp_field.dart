@@ -24,6 +24,7 @@ class CustomOtpField extends StatelessWidget {
     return PinCodeTextField(
       appContext: context,
       controller: controller,
+      autoDisposeControllers: false,
       length: 6,
       autoFocus: true,
 

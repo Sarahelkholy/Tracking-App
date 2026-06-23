@@ -1,3 +1,4 @@
+import 'package:flower_driver/core/helpers/event_handler_mixin.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
@@ -10,8 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-import '../../../../../config/base_cubit/base_event.dart';
-import '../../../../../core/helpers/app_snack_bar.dart';
 import '../../../../../core/helpers/validator.dart';
 import '../../../../../core/utils/app_constants.dart';
 
@@ -23,7 +22,8 @@ class PasswordEnterEmailScreen extends StatefulWidget {
       _PasswordEnterEmailScreenState();
 }
 
-class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
+class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen>
+    with EventHandlerMixin {
   late AppLocalizations localizations;
   late KeyboardVisibilityController keyboardVisibilityController;
   late final ForgetPasswordCubit _cubit;
@@ -41,25 +41,13 @@ class _PasswordEnterEmailScreenState extends State<PasswordEnterEmailScreen> {
     });
 
     _cubit = context.read<ForgetPasswordCubit>();
+
     _cubit.eventStream.listen((event) {
-      switch (event) {
-        case DisplayErrorEvent():
-          if (!mounted) return;
-          AppSnackBar.error(context, event.errorMsg);
+      if (!mounted) return;
 
-        case DisplaySuccessEvent():
-          if (!mounted) return;
-          AppSnackBar.success(context, event.successMsg);
-
-        case NavigationEvent():
-          if (!mounted) return;
-          Navigator.pushNamed(
-            context,
-            event.routeName,
-            arguments: context.read<ForgetPasswordCubit>(),
-          );
-      }
+      handleEvent(event);
     });
+
     super.initState();
   }
 
