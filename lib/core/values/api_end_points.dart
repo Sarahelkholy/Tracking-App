@@ -10,4 +10,5 @@ abstract class ApiEndPoints {
   static const String resetPassword = "/drivers/resetPassword";
 
   static const String getDriverData = "/drivers/profile-data";
+  static const String pendingOrders = "/orders/pending-orders";
 }

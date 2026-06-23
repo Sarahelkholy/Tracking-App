@@ -1,6 +1,7 @@
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'config/di/di.dart';
 import 'config/driver/manager/driver_state.dart';
@@ -16,6 +17,8 @@ import 'core/values/app_strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
 
   configureDependencies();
 
