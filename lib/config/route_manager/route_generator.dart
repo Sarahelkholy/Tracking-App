@@ -4,17 +4,19 @@ import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/core/shared_widgets/custom_bottom_nav.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/auth/presentation/manager/login/login_cubit.dart';
-import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
-import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_enter_email_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_reset_password_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
+import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
+import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
+import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
+import '../../features/auth/presentation/manager/splash_cubit/splash_cubit.dart';
 import '../../features/auth/presentation/pages/apply/apply_page.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
 
@@ -26,7 +28,10 @@ abstract class RouteGenerator {
         case Routes.splashRoute:
           return MaterialPageRoute(
             settings: const RouteSettings(name: Routes.splashRoute),
-            builder: (_) => const SplashScreen(),
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SplashCubit>(),
+              child: const SplashScreen(),
+            ),
           );
 
         /// onboarding screen
@@ -93,6 +98,10 @@ abstract class RouteGenerator {
             builder: (_) =>
                 CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
+
+        /// orders
+        case Routes.ordersRoute:
+          return MaterialPageRoute(builder: (_) => const OrdersScreen());
 
         /// Default
         default:

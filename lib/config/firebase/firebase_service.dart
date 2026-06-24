@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../features/orders/domain/entities/enums/order_status_enum.dart';
+
 @lazySingleton
 class FirebaseService {
   final FirebaseFirestore _firestore;
@@ -10,6 +12,32 @@ class FirebaseService {
   // Get a reference to a collection
   CollectionReference<Map<String, dynamic>> getCollection(String path) {
     return _firestore.collection(path);
+  }
+
+  Future<Map<String, dynamic>> getCollectionWhere({
+    required String path,
+    required String field,
+  }) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection(path)
+          .where(field, isNotEqualTo: OrderStatusEnum.delivered.name)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final doc = snapshot.docs.first;
+        final data = doc.data();
+        print("firestore model is empty");
+        return data;
+      } else {
+        print("firestore model is empty");
+        return {};
+      }
+    } catch (e) {
+      print("firebase exception ${e.toString()}");
+      return {};
+    }
   }
 
   // Get a reference to a document

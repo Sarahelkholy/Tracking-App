@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'order_item_entity.dart';
 import 'order_store_entity.dart';
 import 'order_user_entity.dart';
@@ -20,6 +21,7 @@ class OrderEntity extends Equatable {
   final OrderStoreEntity store;
   final ShippingAddressEntity shippingAddress;
   final DateTime paidAt;
+  final OrderStatusEnum orderStatus;
 
   const OrderEntity({
     required this.id,
@@ -37,6 +39,7 @@ class OrderEntity extends Equatable {
     required this.store,
     required this.shippingAddress,
     required this.paidAt,
+    required this.orderStatus,
   });
 
   @override
@@ -56,5 +59,6 @@ class OrderEntity extends Equatable {
     store,
     shippingAddress,
     paidAt,
+    orderStatus
   ];
 }

@@ -38,6 +38,8 @@ class OrderDataResponse {
   ShippingAddressResponse? shippingAddress;
   @JsonKey(name: "paidAt")
   DateTime? paidAt;
+  @JsonKey(name: 'orderStatus')
+  String? orderStatus;
 
   OrderDataResponse({
     this.id,

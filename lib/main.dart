@@ -1,4 +1,5 @@
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/get_all_pending_orders_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,6 +25,7 @@ void main() async {
 
   Bloc.observer = CustomBlocObserver();
 
+  GetAllPendingOrdersUseCase useCase = getIt<GetAllPendingOrdersUseCase>()..call();
   runApp(const MyApp());
 }
 

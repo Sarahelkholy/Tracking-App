@@ -1,3 +1,4 @@
+import '../../domain/entities/enums/order_status_enum.dart';
 import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/order_store_entity.dart';
 import '../../domain/entities/order_user_entity.dart';
@@ -54,6 +55,9 @@ extension OrderDataResponseMapper on OrderDataResponse {
             long: '',
           ),
       paidAt: paidAt ?? DateTime.fromMillisecondsSinceEpoch(0),
+        orderStatus: orderStatus != null
+            ? OrderStatusExtension.fromString(orderStatus!)
+            : OrderStatusEnum.pending,
     );
   }
 }

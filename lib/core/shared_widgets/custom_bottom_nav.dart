@@ -1,5 +1,4 @@
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
-
 import 'package:flutter/material.dart';
 
 import '../../features/orders/presentation/pages/home_screen.dart';
@@ -10,10 +9,7 @@ import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
-  const CustomBottomNavBar({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const CustomBottomNavBar({super.key, this.initialIndex = 0});
 
   final int initialIndex;
 
