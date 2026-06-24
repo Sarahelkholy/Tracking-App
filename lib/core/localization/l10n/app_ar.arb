@@ -92,5 +92,8 @@
   "newPassword": "كلمة المرور الجديدة",
   "enterYourPassword": "أدخل كلمة المرور",
   "enterConfirmPassword": "أدخل تأكيد كلمة المرور",
-  "confirm": "تأكيد"
+  "confirm": "تأكيد",
+  "currentPassword":"كلمة المرور الحالية",
+  "update":"تحديث",
+  "oldAndNewPasswordSame": "يجب أن تكون كلمة المرور الجديدة \nمختلفة عن كلمة المرور الحالية"
 }

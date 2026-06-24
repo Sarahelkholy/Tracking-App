@@ -1,5 +1,33 @@
+import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/profile/data/data_source/remote/profile_remote_data_source.dart';
+import 'package:flower_driver/features/profile/data/models/response/change_password_response.dart';
+import 'package:injectable/injectable.dart';
 
-class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource{
+import '../../../../../config/error_handling/execute_api.dart';
+import '../../../data/models/request/change_password_request.dart';
+import '../api_profile.dart';
 
+@Injectable(as: ProfileRemoteDataSource)
+class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
+
+  final ApiProfile _apiClient;
+  ProfileRemoteDataSourceImpl(this._apiClient);
+
+
+  /////? Change password
+  @override
+  Future<Result<ChangePasswordResponse>> changePassword({
+    required String password,
+    required String newPassword,
+  }) {
+    return executeApi(() async {
+      final response = await _apiClient.changePassword(
+        ChangePasswordRequest(
+          password: password,
+          newPassword: newPassword,
+        ),
+      );
+      return response;
+    });
+  }
 }
