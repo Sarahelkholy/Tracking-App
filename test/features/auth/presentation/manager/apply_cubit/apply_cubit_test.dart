@@ -1,5 +1,6 @@
 import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_cubit.dart';
 import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_intents.dart';
+import 'package:flower_driver/features/auth/domain/entities/country_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mockito/mockito.dart';
@@ -132,7 +133,15 @@ void main() {
         return applyCubit;
       },
       act: (cubit) => cubit.handleIntent(SelectCountryIntent('Egypt')),
-      expect: () => [ApplyState.initial().copyWith(selectedCountry: 'Egypt')],
+      expect: () => [
+        ApplyState.initial().copyWith(
+          selectedCountry: 'Egypt',
+          countryEntity: const [
+            CountryEntity(name: 'Egypt', code: '', flagUrl: ''),
+            CountryEntity(name: 'UAE', code: '', flagUrl: ''),
+          ],
+        ),
+      ],
     );
 
     blocTest<ApplyCubit, ApplyState>(
@@ -153,8 +162,20 @@ void main() {
         await cubit.handleIntent(SelectCountryIntent('UAE'));
       },
       expect: () => [
-        ApplyState.initial().copyWith(selectedCountry: 'Egypt'),
-        ApplyState.initial().copyWith(selectedCountry: 'UAE'),
+        ApplyState.initial().copyWith(
+          selectedCountry: 'Egypt',
+          countryEntity: const [
+            CountryEntity(name: 'Egypt', code: '', flagUrl: ''),
+            CountryEntity(name: 'UAE', code: '', flagUrl: ''),
+          ],
+        ),
+        ApplyState.initial().copyWith(
+          selectedCountry: 'UAE',
+          countryEntity: const [
+            CountryEntity(name: 'Egypt', code: '', flagUrl: ''),
+            CountryEntity(name: 'UAE', code: '', flagUrl: ''),
+          ],
+        ),
       ],
     );
   });
@@ -410,10 +431,24 @@ void main() {
         cubit.handleIntent(SelectGenderIntent('Female'));
       },
       expect: () => [
-        ApplyState.initial().copyWith(selectedCountry: 'Saudi Arabia'),
+        ApplyState.initial().copyWith(
+          selectedCountry: 'Saudi Arabia',
+          countryEntity: const [
+            CountryEntity(name: 'Egypt', code: '', flagUrl: ''),
+            CountryEntity(name: 'UAE', code: '', flagUrl: ''),
+            CountryEntity(name: 'Saudi Arabia', code: '', flagUrl: ''),
+            CountryEntity(name: 'Kuwait', code: '', flagUrl: ''),
+          ],
+        ),
         ApplyState.initial().copyWith(
           selectedCountry: 'Saudi Arabia',
           selectedGender: 'Female',
+          countryEntity: const [
+            CountryEntity(name: 'Egypt', code: '', flagUrl: ''),
+            CountryEntity(name: 'UAE', code: '', flagUrl: ''),
+            CountryEntity(name: 'Saudi Arabia', code: '', flagUrl: ''),
+            CountryEntity(name: 'Kuwait', code: '', flagUrl: ''),
+          ],
         ),
       ],
     );

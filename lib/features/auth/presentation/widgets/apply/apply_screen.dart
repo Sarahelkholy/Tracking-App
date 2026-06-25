@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:core';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,15 +40,13 @@ class _ApplyScreenState extends State<ApplyScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  final List<Map<String, String>> _countries = [
-    {'name': 'Egypt', 'flag': '🇪🇬'},
-    {'name': 'Saudi Arabia', 'flag': '🇸🇦'},
-    {'name': 'UAE', 'flag': '🇦🇪'},
-    {'name': 'Kuwait', 'flag': '🇰🇼'},
-    {'name': 'Bahrain', 'flag': '🇧🇭'},
-  ];
-
-  final List<String> _vehicleTypes = ['Car', 'Motorbike', 'Bicycle'];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ApplyCubit>().handleIntent(LoadCountriesIntent());
+    });
+  }
 
   @override
   void dispose() {
@@ -146,14 +145,10 @@ class _ApplyScreenState extends State<ApplyScreen> {
 
   // Helper to format phone number with country code
   String _formatPhone(String? country, String rawPhone) {
-    const countryCodes = {
-      'Egypt': '+20',
-      'Saudi Arabia': '+966',
-      'UAE': '+971',
-      'Kuwait': '+965',
-      'Bahrain': '+973',
-    };
-    final code = countryCodes[country] ?? '';
+    final applyCubit = context.read<ApplyCubit>();
+    final code = applyCubit.state.countryEntity
+        ?.firstWhere((c) => c.name == country)
+        .code;
     // Remove any non-digit characters
     final digits = rawPhone.replaceAll(RegExp(r'\\D'), '');
     return '$code$digits';
@@ -161,7 +156,6 @@ class _ApplyScreenState extends State<ApplyScreen> {
 
   void _submitForm(ApplyState state) {
     if (_formKey.currentState!.validate()) {
-
       if (state.vehicleLicensePath == null) {
         AppSnackBar.error(context, AppStrings.current.errorUploadLicense);
         return;
@@ -171,20 +165,11 @@ class _ApplyScreenState extends State<ApplyScreen> {
         return;
       }
 
-      String vehicleTypeId = '';
-      if (state.selectedVehicleType == 'Car') {
-        vehicleTypeId = '6a32b278992612ae599acf91';
-      } else if (state.selectedVehicleType == 'Motorbike') {
-        vehicleTypeId = '6a32b312992612ae599acfb2';
-      } else if (state.selectedVehicleType == 'Bicycle') {
-        vehicleTypeId = '6a32b384992612ae599acfb9';
-      }
-
       final request = ApplyRequest(
         country: state.selectedCountry,
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
-        vehicleType: vehicleTypeId,
+        vehicleType: state.selectedVehicleType,
         vehicleNumber: _vehicleNumberController.text.trim(),
         vehicleLicense: state.vehicleLicensePath,
         nid: _nidController.text.trim(),
@@ -192,7 +177,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
         rePassword: _confirmPasswordController.text,
-        gender: state.selectedGender.toLowerCase(),
+        gender: state.selectedGender?.toLowerCase(),
         phone: _formatPhone(
           state.selectedCountry,
           _phoneController.text.trim(),
@@ -261,21 +246,21 @@ class _ApplyScreenState extends State<ApplyScreen> {
 
                 // Country Dropdown
                 DropdownButtonFormField<String>(
-                  value: state.selectedCountry,
+                  value: state.countryEntity != null &&
+                          state.countryEntity!.any((c) => c.name == state.selectedCountry)
+                      ? state.selectedCountry
+                      : null,
                   decoration: InputDecoration(
                     labelText: AppStrings.current.country,
                   ),
-                  items: _countries.map((c) {
+                  items: state.countryEntity?.map((c) {
                     return DropdownMenuItem<String>(
-                      value: c['name'],
+                      value: c.name,
                       child: Row(
                         children: [
-                          Text(
-                            c['flag']!,
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                          Text(c.flagUrl, style: const TextStyle(fontSize: 18)),
                           const SizedBox(width: 10),
-                          Text(c['name']!),
+                          Text(c.name),
                         ],
                       ),
                     );
@@ -318,7 +303,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.current.vehicleType,
                   ),
-                  items: _vehicleTypes.map((type) {
+                  items: const ['Car', 'Motorbike', 'Bicycle'].map((type) {
                     return DropdownMenuItem<String>(
                       value: type,
                       child: Text(type),

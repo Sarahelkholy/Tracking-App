@@ -3,28 +3,30 @@ part of 'apply_cubit.dart';
 class ApplyState extends Equatable {
   final bool isLoading;
   final bool isSuccess;
+  final List<CountryEntity>? countryEntity;
   final String? errorMessage;
   final String? message;
   final Driver? driver;
   final String? token;
 
   // Form selections and file paths
-  final String selectedCountry;
-  final String selectedVehicleType;
-  final String selectedGender;
+  final String? selectedCountry;
+  final String? selectedVehicleType;
+  final String? selectedGender;
   final String? vehicleLicensePath;
   final String? nidImagePath;
 
   const ApplyState({
     required this.isLoading,
     required this.isSuccess,
+    this.countryEntity,
     this.errorMessage,
     this.message,
     this.driver,
     this.token,
-    required this.selectedCountry,
-    required this.selectedVehicleType,
-    required this.selectedGender,
+    this.selectedCountry,
+    this.selectedVehicleType,
+    this.selectedGender,
     this.vehicleLicensePath,
     this.nidImagePath,
   });
@@ -46,6 +48,7 @@ class ApplyState extends Equatable {
     String? message,
     Driver? driver,
     String? token,
+    List<CountryEntity>? countryEntity,
     String? selectedCountry,
     String? selectedVehicleType,
     String? selectedGender,
@@ -56,6 +59,7 @@ class ApplyState extends Equatable {
     return ApplyState(
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
+      countryEntity: countryEntity ?? this.countryEntity,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       message: message ?? this.message,
       driver: driver ?? this.driver,
@@ -70,16 +74,17 @@ class ApplyState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isSuccess,
-        errorMessage,
-        message,
-        driver,
-        token,
-        selectedCountry,
-        selectedVehicleType,
-        selectedGender,
-        vehicleLicensePath,
-        nidImagePath,
-      ];
+    isLoading,
+    isSuccess,
+    errorMessage,
+    message,
+    driver,
+    token,
+    countryEntity,
+    selectedCountry,
+    selectedVehicleType,
+    selectedGender,
+    vehicleLicensePath,
+    nidImagePath,
+  ];
 }

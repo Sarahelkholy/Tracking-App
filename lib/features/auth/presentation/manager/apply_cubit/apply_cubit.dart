@@ -1,4 +1,5 @@
 import 'package:flower_driver/features/auth/data/models/responses/country_model.dart';
+import 'package:flower_driver/features/auth/domain/entities/country_entity.dart';
 import 'package:flower_driver/features/auth/domain/use_case/get_all_countries_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -21,8 +22,11 @@ class ApplyCubit extends Cubit<ApplyState> {
 
   Future<void> handleIntent(ApplyIntents intent) async {
     switch (intent) {
+      case LoadCountriesIntent():
+        await _loadCountries();
+        break;
       case SelectCountryIntent selectCountryIntent:
-        await _onSelectCountry(selectCountryIntent);
+        _onSelectCountry(selectCountryIntent);
         break;
       case SelectVehicleTypeIntent selectVehicleTypeIntent:
         _onSelectVehicleType(selectVehicleTypeIntent);
@@ -39,21 +43,41 @@ class ApplyCubit extends Cubit<ApplyState> {
     }
   }
 
-  Future<void> _onSelectCountry(SelectCountryIntent intent) async {
+  /// Fetches the country list from the API and populates state.countryEntity.
+  Future<void> _loadCountries() async {
     final result = await _getCountriesUseCase();
 
     switch (result) {
       case Success<List<CountryModel>>():
-        final country = result.data.firstWhere(
-          (country) => country.name == intent.country,
-          orElse: () => CountryModel(name: intent.country),
+        final countryEntities = result.data
+            .map(
+              (c) => CountryEntity(
+                name: c.name ?? 'Egypt',
+                code: c.phoneCode ?? '',
+                flagUrl: c.flag ?? '',
+              ),
+            )
+            .toList();
+        emit(
+          state.copyWith(
+            countryEntity: countryEntities,
+            // Auto-select first country if nothing is selected yet
+            selectedCountry:
+                state.selectedCountry == null && countryEntities.isNotEmpty
+                ? countryEntities.first.name
+                : state.selectedCountry,
+          ),
         );
-        emit(state.copyWith(selectedCountry: country.name ?? intent.country));
         break;
       case Failure<List<CountryModel>>():
         emit(state.copyWith(errorMessage: result.errorMessage));
         break;
     }
+  }
+
+  /// Simply updates the selected country in state (no API call).
+  void _onSelectCountry(SelectCountryIntent intent) {
+    emit(state.copyWith(selectedCountry: intent.country));
   }
 
   void _onSelectVehicleType(SelectVehicleTypeIntent intent) {

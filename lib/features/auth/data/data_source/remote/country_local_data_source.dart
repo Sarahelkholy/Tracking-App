@@ -13,7 +13,7 @@ abstract class CountryLocalDataSource {
 class CountryLocalDataSourceImpl implements CountryLocalDataSource {
   @override
   Future<Result<List<CountryModel>>> getCountries() async {
-    final String response = await rootBundle.loadString('assets/country.json');
+    final String response = await rootBundle.loadString('assets/data/country.json');
     final List<dynamic> data = await json.decode(response);
     return Success(data: data.map((json) => CountryModel.fromJson(json)).toList());
   }
