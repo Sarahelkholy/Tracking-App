@@ -1,10 +1,10 @@
+import 'package:flower_driver/config/data_base/data_base_service.dart';
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
 import 'package:flower_driver/features/orders/data/mapper/order_data_mapper.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../config/error_handling/result.dart';
-import '../../../../config/firebase/firebase_service.dart';
 import '../../../../config/firebase/firestore_collection.dart';
 import '../../domain/entities/orders_entity.dart';
 import '../../domain/repositories/orders_repo.dart';
@@ -16,9 +16,9 @@ import '../models/responses/orders_response/orders_response.dart';
 @Injectable(as: OrdersRepo)
 class OrdersRepoImpl implements OrdersRepo {
   final OrdersRemoteDataSource _ordersRemoteDataSource;
-  final FirebaseService _firebaseService;
+  final DatabaseService _databaseService;
 
-  OrdersRepoImpl(this._ordersRemoteDataSource, this._firebaseService);
+  OrdersRepoImpl(this._ordersRemoteDataSource, this._databaseService);
 
   @override
   Future<Result<OrdersEntity>> getAllPendingOrders() async {
@@ -34,7 +34,7 @@ class OrdersRepoImpl implements OrdersRepo {
 
   @override
   Future<OrderEntity?> getParsedDoc(String path, String field) async {
-    final data = await _firebaseService.getCollectionWhere(
+    final data = await _databaseService.getCollectionWhere(
       path: FireStoreCollection.orderCollectionPath,
       field: FireStoreFieldName.orderStatus,
     );
