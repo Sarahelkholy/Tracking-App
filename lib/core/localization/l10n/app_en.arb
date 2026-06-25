@@ -92,5 +92,25 @@
   "newPassword": "New Password",
   "enterYourPassword": "Enter Your Password",
   "enterConfirmPassword": "Enter Confirm Password",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+
+  "orderDetails" : "Order details",
+  "status" : "Status :",
+  "orderId" : "Order ID : # ",
+  "pickupAddress" : "Pickup address",
+  "userAddress" : "User address",
+  "egp" : "EGP",
+  "total" : "Total",
+  "paymentMethod" : "Payment method",
+  "accepted" : "Accepted",
+  "picked" : "Picked",
+  "outForDelivery" : "Out for delivery",
+  "arrived" : "Arrived",
+  "delivered" : "Delivered",
+
+  "arrivedAtPickupPoint" : "Arrived at Pickup point",
+  "startDeliver" : "Start deliver",
+  "arrivedToTheUser" : "Arrived to the user",
+  "deliveredToTheUser" : "Delivered to the user"
+
 }

@@ -10,6 +10,7 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
+import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
 import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,6 +103,12 @@ abstract class RouteGenerator {
         /// orders
         case Routes.ordersRoute:
           return MaterialPageRoute(builder: (_) => const OrdersScreen());
+
+        /// active order details
+        case Routes.activeOrderDetails:
+          return MaterialPageRoute(
+            builder: (_) => const ActiveOrderDetailsScreen(),
+          );
 
         /// Default
         default:
