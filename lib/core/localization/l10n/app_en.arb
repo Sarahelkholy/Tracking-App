@@ -34,6 +34,9 @@
   "error503": "Service Unavailable",
   "error504": "Gateway Timeout",
   "defaultError": "An error occurred",
+  "home":"Home",
+  "orders":"Orders",
+  "profile":"Profile",
 
   "passwordChangedSuccessfully" : "Password Changed Successfully",
 

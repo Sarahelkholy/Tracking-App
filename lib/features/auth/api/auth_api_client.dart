@@ -10,6 +10,7 @@ import '../data/models/requests/verify_otp_request.dart';
 import '../data/models/responses/enter_email_response.dart';
 import '../data/models/responses/new_password_response.dart';
 import '../data/models/responses/verify_otp_response.dart';
+import 'package:retrofit/error_logger.dart';
 
 part 'auth_api_client.g.dart';
 
