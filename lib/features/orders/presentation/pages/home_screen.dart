@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../mangers/home_cubit.dart';
 import '../mangers/home_event.dart';
-
+import '../widgets/order_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,11 +28,51 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<HomeCubit, HomeState>(
+        buildWhen: (previous, current) =>
+            previous.pendingOrdersState != current.pendingOrdersState,
         builder: (BuildContext context, HomeState state) {
           if (state.pendingOrdersState.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          return const Center(child: Text('Home Screen'));
+          return SafeArea(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return OrderCard(
+                  storeName:
+                      state.pendingOrdersState.data!.orders[index].store.name,
+                  storeAddress: state
+                      .pendingOrdersState
+                      .data!
+                      .orders[index]
+                      .shippingAddress
+                      .address,
+                  userName: state
+                      .pendingOrdersState
+                      .data!
+                      .orders[index]
+                      .user
+                      .firstName,
+                  userAddress: state
+                      .pendingOrdersState
+                      .data!
+                      .orders[index]
+                      .shippingAddress
+                      .address,
+                  price: state.pendingOrdersState.data!.orders[index].totalPrice
+                      .toString(),
+                  onAccept: () {
+                    _homeCubit.doIntent(
+                      SelectOrder(
+                        selectedOrder:
+                            state.pendingOrdersState.data!.orders[index],
+                      ),
+                    );
+                  },
+                  onReject: () {},
+                );
+              },
+            ),
+          );
         },
       ),
     );

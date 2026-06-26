@@ -5,16 +5,21 @@ import 'package:flower_driver/features/orders/domain/entities/order_entity.dart'
 import '../../domain/entities/orders_entity.dart';
 
 class HomeState extends Equatable {
-  const HomeState({this.pendingOrdersState = const BaseState<OrdersEntity>()});
+  const HomeState({
+    this.pendingOrdersState = const BaseState<OrdersEntity>(),
+    this.selectedOrder = const BaseState<OrderEntity>(),
+  });
 
   final BaseState<OrdersEntity> pendingOrdersState;
+  final BaseState<OrderEntity> selectedOrder;
 
-  HomeState copyWith({BaseState<OrdersEntity>? pendingOrdersState}) {
+  HomeState copyWith({BaseState<OrdersEntity>? pendingOrdersState , BaseState<OrderEntity>? selectedOrder}) {
     return HomeState(
       pendingOrdersState: pendingOrdersState ?? this.pendingOrdersState,
+      selectedOrder: selectedOrder ?? this.selectedOrder,
     );
   }
 
   @override
-  List<Object?> get props => [pendingOrdersState];
+  List<Object?> get props => [pendingOrdersState, selectedOrder];
 }

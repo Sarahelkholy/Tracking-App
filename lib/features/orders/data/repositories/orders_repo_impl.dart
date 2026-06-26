@@ -47,4 +47,13 @@ class OrdersRepoImpl implements OrdersRepo {
     print("firestore model is not empty");
     return OrderDataResponse.fromJson(data).toEntity();
   }
+
+  @override
+  Future<Result<bool>> acceptOrder(OrderEntity selectedOrder) async {
+    await _databaseService.addData(
+      FireStoreCollection.orderCollectionPath,
+      selectedOrder.toModel().toJson(),
+    );
+    return Success(data: true);
+  }
 }

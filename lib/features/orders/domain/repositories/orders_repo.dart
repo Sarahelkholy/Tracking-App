@@ -5,4 +5,5 @@ import '../entities/orders_entity.dart';
 abstract interface class OrdersRepo {
   Future<Result<OrdersEntity>> getAllPendingOrders();
   Future<OrderEntity?> getParsedDoc(String path, String field);
+  Future<Result<bool>> acceptOrder(OrderEntity selectedOrder);
 }

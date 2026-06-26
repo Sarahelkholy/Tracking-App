@@ -40,6 +40,8 @@ class OrderDataResponse {
   DateTime? paidAt;
   @JsonKey(name: 'orderStatus')
   String? orderStatus;
+  @JsonKey(name: 'currentLocation')
+  Map<String, dynamic>? currentLocation;
 
   OrderDataResponse({
     this.id,
@@ -57,6 +59,8 @@ class OrderDataResponse {
     this.store,
     this.shippingAddress,
     this.paidAt,
+    this.orderStatus,
+    this.currentLocation,
   });
 
   factory OrderDataResponse.fromJson(Map<String, dynamic> json) =>

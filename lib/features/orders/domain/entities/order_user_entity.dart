@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../data/models/responses/orders_response/user_response.dart';
 
 class OrderUserEntity extends Equatable {
   final String id;
@@ -22,6 +23,20 @@ class OrderUserEntity extends Equatable {
     required this.passwordChangedAt,
     required this.resetCodeVerified,
   });
+
+  UserResponse toModel() {
+    return UserResponse(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      gender: gender,
+      phone: phone,
+      photo: photo,
+      passwordChangedAt: passwordChangedAt,
+      resetCodeVerified: resetCodeVerified,
+    );
+  }
 
   @override
   List<Object?> get props => [
