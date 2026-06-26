@@ -14,8 +14,8 @@ class ChangePasswordUseCase {
   Future<Result<ChangePasswordEntity>> changePassword({
     required String password,
     required String newPassword,
-  }) async {
-    return await _repo.changePassword(
+  }) {
+    return _repo.changePassword(
       password: password,
       newPassword: newPassword,
     );

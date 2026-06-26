@@ -7,7 +7,7 @@ import '../../data/models/request/change_password_request.dart';
 import '../../data/models/response/change_password_response.dart';
 part 'api_profile.g.dart';
 
-@injectable
+@lazySingleton
 @RestApi()
 abstract class ApiProfile {
   @factoryMethod

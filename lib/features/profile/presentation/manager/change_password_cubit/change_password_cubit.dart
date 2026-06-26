@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../../config/base_cubit/base_cubit.dart';
 import '../../../../../config/base_cubit/base_event.dart';
 import '../../../../../config/base_state/base_state.dart';
+import '../../../../../config/route_manager/routes.dart';
 import '../../../domain/use_case/change_password_use_case.dart';
 import 'change_password_event.dart';
 
@@ -43,10 +44,19 @@ class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
         emit(
           state.copyWith(
             changePasswordStateParam: const BaseState(
-              isLoading: false,
               isSuccess: true,
-              errorMessage: null,
             ),
+          ),
+        );
+        emitEvent(
+          DisplaySuccessEvent(
+            successMsg: result.data.message??"",
+          ),
+        );
+
+        emitEvent(
+          const NavigationEvent(
+            routeName: Routes.loginRoute,
           ),
         );
 
@@ -55,10 +65,13 @@ class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
         emit(
           state.copyWith(
             changePasswordStateParam: BaseState(
-              isLoading: false,
-              isSuccess: false,
               errorMessage: result.errorMessage,
             ),
+          ),
+        );
+        emitEvent(
+          DisplayErrorEvent(
+            errorMsg: result.errorMessage,
           ),
         );
         break;

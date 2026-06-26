@@ -2,6 +2,7 @@ import 'package:flower_driver/config/base_cubit/base_event.dart';
 import 'package:flower_driver/features/profile/presentation/manager/change_password_cubit/change_password_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../config/route_manager/routes.dart';
 import '../../../../../core/helpers/app_snack_bar.dart';
 import '../../../../../core/helpers/validator.dart';
 import '../../../../../core/localization/l10n/app_localizations.dart';
@@ -41,10 +42,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
         case NavigationEvent():
           if (!mounted) return;
-          Navigator.pushNamed(
+          Navigator.pushReplacementNamed(
             context,
             event.routeName,
-            arguments: context.read<ChangePasswordCubit>(),
           );
       }
     });
