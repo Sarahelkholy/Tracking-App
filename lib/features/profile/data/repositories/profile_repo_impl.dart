@@ -6,7 +6,12 @@ import 'package:flower_driver/features/profile/domain/repositories/profile_repo.
 import 'package:injectable/injectable.dart';
 import '../../../../config/cache/secure_cache/secure_cache_helper.dart';
 import '../../../../config/secure_cache/secure_cache/cache_keys.dart';
+import '../../domain/entities/profile/driver_data_entity.dart';
+import '../../domain/entities/profile/edit_profile_entity.dart';
 import '../mapper/change_password_response_mapper.dart';
+import '../models/request/edit_profile_request.dart';
+import '../models/response/driver_data_response.dart';
+import '../models/response/edit_profile_response.dart';
 
 @Injectable(as: ProfileRepo)
 class ProfileRepoImpl implements ProfileRepo {

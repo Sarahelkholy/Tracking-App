@@ -5,6 +5,9 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../config/error_handling/execute_api.dart';
 import '../../../data/models/request/change_password_request.dart';
+import '../../../data/models/request/edit_profile_request.dart';
+import '../../../data/models/response/driver_data_response.dart';
+import '../../../data/models/response/edit_profile_response.dart';
 import '../api_profile.dart';
 
 @Injectable(as: ProfileRemoteDataSource)

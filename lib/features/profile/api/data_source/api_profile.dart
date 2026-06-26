@@ -4,7 +4,10 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../data/models/request/change_password_request.dart';
+import '../../data/models/request/edit_profile_request.dart';
 import '../../data/models/response/change_password_response.dart';
+import '../../data/models/response/driver_data_response.dart';
+import '../../data/models/response/edit_profile_response.dart';
 part 'api_profile.g.dart';
 
 @lazySingleton

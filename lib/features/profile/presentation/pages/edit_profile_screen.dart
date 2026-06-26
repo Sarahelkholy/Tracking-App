@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
 import 'package:flower_driver/core/shared_widgets/custom_text_form_field.dart';
@@ -188,7 +189,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hint: '******',
                     obscureText: true,
                     suffixIcon: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.changPasswordRoute);
+                      },
                       child: Text(
                         'Change',
                         style: AppTextStyles.regular14(
