@@ -1,20 +1,26 @@
 import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
+import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/orders/presentation/pages/home_screen.dart';
 import '../../features/orders/presentation/pages/orders_screen.dart';
-import '../../features/orders/presentation/pages/profile_screen.dart';
+import '../../features/profile/presentation/pages/profile_screen.dart';
 import '../shared_widgets/svg_wrapper.dart';
 import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
-  const CustomBottomNavBar({super.key, this.initialIndex = 0});
+  const CustomBottomNavBar({
+    super.key,
+    this.initialIndex = 0,
+    this.categoryIndex = 0,
+  });
 
   final int initialIndex;
+  final int categoryIndex;
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
@@ -37,7 +43,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         child: const HomeScreen(),
       ),
       const OrdersScreen(),
-      const ProfileScreen(),
+      BlocProvider(
+        create: (_) => getIt<ProfileCubit>(),
+        child: const ProfileScreen(),
+      ),
     ];
   }
 

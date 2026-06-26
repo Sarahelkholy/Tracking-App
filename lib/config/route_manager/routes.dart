@@ -11,6 +11,7 @@ abstract class Routes {
   static const String homeRoute = "/home";
   static const String ordersRoute = "/orders";
   static const String profileRoute = "/profile";
+  static const String editProfileRoute = "/editProfile";
   static const String bottomNavBarRoute = "/bottomNavBar";
   static const String onboardingRoute = "/onboarding";
   static const String changPasswordRoute = "/changePassword";

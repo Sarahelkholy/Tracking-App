@@ -6,7 +6,12 @@ import 'package:flower_driver/features/profile/domain/repositories/profile_repo.
 import 'package:injectable/injectable.dart';
 import '../../../../config/cache/secure_cache/secure_cache_helper.dart';
 import '../../../../config/secure_cache/secure_cache/cache_keys.dart';
+import '../../domain/entities/profile/driver_data_entity.dart';
+import '../../domain/entities/profile/edit_profile_entity.dart';
 import '../mapper/change_password_response_mapper.dart';
+import '../models/request/edit_profile_request.dart';
+import '../models/response/driver_data_response.dart';
+import '../models/response/edit_profile_response.dart';
 
 @Injectable(as: ProfileRepo)
 class ProfileRepoImpl implements ProfileRepo {
@@ -35,6 +40,58 @@ class ProfileRepoImpl implements ProfileRepo {
 
       case Failure<ChangePasswordResponse>():
         return Failure(errorMessage: response.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<ProfileDriverEntity>> getDriverData() async {
+    final result = await _dataSource.getDriverData();
+
+    switch (result) {
+      case Success<DriverDataResponse>():
+        return Success(
+          data: ProfileDriverEntity(
+            message: result.data.message,
+            driver: result.data.driver?.toEntity(),
+          ),
+        );
+      case Failure<DriverDataResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<EditProfileEntity>> editProfile(EditProfileRequest body) async {
+    final result = await _dataSource.editProfile(body);
+    switch (result) {
+      case Success<EditProfileResponse>():
+        return Success(
+          data: EditProfileEntity(
+            message: result.data.message,
+            driver: result.data.driver?.toEntity(),
+          ),
+        );
+      case Failure<EditProfileResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<ProfileDriverEntity>> updateVehicle(
+      String id,
+      dynamic body,
+      ) async {
+    final result = await _dataSource.updateVehicle(id, body);
+    switch (result) {
+      case Success<DriverDataResponse>():
+        return Success(
+          data: ProfileDriverEntity(
+            message: result.data.message,
+            driver: result.data.driver?.toEntity(),
+          ),
+        );
+      case Failure<DriverDataResponse>():
+        return Failure(errorMessage: result.errorMessage);
     }
   }
 }

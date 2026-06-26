@@ -5,6 +5,9 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../config/error_handling/execute_api.dart';
 import '../../../data/models/request/change_password_request.dart';
+import '../../../data/models/request/edit_profile_request.dart';
+import '../../../data/models/response/driver_data_response.dart';
+import '../../../data/models/response/edit_profile_response.dart';
 import '../api_profile.dart';
 
 @Injectable(as: ProfileRemoteDataSource)
@@ -28,6 +31,27 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         ),
       );
       return response;
+    });
+  }
+
+  @override
+  Future<Result<DriverDataResponse>> getDriverData() {
+    return executeApi(() async {
+      return await _apiClient.getDriverData();
+    });
+  }
+
+  @override
+  Future<Result<EditProfileResponse>> editProfile(EditProfileRequest body) {
+    return executeApi(() async {
+      return await _apiClient.editProfile(body);
+    });
+  }
+
+  @override
+  Future<Result<DriverDataResponse>> updateVehicle(String id, dynamic body) {
+    return executeApi(() async {
+      return await _apiClient.updateVehicle(id, body);
     });
   }
 }
