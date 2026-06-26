@@ -1,4 +1,9 @@
+import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/utils/app_colors.dart';
+import '../mangers/home_cubit.dart';
 
 class OrderCard extends StatelessWidget {
   final String storeName;
@@ -29,34 +34,25 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeCubit = context.read<HomeCubit>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             "Flower order",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
           ),
 
           const SizedBox(height: 16),
 
-          Text(
-            "Pickup address",
-            style: TextStyle(
-              color: Colors.grey.shade600,
-            ),
-          ),
+          Text("Pickup address", style: TextStyle(color: Colors.grey.shade600)),
 
           const SizedBox(height: 8),
 
@@ -68,20 +64,11 @@ class OrderCard extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          Text(
-            "User address",
-            style: TextStyle(
-              color: Colors.grey.shade600,
-            ),
-          ),
+          Text("User address", style: TextStyle(color: Colors.grey.shade600)),
 
           const SizedBox(height: 8),
 
-          AddressTile(
-            image: userImage,
-            title: userName,
-            subtitle: userAddress,
-          ),
+          AddressTile(image: userImage, title: userName, subtitle: userAddress),
 
           const SizedBox(height: 20),
 
@@ -90,7 +77,7 @@ class OrderCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    maxLines:1,
+                    maxLines: 1,
                     price,
                     style: const TextStyle(
                       fontSize: 22,
@@ -127,7 +114,19 @@ class OrderCard extends StatelessWidget {
                       vertical: 14,
                     ),
                   ),
-                  child: const Text("Accept"),
+                  child: BlocBuilder<HomeCubit, HomeState>(
+                    buildWhen: (previous, current) =>
+                        previous.selectedOrder != current.selectedOrder,
+                    builder: (BuildContext context, HomeState state) {
+                      if (state.selectedOrder.isLoading) {
+                        return const CircularProgressIndicator(
+                          color: AppColors.baseWhite,
+                          strokeWidth: 2,
+                        );
+                      }
+                      return const Text("Accept");
+                    },
+                  ),
                 ),
               ],
             ),
@@ -162,11 +161,8 @@ class AddressTile extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundImage:
-            image != null ? AssetImage(image!) : null,
-            child: image == null
-                ? const Icon(Icons.person)
-                : null,
+            backgroundImage: image != null ? AssetImage(image!) : null,
+            child: image == null ? const Icon(Icons.person) : null,
           ),
 
           const SizedBox(width: 12),
@@ -177,9 +173,7 @@ class AddressTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
 
                 const SizedBox(height: 4),
@@ -197,9 +191,7 @@ class AddressTile extends StatelessWidget {
                     Expanded(
                       child: Text(
                         subtitle,
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                        ),
+                        style: TextStyle(color: Colors.grey.shade700),
                       ),
                     ),
                   ],
