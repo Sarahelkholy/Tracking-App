@@ -10,6 +10,8 @@ import 'package:flower_driver/features/profile/presentation/manager/profile/prof
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../config/route_manager/routes.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -188,7 +190,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hint: '******',
                     obscureText: true,
                     suffixIcon: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.changPasswordRoute);
+                      },
                       child: Text(
                         'Change',
                         style: AppTextStyles.regular14(

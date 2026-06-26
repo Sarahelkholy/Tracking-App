@@ -16,7 +16,9 @@ import '../models/response/edit_profile_response.dart';
 @Injectable(as: ProfileRepo)
 class ProfileRepoImpl implements ProfileRepo {
   final ProfileRemoteDataSource _dataSource;
+
   ProfileRepoImpl(this._dataSource);
+
   @override
   Future<Result<ChangePasswordEntity>> changePassword({
     required String password,
@@ -42,7 +44,6 @@ class ProfileRepoImpl implements ProfileRepo {
         return Failure(errorMessage: response.errorMessage);
     }
   }
-
 
 
   @override
@@ -79,10 +80,8 @@ class ProfileRepoImpl implements ProfileRepo {
   }
 
   @override
-  Future<Result<ProfileDriverEntity>> updateVehicle(
-      String id,
-      dynamic body,
-      ) async {
+  Future<Result<ProfileDriverEntity>> updateVehicle(String id,
+      dynamic body,) async {
     final result = await _dataSource.updateVehicle(id, body);
     switch (result) {
       case Success<DriverDataResponse>():
