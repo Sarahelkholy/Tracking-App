@@ -57,6 +57,7 @@ class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
         emitEvent(
           const NavigationEvent(
             routeName: Routes.loginRoute,
+            type: NavigationType.pushReplacementAndRemoveUntil,
           ),
         );
 
