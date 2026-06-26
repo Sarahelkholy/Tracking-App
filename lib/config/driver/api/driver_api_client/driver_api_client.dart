@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/values/api_end_points.dart';
 import '../../data/models/responses/get_driver_data_response.dart';

@@ -37,7 +37,7 @@ dependencies:
   dio: ^5.9.2
   injectable:
   get_it:
-  retrofit:
+  retrofit: ^4.9.2
   logger:
   json_annotation:
   pretty_dio_logger: ^1.4.0
@@ -56,6 +56,9 @@ dependencies:
   flutter_intl_phone_field: ^0.0.7
   flutter_keyboard_visibility: ^6.0.0
   shimmer: ^3.0.0
+  image_upload: ^1.0.0
+  image_picker: ^1.2.2
+  lottie: ^3.3.3
 
 dev_dependencies:
   flutter_test:
@@ -69,13 +72,14 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   injectable_generator:
   build_runner:
-  retrofit_generator:
+  retrofit_generator: ^10.2.6
   json_serializable:
   hive_ce_generator:
   flutter_launcher_icons:
   test:
   mockito:
   bloc_test:
+  mocktail: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -93,6 +97,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/data/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
