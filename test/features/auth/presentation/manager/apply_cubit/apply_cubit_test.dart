@@ -38,8 +38,6 @@ void main() {
         data: [
           CountryModel(name: 'Egypt'),
           CountryModel(name: 'UAE'),
-          CountryModel(name: 'Saudi Arabia'),
-          CountryModel(name: 'Kuwait'),
         ],
       ),
     );

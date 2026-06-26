@@ -1,6 +1,7 @@
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/config/secure_cache/secure_cache/secure_cache.dart';
 import 'package:flower_driver/features/auth/data/data_source/remote/auth_remote_data_source.dart';
+import 'package:flower_driver/features/auth/data/data_source/remote/country_local_data_source.dart';
 import 'package:flower_driver/features/auth/data/models/responses/enter_email_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/new_password_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/verify_otp_response.dart';
@@ -11,10 +12,11 @@ import 'package:mockito/mockito.dart';
 
 import 'auth_repo_impl_test.mocks.dart';
 
-@GenerateMocks([AuthRemoteDataSource, SecureCache])
+@GenerateMocks([AuthRemoteDataSource, SecureCache, CountryLocalDataSource])
 void main() {
   late AuthRepoImpl repo;
   late MockAuthRemoteDataSource mockRemote;
+  late MockCountryLocalDataSource mockCountryLocal;
   late MockSecureCache mockSecureCache;
   late String errorMessage;
 
@@ -34,8 +36,9 @@ void main() {
 
   setUp(() {
     mockRemote = MockAuthRemoteDataSource();
+    mockCountryLocal = MockCountryLocalDataSource();
     mockSecureCache = MockSecureCache();
-    repo = AuthRepoImpl(mockRemote, mockSecureCache);
+    repo = AuthRepoImpl(mockRemote, mockCountryLocal, mockSecureCache);
   });
 
   group("Enter Email Tests", () {

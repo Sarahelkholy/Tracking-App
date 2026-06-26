@@ -2,7 +2,6 @@ import 'package:flower_driver/features/auth/data/models/requests/apply_request.d
 
 sealed class ApplyIntents {}
 
-// Intent to fetch list of countries from the API
 class LoadCountriesIntent extends ApplyIntents {}
 
 class SelectVehicleTypeIntent extends ApplyIntents {

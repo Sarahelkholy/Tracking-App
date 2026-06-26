@@ -1,3 +1,4 @@
+import 'package:flower_driver/features/auth/data/data_source/remote/country_local_data_source.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
@@ -10,11 +11,14 @@ import 'package:flower_driver/features/auth/data/repositories/auth_repo_impl.dar
 import 'package:flower_driver/config/secure_cache/secure_cache/secure_cache.dart';
 
 import 'auth_repo_impl_apply_test.mocks.dart';
+import 'auth_repo_impl_test.mocks.dart'
+    hide MockAuthRemoteDataSource, MockSecureCache, MockCountryLocalDataSource;
 
-@GenerateMocks([AuthRemoteDataSource, SecureCache])
+@GenerateMocks([AuthRemoteDataSource, SecureCache, CountryLocalDataSource])
 void main() {
   late AuthRepoImpl repo;
   late MockAuthRemoteDataSource mockDataSource;
+  late MockCountryLocalDataSource mockCountryLocalDataSource;
   late MockSecureCache mockCache;
 
   setUpAll(() {
@@ -25,8 +29,9 @@ void main() {
 
   setUp(() {
     mockDataSource = MockAuthRemoteDataSource();
+    mockCountryLocalDataSource = MockCountryLocalDataSource();
     mockCache = MockSecureCache();
-    repo = AuthRepoImpl(mockDataSource, mockCache);
+    repo = AuthRepoImpl(mockDataSource, mockCountryLocalDataSource, mockCache);
   });
 
   final request = ApplyRequest(
@@ -50,9 +55,9 @@ void main() {
         token: 'token-xyz',
       );
 
-      when(mockDataSource.apply(request)).thenAnswer(
-        (_) async => Success<ApplyResponse>(data: expectedResponse),
-      );
+      when(
+        mockDataSource.apply(request),
+      ).thenAnswer((_) async => Success<ApplyResponse>(data: expectedResponse));
 
       final result = await repo.apply(request);
 
@@ -85,9 +90,9 @@ void main() {
     });
 
     test('delegates the exact request to the data source', () async {
-      when(mockDataSource.apply(any)).thenAnswer(
-        (_) async => Success<ApplyResponse>(data: ApplyResponse()),
-      );
+      when(
+        mockDataSource.apply(any),
+      ).thenAnswer((_) async => Success<ApplyResponse>(data: ApplyResponse()));
 
       await repo.apply(request);
 
@@ -101,13 +106,15 @@ void main() {
     });
 
     test('does not mutate SecureCache on apply', () async {
-      when(mockDataSource.apply(any)).thenAnswer(
-        (_) async => Success<ApplyResponse>(data: ApplyResponse()),
-      );
+      when(
+        mockDataSource.apply(any),
+      ).thenAnswer((_) async => Success<ApplyResponse>(data: ApplyResponse()));
 
       await repo.apply(request);
 
-      verifyNever(mockCache.saveData(key: anyNamed('key'), value: anyNamed('value')));
+      verifyNever(
+        mockCache.saveData(key: anyNamed('key'), value: anyNamed('value')),
+      );
       verifyNever(mockCache.removeData(key: anyNamed('key')));
     });
   });

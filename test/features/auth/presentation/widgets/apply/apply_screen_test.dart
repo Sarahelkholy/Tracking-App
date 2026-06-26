@@ -1,4 +1,5 @@
 import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_cubit.dart';
+import 'package:flower_driver/features/auth/presentation/manager/apply_cubit/apply_intents.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,21 +10,23 @@ import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations_en.dart';
 
-class MockApplyCubit extends MockCubit<ApplyState> implements ApplyCubit {}
 
-// class FakeApplyIntents extends Mock implements ApplyIntent {}
+class MockApplyCubit extends MockCubit<ApplyState> implements ApplyCubit {}
 
 void main() {
   late MockApplyCubit mockApplyCubit;
 
   setUpAll(() {
-    // registerFallbackValue(FakeApplyIntents());
+    // Use a concrete intent as fallback since ApplyIntents is sealed
+    registerFallbackValue(SelectCountryIntent('US'));
     AppStrings.current = AppLocalizationsEn();
   });
 
   setUp(() {
     mockApplyCubit = MockApplyCubit();
     when(() => mockApplyCubit.state).thenReturn(ApplyState.initial());
+    // Stub async handleIntent to avoid Null returned error
+    when(() => mockApplyCubit.handleIntent(any())).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest() {
