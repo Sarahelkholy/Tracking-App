@@ -6,7 +6,9 @@ import 'package:flower_driver/features/profile/data/models/response/edit_profile
 import 'package:flower_driver/features/profile/domain/entities/profile/driver_data_entity.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';
 import 'package:flower_driver/features/profile/domain/repositories/profile_repo.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: ProfileRepo)
 class ProfileRepoImpl implements ProfileRepo {
   final ProfileRemoteDataSource profileRemoteDataSource;
   ProfileRepoImpl({required this.profileRemoteDataSource});
