@@ -10,6 +10,7 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
+import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
 import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
 import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import '../../features/auth/presentation/manager/forget_password_cubit/forget_pa
 import '../../features/auth/presentation/manager/splash_cubit/splash_cubit.dart';
 import '../../features/auth/presentation/pages/apply/apply_page.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
+import '../../features/orders/presentation/manager/active_order_cubit/active_order_event.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -107,7 +109,11 @@ abstract class RouteGenerator {
         /// active order details
         case Routes.activeOrderDetails:
           return MaterialPageRoute(
-            builder: (_) => const ActiveOrderDetailsScreen(),
+            builder: (_) => BlocProvider(
+              create: (context) =>
+                  getIt<ActiveOrderCubit>()..doEvents(GetActiveOrderEvent()),
+              child: const ActiveOrderDetailsScreen(),
+            ),
           );
 
         /// Default

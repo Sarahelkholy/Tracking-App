@@ -1,43 +1,55 @@
 import '../../../../../core/localization/l10n/app_localizations.dart';
+import '../../../domain/entities/enums/order_status_enum.dart';
 
-extension OrderStatusExtension on OrderStatus {
+extension OrderStatusPresentationExtension on OrderStatusEnum {
   String localized(AppLocalizations localizations) {
     switch (this) {
-      case OrderStatus.accepted:
+      case OrderStatusEnum.pending:
+        return 'Pending';
+      case OrderStatusEnum.accepted:
         return localizations.accepted;
-
-      case OrderStatus.picked:
+      case OrderStatusEnum.picked:
         return localizations.picked;
-
-      case OrderStatus.outForDelivery:
+      case OrderStatusEnum.outForDelivery:
         return localizations.outForDelivery;
-
-      case OrderStatus.arrived:
+      case OrderStatusEnum.arrived:
         return localizations.arrived;
-
-      case OrderStatus.delivered:
+      case OrderStatusEnum.delivered:
         return localizations.delivered;
     }
   }
 
   int get step {
     switch (this) {
-      case OrderStatus.accepted:
+      case OrderStatusEnum.accepted:
         return 1;
-
-      case OrderStatus.picked:
+      case OrderStatusEnum.picked:
         return 2;
-
-      case OrderStatus.outForDelivery:
+      case OrderStatusEnum.outForDelivery:
         return 3;
-
-      case OrderStatus.arrived:
+      case OrderStatusEnum.arrived:
         return 4;
-
-      case OrderStatus.delivered:
+      case OrderStatusEnum.delivered:
         return 5;
+      default:
+        return 1;
+    }
+  }
+
+  String buttonTitle(AppLocalizations localizations) {
+    switch (this) {
+      case OrderStatusEnum.accepted:
+        return localizations.arrivedAtPickupPoint;
+      case OrderStatusEnum.picked:
+        return localizations.startDeliver;
+      case OrderStatusEnum.outForDelivery:
+        return localizations.arrivedToTheUser;
+      case OrderStatusEnum.arrived:
+        return localizations.deliveredToTheUser;
+      case OrderStatusEnum.delivered:
+        return localizations.deliveredToTheUser;
+      default:
+        return localizations.arrivedAtPickupPoint;
     }
   }
 }
-
-enum OrderStatus { accepted, picked, outForDelivery, arrived, delivered }

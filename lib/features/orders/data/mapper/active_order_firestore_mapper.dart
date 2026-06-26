@@ -1,15 +1,15 @@
-import '../../domain/entities/enums/order_status_enum.dart';
-import '../../domain/entities/order_entity.dart';
-import '../../domain/entities/order_store_entity.dart';
-import '../../domain/entities/order_user_entity.dart';
-import '../../domain/entities/shipping_address_entity.dart';
-import '../models/responses/orders_response/order_data_response.dart';
-import 'order_item_mapper.dart';
-import 'shipping_address_mapper.dart';
-import 'store_mapper.dart';
-import 'user_mapper.dart';
+import 'package:flower_driver/features/orders/data/mapper/order_item_mapper.dart';
+import 'package:flower_driver/features/orders/data/mapper/shipping_address_mapper.dart';
+import 'package:flower_driver/features/orders/data/mapper/store_mapper.dart';
+import 'package:flower_driver/features/orders/data/mapper/user_mapper.dart';
+import 'package:flower_driver/features/orders/data/models/responses/active_order_firestore_response.dart';
+import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
+import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
+import 'package:flower_driver/features/orders/domain/entities/order_store_entity.dart';
+import 'package:flower_driver/features/orders/domain/entities/order_user_entity.dart';
+import 'package:flower_driver/features/orders/domain/entities/shipping_address_entity.dart';
 
-extension OrderDataResponseMapper on OrderDataResponse {
+extension ActiveOrderFirestoreResponseMapper on ActiveOrderFirestoreResponse {
   OrderEntity toEntity() {
     return OrderEntity(
       id: id ?? '',
@@ -55,7 +55,7 @@ extension OrderDataResponseMapper on OrderDataResponse {
             long: '',
           ),
       paidAt: paidAt ?? DateTime.fromMillisecondsSinceEpoch(0),
-        orderStatus: orderStatus != null
+      orderStatus: orderStatus != null
           ? OrderStatusEnumHelper.fromString(orderStatus!)
           : OrderStatusEnum.pending,
     );

@@ -5,4 +5,11 @@ import '../entities/orders_entity.dart';
 abstract interface class OrdersRepo {
   Future<Result<OrdersEntity>> getAllPendingOrders();
   Future<OrderEntity?> getParsedDoc(String path, String field);
+
+  Future<Result<OrderEntity>> getActiveOrder(String driverId);
+
+  Stream<OrderEntity?> listenToActiveOrder(String orderId);
+
+  Future<Result<void>> updateOrderStatus(OrderEntity order, String status,
+      {bool? isActive});
 }
