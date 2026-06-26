@@ -100,6 +100,15 @@ abstract class RouteGenerator {
             ),
           );
 
+         /// Change password
+         case Routes.changPasswordRoute:
+           return MaterialPageRoute(
+             builder: (_) => BlocProvider(
+               create: (_) => getIt<ChangePasswordCubit>(),
+               child: const ChangePasswordScreen(),
+             ),
+           );
+
         /// Default
         default:
           return _errorRoute();
