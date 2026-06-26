@@ -27,7 +27,7 @@ extension OrderStatusExtension on OrderStatusEnum {
 
   static OrderStatusEnum fromString(String value) {
     return OrderStatusEnum.values.firstWhere(
-          (status) => status.name == value,
+      (status) => status.name.toLowerCase() == value.toLowerCase(),
       orElse: () => OrderStatusEnum.pending,
     );
   }

@@ -74,8 +74,8 @@ class HomeCubit extends Cubit<HomeState> {
         selectedOrder: BaseState(
           data: selectedOrder,
           errorMessage: null,
-          isSuccess: true,
-          isLoading: false,
+          isSuccess: false,
+          isLoading: true,
         ),
       ),
     );

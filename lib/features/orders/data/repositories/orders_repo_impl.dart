@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../config/error_handling/result.dart';
 import '../../../../config/firebase/firestore_collection.dart';
+import '../../domain/entities/enums/order_status_enum.dart';
 import '../../domain/entities/orders_entity.dart';
 import '../../domain/repositories/orders_repo.dart';
 import '../data_source/remote/orders_remote_data_source.dart';
@@ -37,6 +38,7 @@ class OrdersRepoImpl implements OrdersRepo {
     final data = await _databaseService.getCollectionWhere(
       path: FireStoreCollection.orderCollectionPath,
       field: FireStoreFieldName.orderStatus,
+      isNotEqualTo: OrderStatusEnum.delivered,
     );
 
     if (data.isEmpty) {
