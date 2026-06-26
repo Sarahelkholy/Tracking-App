@@ -14,4 +14,5 @@ abstract class ApiEndPoints {
   ///? Chang password
   static const String changePassword ="/drivers/change-password";
 
+  static const String pendingOrders = "/orders/pending-orders";
 }

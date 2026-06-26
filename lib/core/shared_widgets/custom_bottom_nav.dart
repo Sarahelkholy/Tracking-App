@@ -1,6 +1,8 @@
+import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
-
+import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/orders/presentation/pages/home_screen.dart';
 import '../../features/orders/presentation/pages/orders_screen.dart';
@@ -10,10 +12,7 @@ import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
-  const CustomBottomNavBar({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const CustomBottomNavBar({super.key, this.initialIndex = 0});
 
   final int initialIndex;
 
@@ -32,7 +31,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
     currentIndex = widget.initialIndex;
 
-    screens = [const HomeScreen(), const OrdersScreen(), const ProfileScreen()];
+    screens = [
+      BlocProvider(
+        create: (context) => getIt<HomeCubit>(),
+        child: const HomeScreen(),
+      ),
+      const OrdersScreen(),
+      const ProfileScreen(),
+    ];
   }
 
   @override
