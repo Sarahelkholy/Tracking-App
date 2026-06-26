@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 abstract class LocationHelper {
   static Future<Position> getCurrentLocation() async {
@@ -27,5 +28,34 @@ abstract class LocationHelper {
     return await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
+  }
+
+
+  Future<String> getAddressFromLatLong(String latLong) async {
+    final parts = latLong.split(',');
+
+    final latitude = double.parse(parts[0]);
+    final longitude = double.parse(parts[1]);
+
+    final placemarks = await placemarkFromCoordinates(
+      latitude,
+      longitude,
+    );
+
+    if (placemarks.isEmpty) return 'Unknown location';
+
+    final place = placemarks.first;
+
+    return [
+      place.name,
+      place.street,
+      place.locality,
+      place.administrativeArea,
+      place.country,
+    ].where((e) => e != null && e.isNotEmpty).join(', ');
+  }
+
+  static String positionToString(Position position) {
+    return "${position.latitude},${position.longitude}";
   }
 }

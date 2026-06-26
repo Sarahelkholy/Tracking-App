@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<HomeCubit, HomeState>(
+      body: BlocConsumer<HomeCubit, HomeState>(
         buildWhen: (previous, current) =>
             previous.pendingOrdersState != current.pendingOrdersState,
         builder: (BuildContext context, HomeState state) {
@@ -52,12 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .orders[index]
                       .user
                       .firstName,
-                  userAddress: state
-                      .pendingOrdersState
-                      .data!
-                      .orders[index]
-                      .shippingAddress
-                      .address,
+                  userAddress: '20th st, Sheikh Zayed, Giza',
                   price: state.pendingOrdersState.data!.orders[index].totalPrice
                       .toString(),
                   onAccept: () {
@@ -73,6 +69,13 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           );
+        },
+        listenWhen: (previous, current) =>
+            previous.selectedOrder != current.selectedOrder,
+        listener: (BuildContext context, HomeState state) {
+          if (state.selectedOrder.isSuccess) {
+            Navigator.pushNamed(context, Routes.ordersRoute);
+          }
         },
       ),
     );

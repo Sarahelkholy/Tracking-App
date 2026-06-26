@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'apply_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class ApplyResponse {
     @JsonKey(name: "message")
     final String? message;
@@ -33,7 +33,7 @@ class ApplyResponse {
     Map<String, dynamic> toJson() => _$ApplyResponseToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Driver {
     @JsonKey(name: "country")
     final String? country;

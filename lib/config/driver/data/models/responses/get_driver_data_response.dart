@@ -3,7 +3,7 @@ import 'driver_response.dart';
 
 part 'get_driver_data_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class GetDriverDataResponse {
   @JsonKey(name: "message")
   String? message;

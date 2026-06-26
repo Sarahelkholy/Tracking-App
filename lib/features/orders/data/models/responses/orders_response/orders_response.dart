@@ -4,7 +4,7 @@ import 'order_data_response.dart';
 
 part 'orders_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class OrdersResponse {
   @JsonKey(name: "message")
   String? message;
