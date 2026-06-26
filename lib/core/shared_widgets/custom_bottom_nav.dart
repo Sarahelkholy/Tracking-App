@@ -1,8 +1,12 @@
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/features/oders/presentation/pages/home_screen.dart';
 import 'package:flower_driver/features/oders/presentation/pages/orders_screen.dart';
-import 'package:flower_driver/features/oders/presentation/pages/profile_screen.dart';
+
+import 'package:flower_driver/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
+import 'package:flower_driver/config/di/di.dart';
 
 import '../shared_widgets/svg_wrapper.dart';
 import '../utils/app_assets.dart';
@@ -33,7 +37,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
     currentIndex = widget.initialIndex;
 
-    screens = [const HomeScreen(), const OrdersScreen(), const ProfileScreen()];
+    screens = [
+      const HomeScreen(),
+      const OrdersScreen(),
+      BlocProvider(
+        create: (_) => getIt<ProfileCubit>(),
+        child: const ProfileScreen(),
+      ),
+    ];
   }
 
   @override

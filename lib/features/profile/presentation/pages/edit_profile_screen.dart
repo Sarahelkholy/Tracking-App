@@ -69,7 +69,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         lastName: _lastNameController.text,
         email: _emailController.text,
         phone: _phoneController.text,
-        gender: _selectedGender,
       );
       context.read<ProfileCubit>().handleIntent(SubmitEditProfile(request));
     }
@@ -120,7 +119,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         const CircleAvatar(
                           radius: 40,
                           backgroundColor: AppColors.grayLight,
-                          child: Icon(Icons.person, size: 50, color: AppColors.grayMedium),
+                          child: Icon(
+                            Icons.person,
+                            size: 50,
+                            color: AppColors.grayMedium,
+                          ),
                         ),
                         Positioned(
                           bottom: 0,
@@ -132,7 +135,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 2),
                             ),
-                            child: const Icon(Icons.edit, size: 12, color: Colors.white),
+                            child: const Icon(
+                              Icons.edit,
+                              size: 12,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -182,7 +189,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     obscureText: true,
                     suffixIcon: TextButton(
                       onPressed: () {},
-                      child: Text('Change', style: AppTextStyles.regular14(context).copyWith(color: AppColors.primaryColor)),
+                      child: Text(
+                        'Change',
+                        style: AppTextStyles.regular14(
+                          context,
+                        ).copyWith(color: AppColors.primaryColor),
+                      ),
                     ),
                     validator: (v) => null, // Optional unless changing
                   ),
@@ -227,7 +239,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 16),
                   // Vehicle license mock
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.grayLight),
                       borderRadius: BorderRadius.circular(8),
@@ -238,12 +253,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Vehicle license', style: AppTextStyles.regular14(context).copyWith(color: AppColors.grayDark, fontSize: 12)),
+                            Text(
+                              'Vehicle license',
+                              style: AppTextStyles.regular14(context).copyWith(
+                                color: AppColors.grayDark,
+                                fontSize: 12,
+                              ),
+                            ),
                             const SizedBox(height: 4),
-                            Text('Photo_12345678', style: AppTextStyles.regular14(context)),
+                            Text(
+                              'Photo_12345678',
+                              style: AppTextStyles.regular14(context),
+                            ),
                           ],
                         ),
-                        const Icon(Icons.upload_outlined, color: AppColors.black100),
+                        const Icon(
+                          Icons.upload_outlined,
+                          color: AppColors.black100,
+                        ),
                       ],
                     ),
                   ),
