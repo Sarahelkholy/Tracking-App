@@ -46,7 +46,6 @@ void main() {
           locale: const Locale('en'),
           builder: (context, child) {
             AppStrings.current = AppLocalizations.of(context)!;
-
             return child!;
           },
           home: const PasswordEnterEmailScreen(),

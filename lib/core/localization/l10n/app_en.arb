@@ -92,5 +92,8 @@
   "newPassword": "New Password",
   "enterYourPassword": "Enter Your Password",
   "enterConfirmPassword": "Enter Confirm Password",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "currentPassword":"Current Password",
+  "update":"update",
+  "oldAndNewPasswordSame": "The new password must be different from the current password"
 }
