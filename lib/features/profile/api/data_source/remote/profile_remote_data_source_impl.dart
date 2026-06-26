@@ -30,4 +30,25 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       return response;
     });
   }
+
+  @override
+  Future<Result<DriverDataResponse>> getDriverData() {
+    return executeApi(() async {
+      return await _apiClient.getDriverData();
+    });
+  }
+
+  @override
+  Future<Result<EditProfileResponse>> editProfile(EditProfileRequest body) {
+    return executeApi(() async {
+      return await _apiClient.editProfile(body);
+    });
+  }
+
+  @override
+  Future<Result<DriverDataResponse>> updateVehicle(String id, dynamic body) {
+    return executeApi(() async {
+      return await _apiClient.updateVehicle(id, body);
+    });
+  }
 }

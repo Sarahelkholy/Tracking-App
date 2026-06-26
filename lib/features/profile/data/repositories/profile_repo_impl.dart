@@ -37,4 +37,56 @@ class ProfileRepoImpl implements ProfileRepo {
         return Failure(errorMessage: response.errorMessage);
     }
   }
+
+  @override
+  Future<Result<ProfileDriverEntity>> getDriverData() async {
+    final result = await _dataSource.getDriverData();
+
+    switch (result) {
+      case Success<DriverDataResponse>():
+        return Success(
+          data: ProfileDriverEntity(
+            message: result.data.message,
+            driver: result.data.driver?.toEntity(),
+          ),
+        );
+      case Failure<DriverDataResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<EditProfileEntity>> editProfile(EditProfileRequest body) async {
+    final result = await _dataSource.editProfile(body);
+    switch (result) {
+      case Success<EditProfileResponse>():
+        return Success(
+          data: EditProfileEntity(
+            message: result.data.message,
+            driver: result.data.driver?.toEntity(),
+          ),
+        );
+      case Failure<EditProfileResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<ProfileDriverEntity>> updateVehicle(
+      String id,
+      dynamic body,
+      ) async {
+    final result = await _dataSource.updateVehicle(id, body);
+    switch (result) {
+      case Success<DriverDataResponse>():
+        return Success(
+          data: ProfileDriverEntity(
+            message: result.data.message,
+            driver: result.data.driver?.toEntity(),
+          ),
+        );
+      case Failure<DriverDataResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
 }

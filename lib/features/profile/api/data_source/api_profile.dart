@@ -18,4 +18,15 @@ abstract class ApiProfile {
   Future<ChangePasswordResponse> changePassword(
     @Body() ChangePasswordRequest changePasswordRequest,
   );
+  @GET(ApiEndPoints.getDriverData)
+  Future<DriverDataResponse> getDriverData();
+
+  @PUT(ApiEndPoints.editProfile)
+  Future<EditProfileResponse> editProfile(@Body() EditProfileRequest body);
+
+  @PUT(ApiEndPoints.updateVehicle)
+  Future<DriverDataResponse> updateVehicle(
+    @Part(name: "id") String id,
+    @Body() dynamic body,
+  );
 }

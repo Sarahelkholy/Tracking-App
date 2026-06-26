@@ -8,6 +8,10 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final void Function(String)? onChanged;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final bool readOnly;
+  
   const CustomTextFormField({
     super.key,
     required this.controller,
@@ -17,6 +21,9 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.onChanged,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.readOnly = false,
   });
 
   @override
@@ -28,7 +35,13 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: onChanged,
-      decoration: InputDecoration(labelText: label, hintText: hint),
+      obscureText: obscureText,
+      readOnly: readOnly,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        suffixIcon: suffixIcon,
+      ),
     );
   }
 }
