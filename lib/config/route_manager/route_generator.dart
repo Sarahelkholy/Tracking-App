@@ -17,6 +17,8 @@ import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
 import '../../features/auth/presentation/pages/apply/apply_page.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
+import '../../features/profile/presentation/manager/profile/profile_cubit.dart';
+import '../../features/profile/presentation/pages/edit_profile_screen.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -86,6 +88,16 @@ abstract class RouteGenerator {
           return MaterialPageRoute(
             builder: (_) =>
                 CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
+          );
+
+        /// Edit Profile Screen
+        case Routes.editProfileRoute:
+          final cubit = settings.arguments as ProfileCubit;
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: const EditProfileScreen(),
+            ),
           );
 
         /// Default
