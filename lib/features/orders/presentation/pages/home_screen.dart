@@ -74,7 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
             previous.selectedOrder != current.selectedOrder,
         listener: (BuildContext context, HomeState state) {
           if (state.selectedOrder.isSuccess) {
-            Navigator.pushNamed(context, Routes.ordersRoute);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              Routes.activeOrderDetails,
+              (route) => false,
+            );
           }
         },
       ),

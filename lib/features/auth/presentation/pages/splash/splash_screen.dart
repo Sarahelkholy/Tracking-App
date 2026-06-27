@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (isSuccess) {
       if (splashCubit.state.acceptedOrder != null) {
         print("Go Orders");
-        _replaceTo(Routes.ordersRoute);
+        _replaceTo(Routes.activeOrderDetails);
       } else {
         print("Go BottomNav");
         _replaceTo(Routes.bottomNavBarRoute);

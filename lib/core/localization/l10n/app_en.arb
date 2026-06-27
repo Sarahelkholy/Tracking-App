@@ -95,7 +95,7 @@
   "confirm": "Confirm",
   "currentPassword":"Current Password",
   "update":"update",
-  "oldAndNewPasswordSame": "The new password must be different from the current password"
+  "oldAndNewPasswordSame": "The new password must be different from the current password",
   "confirm": "Confirm",
 
   "orderDetails" : "Order details",

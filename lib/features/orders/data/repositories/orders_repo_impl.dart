@@ -10,13 +10,17 @@ import '../../domain/entities/enums/order_status_enum.dart';
 import '../../domain/entities/orders_entity.dart';
 import '../../domain/repositories/orders_repo.dart';
 import '../data_source/remote/orders_remote_data_source.dart';
+import '../mapper/active_order_firestore_mapper.dart';
+import '../mapper/orders_mapper.dart';
+import '../models/responses/orders_response/order_data_response.dart';
 import '../models/responses/orders_response/orders_response.dart';
 
 @Injectable(as: OrdersRepo)
 class OrdersRepoImpl implements OrdersRepo {
   final OrdersRemoteDataSource _ordersRemoteDataSource;
+  final DatabaseService _databaseService;
 
-  OrdersRepoImpl(this._ordersRemoteDataSource);
+  OrdersRepoImpl(this._ordersRemoteDataSource, this._databaseService);
 
   @override
   Future<Result<OrdersEntity>> getAllPendingOrders() async {
@@ -76,10 +80,11 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<Result<void>> updateOrderStatus(OrderEntity order,
-      String status, {
-        bool? isActive,
-      }) async {
+  Future<Result<void>> updateOrderStatus(
+    OrderEntity order,
+    String status, {
+    bool? isActive,
+  }) async {
     final updateData = <String, dynamic>{
       FireStoreFieldName.orderStatus: status,
     };
@@ -94,8 +99,9 @@ class OrdersRepoImpl implements OrdersRepo {
 
     if (result is Success) {
       // Notification logic
-      final fcmResult =
-      await _ordersRemoteDataSource.getUserFcmToken(order.user.id);
+      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
+        order.user.id,
+      );
 
       if (fcmResult is Success<String?> && fcmResult.data != null) {
         final fcmToken = fcmResult.data!;
