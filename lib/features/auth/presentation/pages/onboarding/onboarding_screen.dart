@@ -1,13 +1,10 @@
 import 'package:flower_driver/core/helpers/my_responsive.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
-import 'package:flower_driver/core/shared_widgets/custom_button.dart';
 import 'package:flower_driver/core/utils/app_assets.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
-// بنستدعي الـ imports الخاصة بالـ Cache والـ Routes
 import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/config/secure_cache/secure_cache/cache_keys.dart';
@@ -30,6 +27,8 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
+    final size = MediaQuery.sizeOf(context);
+
     return Scaffold(
       backgroundColor: AppColors.baseWhite,
       body: SafeArea(
@@ -39,11 +38,11 @@ class OnboardingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width * .75,
-                height: MediaQuery.of(context).size.height * 0.5,
+                width: size.width * .75,
+                height: size.height * 0.5,
                 child: OverflowBox(
-                  minWidth: MediaQuery.of(context).size.height,
-                  maxWidth: MediaQuery.of(context).size.height,
+                  minWidth: size.height,
+                  maxWidth: size.height,
                   child: Center(
                     child: Lottie.asset(
                       AppAssets.onboardingAnimationImage,
@@ -62,27 +61,30 @@ class OnboardingScreen extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                child: CustomButton(
-                  title: local.login,
+                child: ElevatedButton(
                   onPressed: () {
                     _completeOnboarding(context, Routes.loginRoute);
                   },
+                  child: Text(local.login),
                 ),
               ),
 
               SizedBox(height: MyResponsive.fontSize(context, value: 16)),
               SizedBox(
                 width: double.infinity,
-                child: CustomButton(
-                  title: local.applyNow,
-                  titleStyle: AppTextStyles.medium16(
-                    context,
-                  ).copyWith(color: AppColors.primaryColor),
-                  backgroundColor: AppColors.baseWhite,
-                  borderColor: AppColors.primaryColor,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.baseWhite,
+                    foregroundColor: AppColors.primaryColor,
+                    side: const BorderSide(color: AppColors.primaryColor),
+                    textStyle: AppTextStyles.medium16(
+                      context,
+                    ).copyWith(color: AppColors.primaryColor),
+                  ),
                   onPressed: () {
                     _completeOnboarding(context, Routes.applyRoute);
                   },
+                  child: Text(local.applyNow),
                 ),
               ),
 
