@@ -69,6 +69,19 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   }
 
   @override
+  Future<Result<void>> saveActiveOrder(
+    String orderId,
+    Map<String, dynamic> data,
+  ) async {
+    return executeApi(
+      () => _databaseService.setData(
+        "${FireStoreCollection.orderCollectionPath}/$orderId",
+        data,
+      ),
+    );
+  }
+
+  @override
   Future<Result<String?>> getUserFcmToken(String userId) async {
     return executeApi(() async {
       final userDoc = await _databaseService.getDocumentData(

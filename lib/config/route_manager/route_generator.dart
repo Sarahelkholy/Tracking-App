@@ -25,7 +25,6 @@ import '../../features/profile/presentation/manager/change_password_cubit/change
 import '../../features/profile/presentation/pages/change_password/change_password_screen.dart';
 import '../../features/profile/presentation/manager/profile/profile_cubit.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
-import '../../features/orders/presentation/manager/active_order_cubit/active_order_event.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -133,8 +132,7 @@ abstract class RouteGenerator {
         case Routes.activeOrderDetails:
           return MaterialPageRoute(
             builder: (_) => BlocProvider(
-              create: (context) =>
-                  getIt<ActiveOrderCubit>()..doEvents(GetActiveOrderEvent()),
+              create: (context) => getIt<ActiveOrderCubit>(),
               child: const ActiveOrderDetailsScreen(),
             ),
           );

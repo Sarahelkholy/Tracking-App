@@ -33,13 +33,11 @@ class _SplashScreenState extends State<SplashScreen>
   final Completer<void> _acceptedOrderDone = Completer<void>();
 
   late final SplashCubit splashCubit;
-  bool _stopNavigation = false;
 
   @override
   void initState() {
     super.initState();
     splashCubit = context.read<SplashCubit>();
-    splashCubit.doIntent(GetAcceptedOrder());
     _setupAnimation();
     _checkUser();
     _waitAndNavigate();
@@ -77,37 +75,30 @@ class _SplashScreenState extends State<SplashScreen>
       if (!_dataResult.isCompleted) {
         _dataResult.complete(false);
       }
+      if (!_acceptedOrderDone.isCompleted) {
+        _acceptedOrderDone.complete();
+      }
     }
   }
 
   Future<void> _waitAndNavigate() async {
-    print("Waiting...");
-
     final results = await Future.wait([
       _animationDone.future,
       _dataResult.future,
       _acceptedOrderDone.future,
     ]);
 
-    print("All completed");
-
-    if (!mounted || _stopNavigation) return;
+    if (!mounted) return;
 
     final isSuccess = results[1] as bool;
 
-    print("isSuccess = $isSuccess");
-    print("acceptedOrder = ${splashCubit.state.acceptedOrder}");
-
     if (isSuccess) {
       if (splashCubit.state.acceptedOrder != null) {
-        print("Go Orders");
         _replaceTo(Routes.activeOrderDetails);
       } else {
-        print("Go BottomNav");
         _replaceTo(Routes.bottomNavBarRoute);
       }
     } else {
-      print("Go Onboarding");
       _replaceTo(Routes.onboardingRoute);
     }
   }
@@ -130,13 +121,12 @@ class _SplashScreenState extends State<SplashScreen>
         listeners: [
           BlocListener<DriverCubit, DriverState>(
             listener: (context, state) {
-              print("Driver state changed");
-
               if (state.isUnauthorized) {
-                _stopNavigation = true;
-
                 if (!_dataResult.isCompleted) {
                   _dataResult.complete(false);
+                }
+                if (!_acceptedOrderDone.isCompleted) {
+                  _acceptedOrderDone.complete();
                 }
                 return;
               }
@@ -144,11 +134,13 @@ class _SplashScreenState extends State<SplashScreen>
               if (_dataResult.isCompleted) return;
 
               if (state.driver != null) {
-                print("Driver loaded");
+                splashCubit.doIntent(GetAcceptedOrder(state.driver!.id!));
                 _dataResult.complete(true);
               } else if (state.error != null) {
-                print("Driver error");
                 _dataResult.complete(false);
+                if (!_acceptedOrderDone.isCompleted) {
+                  _acceptedOrderDone.complete();
+                }
               }
             },
           ),

@@ -14,6 +14,11 @@ abstract interface class OrdersRemoteDataSource {
     Map<String, dynamic> data,
   );
 
+  Future<Result<void>> saveActiveOrder(
+    String orderId,
+    Map<String, dynamic> data,
+  );
+
   Future<Result<String?>> getUserFcmToken(String userId);
 
   Future<Result<void>> sendPushNotification({

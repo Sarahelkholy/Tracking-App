@@ -1,11 +1,8 @@
-import 'package:flower_driver/config/firebase/firestore_collection.dart';
 import 'package:flower_driver/features/auth/presentation/manager/splash_cubit/spalsh_events.dart';
 import 'package:flower_driver/features/auth/presentation/manager/splash_cubit/splash_state.dart';
 import 'package:flower_driver/features/orders/domain/repositories/orders_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../../config/firebase/firestore_field_name.dart';
 
 @LazySingleton()
 class SplashCubit extends Cubit<SplashState> {
@@ -16,16 +13,13 @@ class SplashCubit extends Cubit<SplashState> {
   void doIntent(SplashEvents event) {
     switch (event) {
       case GetAcceptedOrder():
-        _getAcceptedOrder();
+        _getAcceptedOrder(event.driverId);
     }
   }
 
-  Future<void> _getAcceptedOrder() async {
+  Future<void> _getAcceptedOrder(String driverId) async {
     emit(const SplashState(isLoading: true));
-    var acceptedOrderEntity = await _ordersRepo.getParsedDoc(
-      FireStoreCollection.orderCollectionPath,
-      FireStoreFieldName.orderStatus,
-    );
+    var acceptedOrderEntity = await _ordersRepo.getActiveOrderIfExist(driverId);
     emit(SplashState(acceptedOrder: acceptedOrderEntity));
   }
 }

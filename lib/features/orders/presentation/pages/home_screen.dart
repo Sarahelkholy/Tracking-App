@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           return SafeArea(
             child: ListView.builder(
+              itemCount: state.pendingOrdersState.data?.orders.length,
               itemBuilder: (context, index) {
                 return OrderCard(
                   storeName:
@@ -57,10 +59,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   price: state.pendingOrdersState.data!.orders[index].totalPrice
                       .toString(),
                   onAccept: () {
+                    final driverId = context
+                        .read<DriverCubit>()
+                        .state
+                        .driver
+                        ?.id;
                     _homeCubit.doIntent(
                       SelectOrder(
                         selectedOrder:
                             state.pendingOrdersState.data!.orders[index],
+                        driverId: driverId ?? "",
                       ),
                     );
                   },

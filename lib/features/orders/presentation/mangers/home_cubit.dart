@@ -25,7 +25,7 @@ class HomeCubit extends Cubit<HomeState> {
       case GetPendingOrders():
         _getPendingOrders();
       case SelectOrder():
-        _selectOrder(event.selectedOrder);
+        _selectOrder(event.selectedOrder, event.driverId);
     }
   }
 
@@ -68,7 +68,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> _selectOrder(OrderEntity selectedOrder) async {
+  Future<void> _selectOrder(OrderEntity selectedOrder, String driverId) async {
     emit(
       state.copyWith(
         selectedOrder: BaseState(
@@ -85,7 +85,7 @@ class HomeCubit extends Cubit<HomeState> {
       currentLocation: currentLocation,
     );
 
-    var response = await _acceptOrderUseCase(editedOrder);
+    var response = await _acceptOrderUseCase(editedOrder, driverId);
 
     switch (response) {
       case Success<void>():

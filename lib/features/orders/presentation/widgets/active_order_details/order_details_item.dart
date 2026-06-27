@@ -1,4 +1,5 @@
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
+import 'package:flower_driver/core/shared_widgets/cached_network_image_wrapper.dart';
 import 'package:flower_driver/core/utils/app_assets.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
@@ -42,7 +43,10 @@ class OrderDetailsItem extends StatelessWidget {
               width: 44,
               height: 44,
               child: imageUrl.isNotEmpty
-                  ? Image.network(imageUrl, fit: BoxFit.cover)
+                  ? CachedNetworkImageWrapper(
+                      imagePath: imageUrl,
+                      fit: BoxFit.cover,
+                    )
                   : Image.asset(AppAssets.userTestImage, fit: BoxFit.cover),
             ),
           ),

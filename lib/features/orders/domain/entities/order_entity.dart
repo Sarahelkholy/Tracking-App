@@ -106,12 +106,6 @@ class OrderEntity extends Equatable {
       shippingAddress: shippingAddress.toModel(),
       paidAt: paidAt,
       orderStatus: orderStatus.name,
-      currentLocation: currentLocation != null
-          ? {
-              'latitude': currentLocation!.latitude,
-              'longitude': currentLocation!.longitude,
-            }
-          : null,
     );
   }
 
