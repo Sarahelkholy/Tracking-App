@@ -10,6 +10,8 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
+import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
+import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
 import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +25,7 @@ import '../../features/profile/presentation/manager/change_password_cubit/change
 import '../../features/profile/presentation/pages/change_password/change_password_screen.dart';
 import '../../features/profile/presentation/manager/profile/profile_cubit.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
+import '../../features/orders/presentation/manager/active_order_cubit/active_order_event.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -63,6 +66,7 @@ abstract class RouteGenerator {
         /// Forget Password - Enter Email
         case Routes.forgetPasswordRoute:
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.forgetPasswordRoute),
             builder: (_) => BlocProvider(
               create: (_) => getIt<ForgetPasswordCubit>(),
               child: const PasswordEnterEmailScreen(),
@@ -74,6 +78,7 @@ abstract class RouteGenerator {
           final cubit = settings.arguments as ForgetPasswordCubit;
 
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.passwordVerifyOtpRoute),
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const PasswordVerifyOtpScreen(),
@@ -85,6 +90,7 @@ abstract class RouteGenerator {
           final cubit = settings.arguments as ForgetPasswordCubit;
 
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.resetPasswordRoute),
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const PasswordResetPasswordScreen(),
@@ -122,6 +128,16 @@ abstract class RouteGenerator {
         /// orders
         case Routes.ordersRoute:
           return MaterialPageRoute(builder: (_) => const OrdersScreen());
+
+        /// active order details
+        case Routes.activeOrderDetails:
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) =>
+                  getIt<ActiveOrderCubit>()..doEvents(GetActiveOrderEvent()),
+              child: const ActiveOrderDetailsScreen(),
+            ),
+          );
 
         /// Default
         default:

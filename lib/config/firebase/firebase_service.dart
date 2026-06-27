@@ -46,6 +46,21 @@ class FirebaseService implements DatabaseService {
     }
   }
 
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getCollectionWhereMultiple({
+    required String path,
+    required Map<String, dynamic> queryParams,
+    int limit = 1,
+  }) async {
+    Query<Map<String, dynamic>> query = _firestore.collection(path);
+
+    queryParams.forEach((field, value) {
+      query = query.where(field, isEqualTo: value);
+    });
+
+    return await query.limit(limit).get();
+  }
+
   // Get a reference to a document
   @override
   DocumentReference<Map<String, dynamic>> getDocument(String path) {
