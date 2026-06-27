@@ -1,6 +1,5 @@
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
-import 'package:flower_driver/core/shared_widgets/custom_bottom_nav.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';

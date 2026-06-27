@@ -10,7 +10,7 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: ProfileRemoteDataSource)
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final ApiProfile apiProfile;
-  ProfileRemoteDataSourceImpl({required this.apiProfile});
+  ProfileRemoteDataSourceImpl(this.apiProfile);
 
   @override
   Future<Result<DriverDataResponse>> getDriverData() {
