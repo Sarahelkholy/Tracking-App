@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:injectable/injectable.dart';
 
 import '../data_base/data_base_service.dart';
@@ -16,7 +17,7 @@ class FirebaseService implements DatabaseService {
   }
 
   @override
-  Future<Map<String, dynamic>> getCollectionWhere({
+  Future<Result<Map<String, dynamic>>> getCollectionWhere({
     required String path,
     required String field,
     dynamic isEqualTo,
@@ -36,13 +37,9 @@ class FirebaseService implements DatabaseService {
 
       final snapshot = await query.limit(limit).get();
 
-      if (snapshot.docs.isEmpty) {
-        return {};
-      }
-
-      return snapshot.docs.first.data();
+      return Success<Map<String, dynamic>>(data: snapshot.docs.first.data());
     } catch (e) {
-      return {};
+      return Failure<Map<String, dynamic>>(errorMessage: e.toString());
     }
   }
 

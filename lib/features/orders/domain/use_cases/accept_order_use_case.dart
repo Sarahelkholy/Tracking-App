@@ -9,8 +9,7 @@ class AcceptOrderUseCase {
 
   OrdersRepo _repo;
 
-  Future<Result<void>> call(OrderEntity selectedOrder) async {
-    await _repo.acceptOrder(selectedOrder);
-    return Success(data: true);
+  Future<Result<bool>> call(OrderEntity selectedOrder) async {
+    return _repo.acceptOrder(selectedOrder);
   }
 }

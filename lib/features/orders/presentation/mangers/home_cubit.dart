@@ -88,7 +88,7 @@ class HomeCubit extends Cubit<HomeState> {
     var response = await _acceptOrderUseCase(editedOrder);
 
     switch (response) {
-      case Success<void>():
+      case Success<bool>():
         emit(
           state.copyWith(
             selectedOrder: BaseState(
@@ -99,9 +99,17 @@ class HomeCubit extends Cubit<HomeState> {
             ),
           ),
         );
-      case Failure<void>():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      case Failure<bool>():
+        emit(
+          state.copyWith(
+            selectedOrder: BaseState(
+              data: null,
+              errorMessage: response.errorMessage,
+              isSuccess: true,
+              isLoading: false,
+            ),
+          ),
+        );
     }
   }
 }

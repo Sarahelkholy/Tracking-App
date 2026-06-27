@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flower_driver/config/error_handling/result.dart';
 
 abstract class DatabaseService {
   CollectionReference<Map<String, dynamic>> getCollection(String path);
 
   DocumentReference<Map<String, dynamic>> getDocument(String path);
 
-  Future<Map<String, dynamic>> getCollectionWhere({
+  Future<Result<Map<String, dynamic>>> getCollectionWhere({
     required String path,
     required String field,
     dynamic isEqualTo,

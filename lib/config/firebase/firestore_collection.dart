@@ -1,3 +1,3 @@
 abstract class FireStoreCollection {
-  static String orderCollectionPath = "Orders";
+  static String orderCollectionPath = "orders";
 }

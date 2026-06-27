@@ -34,28 +34,35 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<OrderEntity?> getParsedDoc(String path, String field) async {
-    final data = await _databaseService.getCollectionWhere(
+  Future<Result<OrderEntity>> getParsedDoc(String path, String field) async {
+    final response = await _databaseService.getCollectionWhere(
       path: FireStoreCollection.orderCollectionPath,
       field: FireStoreFieldName.orderStatus,
-      isNotEqualTo: OrderStatusEnum.delivered,
+      isNotEqualTo: OrderStatusEnum.delivered.name,
     );
 
-    if (data.isEmpty) {
-      print("firestore model is empty");
-      return null;
+    switch (response) {
+      case Success<Map<String, dynamic>>():
+        print("accepted order: ${response.data}");
+        return Success(
+          data: OrderDataResponse.fromJson(response.data).toEntity(),
+        );
+      case Failure<Map<String, dynamic>>():
+        print("accepted order error");
+        return Failure(errorMessage: response.errorMessage);
     }
-
-    print("firestore model is not empty");
-    return OrderDataResponse.fromJson(data).toEntity();
   }
 
   @override
   Future<Result<bool>> acceptOrder(OrderEntity selectedOrder) async {
-    await _databaseService.addData(
-      FireStoreCollection.orderCollectionPath,
-      selectedOrder.toModel().toJson(),
-    );
-    return Success(data: true);
+    try {
+      await _databaseService.addData(
+        FireStoreCollection.orderCollectionPath,
+        selectedOrder.toModel().toJson(),
+      );
+      return Success(data: true);
+    } catch (e) {
+      return Failure(errorMessage: e.toString());
+    }
   }
 }
