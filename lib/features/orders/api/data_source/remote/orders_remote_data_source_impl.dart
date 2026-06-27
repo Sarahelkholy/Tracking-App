@@ -1,6 +1,7 @@
 import 'package:flower_driver/config/data_base/data_base_service.dart';
 import 'package:flower_driver/config/firebase/firestore_collection.dart';
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
+import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/features/orders/data/models/responses/active_order_firestore_response.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../../config/error_handling/execute_api.dart';
@@ -23,7 +24,8 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
 
   @override
   Future<Result<ActiveOrderFirestoreResponse>> getActiveOrder(
-      String driverId,) async {
+    String driverId,
+  ) async {
     return executeApi(() async {
       final snapshot = await _databaseService.getCollectionWhereMultiple(
         path: FireStoreCollection.orderCollectionPath,
@@ -48,19 +50,22 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
     return _databaseService
         .listenDocument("${FireStoreCollection.orderCollectionPath}/$orderId")
         .map((data) {
-      if (data == null) return null;
-      return ActiveOrderFirestoreResponse.fromJson(data);
-    });
+          if (data == null) return null;
+          return ActiveOrderFirestoreResponse.fromJson(data);
+        });
   }
 
   @override
-  Future<Result<void>> updateOrderStatus(String orderId,
-      Map<String, dynamic> data,) async {
-    return executeApi(() =>
-        _databaseService.updateData(
-          "${FireStoreCollection.orderCollectionPath}/$orderId",
-          data,
-        ));
+  Future<Result<void>> updateOrderStatus(
+    String orderId,
+    Map<String, dynamic> data,
+  ) async {
+    return executeApi(
+      () => _databaseService.updateData(
+        "${FireStoreCollection.orderCollectionPath}/$orderId",
+        data,
+      ),
+    );
   }
 
   @override
@@ -71,6 +76,19 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       );
       final userData = userDoc.data();
       return userData?[FireStoreFieldName.fcmToken] as String?;
+    });
+  }
+
+  @override
+  Future<Result<void>> sendPushNotification({
+    required String fcmToken,
+    required String title,
+    required String body,
+  }) async {
+    return executeApi(() async {
+      CustomLogger.bgBlue(
+        "MOCK NOTIFICATION: Sending to $fcmToken: $title - $body",
+      );
     });
   }
 }

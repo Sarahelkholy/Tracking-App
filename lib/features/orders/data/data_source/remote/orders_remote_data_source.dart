@@ -15,4 +15,10 @@ abstract interface class OrdersRemoteDataSource {
   );
 
   Future<Result<String?>> getUserFcmToken(String userId);
+
+  Future<Result<void>> sendPushNotification({
+    required String fcmToken,
+    required String title,
+    required String body,
+  });
 }

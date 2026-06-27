@@ -1,5 +1,4 @@
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
-import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/features/orders/data/mapper/active_order_firestore_mapper.dart';
 import 'package:flower_driver/features/orders/data/mapper/orders_mapper.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
@@ -78,9 +77,11 @@ class OrdersRepoImpl implements OrdersRepo {
       await _ordersRemoteDataSource.getUserFcmToken(order.user.id);
 
       if (fcmResult is Success<String?> && fcmResult.data != null) {
-        CustomLogger.green(
-          "Sending notification to user ${order.user.id} with token ${fcmResult
-              .data}. Status: $status",
+        final fcmToken = fcmResult.data!;
+        await _ordersRemoteDataSource.sendPushNotification(
+          fcmToken: fcmToken,
+          title: "Order Update",
+          body: "Your order #${order.orderNumber} is now $status",
         );
       }
     }
