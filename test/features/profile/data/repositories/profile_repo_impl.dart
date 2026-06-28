@@ -9,12 +9,9 @@ import 'package:flower_driver/features/profile/data/models/response/edit_profile
 import 'package:flower_driver/features/profile/data/repositories/profile_repo_impl.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/driver_data_entity.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';
-import 'package:flower_driver/features/profile/domain/repositories/profile_repo.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mocktail/mocktail.dart' hide when, verify, any;
-
 import 'profile_repo_impl.mocks.dart';
 
 @GenerateMocks([ProfileRemoteDataSource])
@@ -75,7 +72,10 @@ void main() {
             Success<EditProfileResponse>(
                   data: EditProfileResponse(
                     message: "test",
-                    driver: edit_profile.Driver(firstName: 'test', lastName: 'test'),
+                    driver: edit_profile.Driver(
+                      firstName: 'test',
+                      lastName: 'test',
+                    ),
                   ),
                 )
                 as Result<EditProfileResponse>,

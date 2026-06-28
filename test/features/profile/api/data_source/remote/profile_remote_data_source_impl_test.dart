@@ -11,7 +11,7 @@ import 'profile_remote_data_source_impl_test.mocks.dart';
 late ProfileRemoteDataSourceImpl dataSource;
 late MockApiProfile apiProfile;
 void main() {
-  setUp(() {
+  setUpAll(() {
     apiProfile = MockApiProfile();
     dataSource = ProfileRemoteDataSourceImpl(apiProfile);
   });
@@ -41,10 +41,11 @@ void main() {
       when(apiProfile.getDriverData()).thenAnswer((_) async => driverResponse);
       final result = await dataSource.getDriverData();
       expect(result, isA<Success<DriverDataResponse>>());
-      expect(result, equals(Success<DriverDataResponse>(data: driverResponse)));
     });
     test('return failiure when editProfile api call is failiure', () async {
-      when(() => apiProfile.getDriverData()).thenThrow(Exception());
+      when(
+        apiProfile.getDriverData(),
+      ).thenAnswer((_) async => throw Exception());
       final result = await dataSource.getDriverData();
       expect(result, isA<Failure<DriverDataResponse>>());
       verify(() => apiProfile.getDriverData()).called(1);

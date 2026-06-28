@@ -7,6 +7,7 @@ import 'package:flower_driver/features/profile/presentation/manager/profile/prof
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/localization/l10n/app_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,10 +25,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Profile', style: AppTextStyles.bold20(context)),
+        title: Text(local.profile, style: AppTextStyles.bold20(context)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () {
@@ -148,8 +150,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildVehicleCard(BuildContext context, dynamic driver) {
-    final vehicleType = driver?.vehicleType ?? 'Bike';
-    final vehicleNumber = driver?.vehicleNumber ?? 'UP16DL0007';
+    final local = AppLocalizations.of(context)!;
+
+    final vehicleType = driver?.vehicleType ?? local.vehicleType;
+    final vehicleNumber = driver?.vehicleNumber ?? local.enterVehicleNumber;
 
     return GestureDetector(
       onTap: () {}, // Might navigate to vehicle edit in the future
@@ -167,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Vehicle info',
+                    local.vehicleInformation,
                     style: AppTextStyles.semiBold16(context),
                   ),
                   const SizedBox(height: 8),

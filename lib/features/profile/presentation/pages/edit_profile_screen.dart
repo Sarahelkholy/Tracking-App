@@ -1,4 +1,5 @@
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
+import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
 import 'package:flower_driver/core/shared_widgets/custom_text_form_field.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
@@ -76,10 +77,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Edit profile', style: AppTextStyles.bold20(context)),
+        title: Text(local.editProfile, style: AppTextStyles.bold20(context)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () {
@@ -151,18 +153,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Expanded(
                         child: CustomTextFormField(
                           controller: _firstNameController,
-                          label: 'First name',
-                          hint: 'First name',
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
+                          label: local.firstName,
+                          hint: local.firstName,
+                          validator: (v) => v!.isEmpty ? local.required : null,
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: CustomTextFormField(
                           controller: _lastNameController,
-                          label: 'Last name',
-                          hint: 'Last name',
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
+                          label: local.lastName,
+                          hint: local.lastName,
+                          validator: (v) => v!.isEmpty ? local.required : null,
                         ),
                       ),
                     ],
@@ -179,18 +181,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     controller: _phoneController,
                     label: 'Phone number',
                     hint: 'Phone number',
-                    validator: (v) => v!.isEmpty ? 'Required' : null,
+                    validator: (v) => v!.isEmpty ? local.required : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _passwordController,
-                    label: 'Password',
+                    label: local.password,
                     hint: '******',
                     obscureText: true,
                     suffixIcon: TextButton(
                       onPressed: () {},
                       child: Text(
-                        'Change',
+                        local.changePassword,
                         style: AppTextStyles.regular14(
                           context,
                         ).copyWith(color: AppColors.primaryColor),
@@ -201,30 +203,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      Text('Gender', style: AppTextStyles.semiBold14(context)),
+                      Text(
+                        local.gender,
+                        style: AppTextStyles.semiBold14(context),
+                      ),
                       const Spacer(),
                       Radio<String>(
-                        value: 'Female',
+                        value: local.female,
                         groupValue: _selectedGender,
                         activeColor: AppColors.primaryColor,
                         onChanged: (v) => setState(() => _selectedGender = v!),
                       ),
-                      Text('Female', style: AppTextStyles.regular14(context)),
+                      Text(
+                        local.female,
+                        style: AppTextStyles.regular14(context),
+                      ),
                       const SizedBox(width: 16),
                       Radio<String>(
-                        value: 'Male',
+                        value: local.male,
                         groupValue: _selectedGender,
                         activeColor: AppColors.primaryColor,
                         onChanged: (v) => setState(() => _selectedGender = v!),
                       ),
-                      Text('Male', style: AppTextStyles.regular14(context)),
+                      Text(local.male, style: AppTextStyles.regular14(context)),
                     ],
                   ),
                   const SizedBox(height: 32),
                   CustomTextFormField(
                     controller: _vehicleTypeController,
-                    label: 'Vehicle type',
-                    hint: 'Vehicle type',
+                    label: local.vehicleType,
+                    hint: local.vehicleType,
                     readOnly: true,
                     suffixIcon: const Icon(Icons.keyboard_arrow_down),
                     validator: (v) => null,
@@ -232,8 +240,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _vehicleNumberController,
-                    label: 'Vehicle number',
-                    hint: 'Vehicle number',
+                    label: local.vehicleNumber,
+                    hint: local.vehicleNumber,
                     validator: (v) => null,
                   ),
                   const SizedBox(height: 16),
@@ -254,7 +262,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Vehicle license',
+                              local.vehicleLicense,
                               style: AppTextStyles.regular14(context).copyWith(
                                 color: AppColors.grayDark,
                                 fontSize: 12,
@@ -276,7 +284,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 32),
                   CustomButton(
-                    title: 'Update',
+                    title: local.updateProfile,
                     isLoading: state is EditProfileLoading,
                     onPressed: _submitForm,
                   ),
