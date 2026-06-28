@@ -22,7 +22,7 @@ class ActiveOrderFirestoreResponse {
   final DateTime? paidAt;
   final String? orderStatus;
   final String? driverId;
-  final dynamic driverLocation;
+  final Map<String, dynamic>? currentLocation;
   final bool? isActive;
 
   ActiveOrderFirestoreResponse({
@@ -43,7 +43,7 @@ class ActiveOrderFirestoreResponse {
     this.paidAt,
     this.orderStatus,
     this.driverId,
-    this.driverLocation,
+    this.currentLocation,
     this.isActive,
   });
 
@@ -56,7 +56,7 @@ class ActiveOrderFirestoreResponse {
     }
 
     return ActiveOrderFirestoreResponse(
-      id: json['_id'] as String?,
+      id: json['_id'] as String? ?? json['id'] as String?,
       user: json['user'] == null
           ? null
           : UserResponse.fromJson(json['user'] as Map<String, dynamic>),
@@ -83,8 +83,32 @@ class ActiveOrderFirestoreResponse {
       paidAt: parseDate(json['paidAt']),
       orderStatus: json['orderStatus'] as String?,
       driverId: json['driverId'] as String?,
-      driverLocation: json['driverLocation'],
+      currentLocation: json['currentLocation'] as Map<String, dynamic>?,
       isActive: json['isActive'] as bool?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'user': user?.toJson(),
+      'orderItems': orderItems?.map((e) => e.toJson()).toList(),
+      'totalPrice': totalPrice,
+      'paymentType': paymentType,
+      'isPaid': isPaid,
+      'isDelivered': isDelivered,
+      'state': state,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'orderNumber': orderNumber,
+      '__v': v,
+      'store': store?.toJson(),
+      'shippingAddress': shippingAddress?.toJson(),
+      'paidAt': paidAt?.toIso8601String(),
+      'orderStatus': orderStatus,
+      'driverId': driverId,
+      'currentLocation': currentLocation,
+      'isActive': isActive,
+    };
   }
 }

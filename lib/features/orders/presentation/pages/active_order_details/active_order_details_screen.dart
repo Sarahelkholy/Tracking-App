@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/core/helpers/event_handler_mixin.dart';
 import 'package:flower_driver/core/helpers/url_launcher_helper.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
@@ -40,6 +41,8 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
       if (!mounted) return;
       handleEvent(event);
     });
+    final driverId = context.read<DriverCubit>().state.driver?.id;
+    cubit.doEvents(GetActiveOrderEvent(driverId: driverId ?? ""));
   }
 
   @override

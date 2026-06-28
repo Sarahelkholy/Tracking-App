@@ -29,7 +29,7 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
   void doEvents(ActiveOrderEvents event) {
     switch (event) {
       case GetActiveOrderEvent():
-        _getActiveOrder();
+        _getActiveOrder(event.driverId);
       case UpdateOrderStatusEvent():
         _updateOrderStatus(event);
       case OrderUpdatedEvent():
@@ -37,14 +37,14 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     }
   }
 
-  Future<void> _getActiveOrder() async {
+  Future<void> _getActiveOrder(String driverId) async {
     emit(
       state.copyWith(
         getActiveOrderStateParam: const BaseState(isLoading: true),
       ),
     );
 
-    final result = await _getActiveOrderUseCase.call("driver_demo");
+    final result = await _getActiveOrderUseCase.call(driverId);
 
     switch (result) {
       case Success():
