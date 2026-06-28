@@ -95,6 +95,7 @@
   "confirm": "تأكيد",
 
   "orderDetails": "تفاصيل الطلب",
+    "noActiveOrderFound" : "لا يوجد طلبات مفعله حتي الان",
     "status": "الحالة :",
     "orderId": "رقم الطلب : # ",
     "pickupAddress": "عنوان الاستلام",

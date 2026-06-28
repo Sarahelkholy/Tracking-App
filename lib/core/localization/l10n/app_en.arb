@@ -95,6 +95,7 @@
   "confirm": "Confirm",
 
   "orderDetails" : "Order details",
+  "noActiveOrderFound" : "No active order found",
   "status" : "Status :",
   "orderId" : "Order ID : # ",
   "pickupAddress" : "Pickup address",

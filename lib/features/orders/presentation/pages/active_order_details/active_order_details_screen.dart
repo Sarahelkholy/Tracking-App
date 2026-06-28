@@ -3,6 +3,8 @@ import 'package:flower_driver/core/helpers/event_handler_mixin.dart';
 import 'package:flower_driver/core/helpers/url_launcher_helper.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
+import 'package:flower_driver/core/shared_widgets/custom_error_widget.dart';
+import 'package:flower_driver/core/shared_widgets/custom_loading_indicator.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
@@ -95,9 +97,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
     return BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
       builder: (context, state) {
         if (state.getActiveOrderState.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: CustomLoadingIndicator());
         }
 
         final order = state.order;
@@ -105,20 +105,14 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
         if (order == null) {
           return Scaffold(
             appBar: AppBar(title: Text(localizations.orderDetails)),
-            body: const Center(child: Text('No active order found')),
+            body: CustomErrorWidget(
+              errorMessage: localizations.noActiveOrderFound,
+            ),
           );
         }
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(localizations.orderDetails),
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back_ios_new),
-            ),
-          ),
+          appBar: AppBar(title: Text(localizations.orderDetails)),
           body: Column(
             children: [
               Expanded(
