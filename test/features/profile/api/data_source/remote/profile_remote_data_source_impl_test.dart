@@ -41,15 +41,7 @@ void main() {
       when(apiProfile.getDriverData()).thenAnswer((_) async => driverResponse);
       final result = await dataSource.getDriverData();
       expect(result, isA<Success<DriverDataResponse>>());
-      expect(
-        result,
-        equals(
-          DriverDataResponse(
-            driver: driverResponse.driver,
-            message: driverResponse.message,
-          ),
-        ),
-      );
+      expect(result, equals(Success<DriverDataResponse>(data: driverResponse)));
     });
     test('return failiure when editProfile api call is failiure', () async {
       when(() => apiProfile.getDriverData()).thenThrow(Exception());
