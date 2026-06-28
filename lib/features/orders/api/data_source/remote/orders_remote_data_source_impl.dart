@@ -73,6 +73,9 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
     String orderId,
     Map<String, dynamic> data,
   ) async {
+    print(
+      "shipping address after mapping to json: =====> ${data[ 'shippingAddress']['city']}",
+    );
     return executeApi(
       () => _databaseService.setData(
         "${FireStoreCollection.orderCollectionPath}/$orderId",

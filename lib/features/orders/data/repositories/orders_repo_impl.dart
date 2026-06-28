@@ -9,10 +9,6 @@ import '../../../../config/error_handling/result.dart';
 import '../../domain/entities/orders_entity.dart';
 import '../../domain/repositories/orders_repo.dart';
 import '../data_source/remote/orders_remote_data_source.dart';
-import '../mapper/order_item_mapper.dart';
-import '../mapper/shipping_address_mapper.dart';
-import '../mapper/store_mapper.dart';
-import '../mapper/user_mapper.dart';
 import '../models/responses/active_order_firestore_response.dart';
 import '../models/responses/orders_response/orders_response.dart';
 
@@ -45,11 +41,14 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<Result<bool>> acceptOrder(OrderEntity selectedOrder,
-      String driverId) async {
+  Future<Result<bool>> acceptOrder(
+    OrderEntity selectedOrder,
+    String driverId,
+  ) async {
     // Convert to Firestore model for saving
-    print("shipping address before mapping : =====> ${selectedOrder
-        .shippingAddress}");
+    print(
+      "shipping address before mapping : =====> ${selectedOrder.shippingAddress.city}",
+    );
 
     final firestoreModel = ActiveOrderFirestoreResponse(
       id: selectedOrder.id,
@@ -72,15 +71,16 @@ class OrdersRepoImpl implements OrdersRepo {
       isActive: true,
       currentLocation: selectedOrder.currentLocation != null
           ? {
-        'latitude': selectedOrder.currentLocation!.latitude,
-        'longitude': selectedOrder.currentLocation!.longitude,
-      }
+              'latitude': selectedOrder.currentLocation!.latitude,
+              'longitude': selectedOrder.currentLocation!.longitude,
+            }
           : null,
     );
 
     print(
-        "shipping address after mapping: =====> ${firestoreModel.shippingAddress
-            .toString()}");
+      "shipping address after mapping: =====> ${firestoreModel.shippingAddress?.city}",
+    );
+
 
     final result = await _ordersRemoteDataSource.saveActiveOrder(
       selectedOrder.id,
@@ -89,16 +89,17 @@ class OrdersRepoImpl implements OrdersRepo {
 
     if (result is Success) {
       // Notification logic for acceptance
-      final fcmResult =
-      await _ordersRemoteDataSource.getUserFcmToken(selectedOrder.user.id);
+      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
+        selectedOrder.user.id,
+      );
 
       if (fcmResult is Success<String?> && fcmResult.data != null) {
         final fcmToken = fcmResult.data!;
         await _ordersRemoteDataSource.sendPushNotification(
           fcmToken: fcmToken,
           title: "Order Accepted",
-          body: "Your order #${selectedOrder
-              .orderNumber} has been accepted by the driver",
+          body:
+              "Your order #${selectedOrder.orderNumber} has been accepted by the driver",
         );
       }
     }
@@ -150,8 +151,9 @@ class OrdersRepoImpl implements OrdersRepo {
 
     if (result is Success) {
       // Notification logic
-      final fcmResult =
-      await _ordersRemoteDataSource.getUserFcmToken(order.user.id);
+      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
+        order.user.id,
+      );
 
       if (fcmResult is Success<String?> && fcmResult.data != null) {
         final fcmToken = fcmResult.data!;
@@ -162,7 +164,6 @@ class OrdersRepoImpl implements OrdersRepo {
         );
       }
     }
-
     return result;
   }
 }
