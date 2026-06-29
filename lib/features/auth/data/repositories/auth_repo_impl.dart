@@ -1,4 +1,5 @@
 import 'package:flower_driver/config/error_handling/result.dart';
+import 'package:flower_driver/config/secure_cache/secure_cache/secure_cache.dart';
 import 'package:flower_driver/features/auth/data/data_source/remote/auth_remote_data_source.dart';
 import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
@@ -13,7 +14,7 @@ class AuthRepoImpl implements AuthRepo {
 
   AuthRepoImpl(this._authRemoteDataSource, this.secureCache);
 
-  final secureCache;
+  final SecureCache secureCache;
 
   @override
   Future<Result<AuthResponse>> signIn(
