@@ -49,78 +49,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: BlocConsumer<ProfileCubit, ProfileState>(
+      body: BlocListener<LogoutCubit, LogoutState>(
         listener: (context, state) {
-          if (state is ProfileError) {
-            AppSnackBar.error(context, state.message);
+          if (state is LogoutSuccess) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routes.loginRoute, (route) => false);
+          } else if (state is LogoutFailure) {
+            AppSnackBar.error(context, state.errorMessage);
+          } else if (state is LogoutLoading) {
+            // Optional: show a loading indicator overlay
           }
         },
-        builder: (context, state) {
-          if (state is ProfileLoading || state is ProfileInitial) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProfileLoaded) {
-            final driver = state.driverData.driver;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _buildProfileCard(context, driver),
-                  const SizedBox(height: 16),
-                  _buildVehicleCard(context, driver),
-                  const SizedBox(height: 32),
-                  _buildSettingsOption(
-                    context: context,
-                    icon: Icons.language,
-                    title: local.changeLanguage,
-                    trailing: Text(
-                      local.currentLang == local.arabic
-                          ? local.english
-                          : local.arabic,
-                      style: AppTextStyles.regular14(
-                        context,
-                      ).copyWith(color: AppColors.primaryColor),
+        child: BlocConsumer<ProfileCubit, ProfileState>(
+          listener: (context, state) {
+            if (state is ProfileError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is ProfileLoading || state is ProfileInitial) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is ProfileLoaded) {
+              final driver = state.driverData.driver;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    _buildProfileCard(context, driver),
+                    const SizedBox(height: 16),
+                    _buildVehicleCard(context, driver),
+                    const SizedBox(height: 32),
+                    _buildSettingsOption(
+                      context: context,
+                      icon: Icons.language,
+                      title: local.changeLanguage,
+                      trailing: Text(
+                        local.currentLang == local.arabic
+                            ? local.english
+                            : local.arabic,
+                        style: AppTextStyles.regular14(
+                          context,
+                        ).copyWith(color: AppColors.primaryColor),
+                      ),
+                      onTap: () {
+                        context.read<LocaleCubit>().toggleLanguage();
+                      },
                     ),
-                    onTap: () {
-                      context.read<LocaleCubit>().toggleLanguage();
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildSettingsOption(
-                    context: context,
-                    icon: Icons.logout,
-                    title: local.logout,
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text(local.logout),
-                          content: Text(local.areYouSureYouWantToLogout),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(local.cancel),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                context.read<LogoutCubit>().doEvents(
-                                  LogoutEvent(),
-                                );
-                              },
-                              child: Text(local.logout),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Center(child: Text(local.failedToLoadProfile));
-          }
-        },
+                    const SizedBox(height: 16),
+                    _buildSettingsOption(
+                      context: context,
+                      icon: Icons.logout,
+                      title: local.logout,
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text(local.logout),
+                            content: Text(local.areYouSureYouWantToLogout),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(local.cancel),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                  context.read<LogoutCubit>().doEvents(
+                                    LogoutEvent(),
+                                  );
+                                },
+                                child: Text(local.logout),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Center(child: Text(local.failedToLoadProfile));
+            }
+          },
+        ),
       ),
     );
   }
