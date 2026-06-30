@@ -5,6 +5,23 @@ sealed class ProfileState {
   const ProfileState();
 }
 
+class UploadProfilePhotoLoading extends ProfileState {
+  const UploadProfilePhotoLoading();
+}
+
+class UploadProfilePhotoSuccess extends ProfileState {
+  final String message;
+  final DriverEntity? updatedDriver;
+
+  const UploadProfilePhotoSuccess({required this.message, this.updatedDriver});
+}
+
+class UploadProfilePhotoError extends ProfileState {
+  final String message;
+
+  const UploadProfilePhotoError({required this.message});
+}
+
 class ProfileInitial extends ProfileState {
   const ProfileInitial();
 }

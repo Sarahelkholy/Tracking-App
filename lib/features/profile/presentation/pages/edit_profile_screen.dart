@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
@@ -10,6 +12,7 @@ import 'package:flower_driver/features/profile/presentation/manager/profile/prof
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -118,13 +121,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Center(
                     child: Stack(
                       children: [
-                        const CircleAvatar(
-                          radius: 40,
-                          backgroundColor: AppColors.grayLight,
-                          child: Icon(
-                            Icons.person,
-                            size: 50,
-                            color: AppColors.grayMedium,
+                        InkWell(
+                          onTap: () {
+                            ImagePicker()
+                                .pickImage(source: ImageSource.gallery)
+                                .then((result) {
+                                  if (result != null) {
+                                    final file = File(result.path);
+                                    context.read<ProfileCubit>().handleIntent(
+                                      UploadProfilePhotoIntent(file),
+                                    );
+                                  }
+                                });
+                          },
+                          child: CircleAvatar(
+                            backgroundImage:
+                                (state is ProfileLoaded &&
+                                    state.driverData.driver?.photo != null)
+                                ? (state.driverData.driver!.photo!.startsWith(
+                                        'http',
+                                      )
+                                      ? NetworkImage(
+                                          state.driverData.driver!.photo!,
+                                        )
+                                      : FileImage(
+                                          File(state.driverData.driver!.photo!),
+                                        ))
+                                : null,
+                            radius: 40,
+                            backgroundColor: AppColors.grayLight,
+                            child: (state is UploadProfilePhotoLoading)
+                                ? const CircularProgressIndicator(
+                                    color: AppColors.primaryColor,
+                                  )
+                                : const Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: AppColors.grayMedium,
+                                  ),
                           ),
                         ),
                         Positioned(
