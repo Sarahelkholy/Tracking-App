@@ -124,5 +124,6 @@
   "language": "Language",
   "failedToLoadProfile": "Failed to load profile",
   "error": "Error",
-  "currentLang": "Current Language"
+  "currentLang": "Current Language",
+  "areYouSureYouWantToLogout": "Are you sure you want to logout?"
 }

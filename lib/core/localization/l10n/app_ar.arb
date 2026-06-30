@@ -116,5 +116,6 @@
   "language": "اللغة",
   "failedToLoadProfile": "فشل تحميل الملف الشخصي",
   "error": "حدث خطأ",
-  "currentLang": "اللغةالحالية"
+  "currentLang": "اللغةالحالية",
+  "areYouSureYouWantToLogout": "هل انت متاكد من تسجيل الخروج"
 }

@@ -3,6 +3,8 @@ import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/local_cubit/locale_cubit.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
+import 'package:flower_driver/features/auth/presentation/manager/logout/logout_cubit.dart';
+import 'package:flower_driver/features/auth/presentation/manager/logout/logout_events.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_intent.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
@@ -89,8 +91,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: local.logout,
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      context.read<ProfileCubit>().handleIntent(
-                        const LogoutIntent(),
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(local.logout),
+                          content: Text(local.areYouSureYouWantToLogout),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(local.cancel),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<LogoutCubit>().doEvents(
+                                  LogoutEvent(),
+                                );
+                              },
+                              child: Text(local.logout),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),

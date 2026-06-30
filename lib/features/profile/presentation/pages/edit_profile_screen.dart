@@ -32,7 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _vehicleTypeController = TextEditingController();
   final _vehicleNumberController = TextEditingController();
 
-  String _selectedGender = 'Male';
+  // String _selectedGender = 'Male';
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _phoneController.text = driver?.phone ?? '';
       _vehicleTypeController.text = driver?.vehicleType ?? '';
       _vehicleNumberController.text = driver?.vehicleNumber ?? '';
-      _selectedGender = driver?.gender ?? 'Male';
+      // _selectedGender = driver?.gender ?? 'Male';
     }
   }
 
@@ -154,6 +154,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ? const CircularProgressIndicator(
                                     color: AppColors.primaryColor,
                                   )
+                                : (state is ProfileLoaded &&
+                                      state.driverData.driver?.photo != null)
+                                ? null
                                 : const Icon(
                                     Icons.person,
                                     size: 50,
@@ -234,35 +237,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     validator: (v) => null, // Optional unless changing
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Text(
-                        local.gender,
-                        style: AppTextStyles.semiBold14(context),
-                      ),
-                      const Spacer(),
-                      Radio<String>(
-                        value: local.female,
-                        groupValue: _selectedGender,
-                        activeColor: AppColors.primaryColor,
-                        onChanged: (v) => setState(() => _selectedGender = v!),
-                      ),
-                      Text(
-                        local.female,
-                        style: AppTextStyles.regular14(context),
-                      ),
-                      const SizedBox(width: 16),
-                      Radio<String>(
-                        value: local.male,
-                        groupValue: _selectedGender,
-                        activeColor: AppColors.primaryColor,
-                        onChanged: (v) => setState(() => _selectedGender = v!),
-                      ),
-                      Text(local.male, style: AppTextStyles.regular14(context)),
-                    ],
-                  ),
-
                   const SizedBox(height: 32),
                   CustomButton(
                     title: local.updateProfile,
