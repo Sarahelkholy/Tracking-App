@@ -80,11 +80,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = Theme.of(context);
     final local = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(local.editProfile, style: AppTextStyles.bold20(context)),
+        title: Text(
+          local.editProfile,
+          style: appTheme.textTheme.headlineSmall?.copyWith(
+            color: AppColors.black100,
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () {
@@ -209,22 +215,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _emailController,
-                    label: 'Email',
-                    hint: 'Email',
-                    validator: (v) => v!.isEmpty ? 'Required' : null,
+                    label: local.email,
+                    hint: local.email,
+                    validator: (v) => v!.isEmpty ? local.required : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _phoneController,
-                    label: 'Phone number',
-                    hint: 'Phone number',
+                    label: local.phoneNumber,
+                    hint: local.phoneNumber,
                     validator: (v) => v!.isEmpty ? local.required : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _passwordController,
                     label: local.password,
-                    hint: '******',
+                    hint: local.password,
                     obscureText: true,
                     suffixIcon: TextButton(
                       onPressed: () {},

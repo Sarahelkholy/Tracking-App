@@ -1,6 +1,7 @@
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/local_cubit/locale_cubit.dart';
+import 'package:flower_driver/core/theme/app_theme.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/auth/presentation/manager/logout/logout_cubit.dart';
@@ -28,9 +29,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = AppTheme.appTheme(context);
     final local = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: appTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(local.profile, style: AppTextStyles.bold20(context)),
         leading: IconButton(
@@ -53,7 +55,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         listener: (context, state) {
           if (state is LogoutSuccess) {
             Navigator.pushNamedAndRemoveUntil(
-                context, Routes.loginRoute, (route) => false);
+              context,
+              Routes.loginRoute,
+              (route) => false,
+            );
           } else if (state is LogoutFailure) {
             AppSnackBar.error(context, state.errorMessage);
           } else if (state is LogoutLoading) {
@@ -105,12 +110,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: Text(local.logout),
-                            content: Text(local.areYouSureYouWantToLogout),
+                            title: Text(
+                              local.logout,
+                              style: AppTextStyles.bold18(context),
+                            ),
+                            content: Text(
+                              local.areYouSureYouWantToLogout,
+                              style: AppTextStyles.regular16(
+                                context,
+                              ).copyWith(color: AppColors.black90),
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: Text(local.cancel),
+                                child: Text(
+                                  local.cancel,
+                                  style: AppTextStyles.regular16(
+                                    context,
+                                  ).copyWith(color: AppColors.black90),
+                                ),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -119,7 +137,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     LogoutEvent(),
                                   );
                                 },
-                                child: Text(local.logout),
+                                child: Text(
+                                  local.logout,
+                                  style: AppTextStyles.regular16(
+                                    context,
+                                  ).copyWith(color: AppColors.red),
+                                ),
                               ),
                             ],
                           ),
