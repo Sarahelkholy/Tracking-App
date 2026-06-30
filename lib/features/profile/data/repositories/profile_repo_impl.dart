@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/profile/data/data_source/remote/profile_remote_data_source.dart';
 import 'package:flower_driver/features/profile/data/models/request/edit_profile_request.dart';
 import 'package:flower_driver/features/profile/data/models/response/driver_data_response.dart';
 import 'package:flower_driver/features/profile/data/models/response/edit_profile_response.dart';
+import 'package:flower_driver/features/profile/data/models/response/upload_profile_photo_response.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/driver_data_entity.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';
 import 'package:flower_driver/features/profile/domain/repositories/profile_repo.dart';
@@ -60,6 +63,19 @@ class ProfileRepoImpl implements ProfileRepo {
           ),
         );
       case Failure<DriverDataResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<UploadProfilePhotoResponse>> uploadPhoto(File photo) async {
+    final result = await profileRemoteDataSource.uploadPhoto(photo);
+    switch (result) {
+      case Success<UploadProfilePhotoResponse>():
+        return Success(
+          data: UploadProfilePhotoResponse(message: result.data.message),
+        );
+      case Failure<UploadProfilePhotoResponse>():
         return Failure(errorMessage: result.errorMessage);
     }
   }

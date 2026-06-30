@@ -228,60 +228,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Text(local.male, style: AppTextStyles.regular14(context)),
                     ],
                   ),
-                  const SizedBox(height: 32),
-                  CustomTextFormField(
-                    controller: _vehicleTypeController,
-                    label: local.vehicleType,
-                    hint: local.vehicleType,
-                    readOnly: true,
-                    suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                    validator: (v) => null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextFormField(
-                    controller: _vehicleNumberController,
-                    label: local.vehicleNumber,
-                    hint: local.vehicleNumber,
-                    validator: (v) => null,
-                  ),
-                  const SizedBox(height: 16),
-                  // Vehicle license mock
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.grayLight),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              local.vehicleLicense,
-                              style: AppTextStyles.regular14(context).copyWith(
-                                color: AppColors.grayDark,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Photo_12345678',
-                              style: AppTextStyles.regular14(context),
-                            ),
-                          ],
-                        ),
-                        const Icon(
-                          Icons.upload_outlined,
-                          color: AppColors.black100,
-                        ),
-                      ],
-                    ),
-                  ),
+
                   const SizedBox(height: 32),
                   CustomButton(
                     title: local.updateProfile,
