@@ -118,5 +118,11 @@
   "nidImage": "Nid Image",
   "uploadNidImage": "Upload Nid Image",
   "updateProfile": "Update Profile",
-  "required": "required"
+  "required": "required",
+  "english": "English",
+  "arabic": "العربية",
+  "language": "Language",
+  "failedToLoadProfile": "Failed to load profile",
+  "error": "Error",
+  "currentLang": "Current Language"
 }

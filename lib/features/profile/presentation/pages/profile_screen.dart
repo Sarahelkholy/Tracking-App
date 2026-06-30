@@ -1,5 +1,6 @@
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
+import 'package:flower_driver/core/local_cubit/locale_cubit.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
@@ -68,20 +69,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildSettingsOption(
                     context: context,
                     icon: Icons.language,
-                    title: 'Language',
+                    title: local.changeLanguage,
                     trailing: Text(
-                      'English',
+                      local.currentLang == local.arabic
+                          ? local.english
+                          : local.arabic,
                       style: AppTextStyles.regular14(
                         context,
                       ).copyWith(color: AppColors.primaryColor),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      context.read<LocaleCubit>().toggleLanguage();
+                    },
                   ),
                   const SizedBox(height: 16),
                   _buildSettingsOption(
                     context: context,
                     icon: Icons.logout,
-                    title: 'Logout',
+                    title: local.logout,
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
                       context.read<ProfileCubit>().handleIntent(
@@ -93,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             );
           } else {
-            return const Center(child: Text('Failed to load profile.'));
+            return Center(child: Text(local.failedToLoadProfile));
           }
         },
       ),
@@ -101,9 +106,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileCard(BuildContext context, dynamic driver) {
-    final name = '${driver?.firstName ?? 'John'} ${driver?.lastName ?? 'Doe'}';
-    final email = driver?.email ?? 'JohnDoe@gmail.com';
-    final phone = driver?.phone ?? '012113456789';
+    final name = '${driver?.firstName} ${driver?.lastName}';
+    final email = driver?.email;
+    final phone = driver?.phone;
 
     return GestureDetector(
       onTap: () => Navigator.pushNamed(

@@ -110,5 +110,11 @@
   "nidImage": "صورة الهوية الوطنية",
   "uploadNidImage": "رفع صورة الهوية الوطنية",
   "updateProfile": "تحديث الملف الشخصي",
-  "required": "مطلوب"
+  "required": "مطلوب",
+  "english": "English",
+  "arabic": "العربية",
+  "language": "اللغة",
+  "failedToLoadProfile": "فشل تحميل الملف الشخصي",
+  "error": "حدث خطأ",
+  "currentLang": "اللغةالحالية"
 }
