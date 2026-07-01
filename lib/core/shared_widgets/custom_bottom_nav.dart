@@ -1,7 +1,11 @@
+import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
+import 'package:flower_driver/core/utils/app_assets.dart';
+import 'package:flower_driver/features/oders/presentation/pages/home_screen.dart';
+import 'package:flower_driver/features/oders/presentation/pages/orders_screen.dart';
+import 'package:flower_driver/features/oders/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../shared_widgets/svg_wrapper.dart';
-import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -29,12 +33,12 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
     currentIndex = widget.initialIndex;
 
-    screens = [];
+    screens = [const HomeScreen(), const OrdersScreen(), const ProfileScreen()];
   }
 
   @override
   Widget build(BuildContext context) {
-    // final local = AppLocalizations.of(context)!;
+    final local = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: IndexedStack(index: currentIndex, children: screens),
@@ -47,61 +51,47 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           });
         },
 
-        destinations: const [
-          NavigationDestination(
-            icon: _BottomNavIcon(
-              path: AppAssets.appLogo,
-              isSelected: false,
-            ),
-
-            selectedIcon: _BottomNavIcon(
-              path: AppAssets.appLogo,
-              isSelected: true,
-            ),
-
-            label: 'home',
-          ),
-
+        destinations: [
           NavigationDestination(
             icon: const _BottomNavIcon(
-              path: AppAssets.appLogo,
+              path: AppAssets.homeIcon,
               isSelected: false,
             ),
 
             selectedIcon: const _BottomNavIcon(
-              path: AppAssets.appLogo,
+              path: AppAssets.homeIcon,
               isSelected: true,
             ),
 
-            label: 'local.categories',
+            label: local.home,
           ),
 
           NavigationDestination(
             icon: const _BottomNavIcon(
-              path: AppAssets.appLogo,
+              path: AppAssets.orders,
               isSelected: false,
             ),
 
             selectedIcon: const _BottomNavIcon(
-              path: AppAssets.appLogo,
+              path: AppAssets.orders,
               isSelected: true,
             ),
 
-            label: 'cart',
+            label: local.orders,
           ),
 
           NavigationDestination(
             icon: const _BottomNavIcon(
-              path: AppAssets.appLogo,
+              path: AppAssets.personIcon,
               isSelected: false,
             ),
 
             selectedIcon: const _BottomNavIcon(
-              path: AppAssets.appLogo,
+              path: AppAssets.personIcon,
               isSelected: true,
             ),
 
-            label: 'profile',
+            label: local.profile,
           ),
         ],
       ),

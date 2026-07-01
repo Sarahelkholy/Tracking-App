@@ -3,6 +3,9 @@ abstract class AppAssets {
   static const String _baseIconsPath = "assets/icons";
 
   static const String appLogo = "$_baseIconsPath/app_logo.svg";
+  static const String homeIcon = "$_baseIconsPath/homeIcon.svg";
+  static const String orders = "$_baseIconsPath/orders.svg";
+  static const String personIcon = "$_baseIconsPath/personIcon.svg";
 
   static const String testImage = "$_baseImagesPath/Image_test.png";
 }

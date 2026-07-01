@@ -39,5 +39,32 @@
   "error502": "Bad Gateway",
   "error503": "Service Unavailable",
   "error504": "Gateway Timeout",
-  "defaultError": "An error occurred"
+  "defaultError": "An error occurred",
+  "home":"Home",
+  "orders":"Orders",
+  "profile":"Profile",
+
+  "passwordChangedSuccessfully" : "Password Changed Successfully",
+
+  "password" : "Password",
+  "forgetPassword" : "Forget Password",
+  "enterEmailSubTitle" : "Please enter your email associated to\nYour account",
+  "email" : "Email" ,
+  "enterYourEmail" : "Enter Your Email",
+
+  "emailVerification" : "Email verification",
+  "verifyOtpSubTitle" : "Please enter your code that send to your\nEmail address",
+  "invalidCode" : "Invalid Code",
+  "didNotReceiveCode": "Didn't receive code?",
+  "resend" : "Resend",
+
+  "resetPassword" : "Reset password",
+  "resetPasswordSubTitle" : "Password must not be empty and must contain\n6 characters with upper case letter and one\nNumber at least",
+  "newPassword" : "New Password",
+  "enterYourPassword" : "Enter Your Password",
+  "confirmPassword" : "Confirm Password",
+  "enterConfirmPassword" : "Enter Confirm Password",
+  "confirm" : "Confirm"
+
+
 }
