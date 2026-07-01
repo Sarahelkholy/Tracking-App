@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/localization/l10n/app_localizations.dart';
+import '../../core/shared_widgets/custom_bottom_nav.dart';
 import '../../features/auth/presentation/pages/login/login_screen.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
 
@@ -25,6 +26,14 @@ abstract class RouteGenerator {
               value:getIt<LoginCubit>(),
               child: const LoginScreen(),
             ),
+          );
+
+        case Routes.bottomNavBarRoute:
+          final args = settings.arguments as Map<String, dynamic>?;
+
+          return MaterialPageRoute(
+            builder: (_) =>
+                CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
 
         /// Default

@@ -47,62 +47,62 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           });
         },
 
-        destinations: [
-          // NavigationDestination(
-          //   icon: const _BottomNavIcon(
-          //     path: AppAssets.homeIcon,
-          //     isSelected: false,
-          //   ),
-          //
-          //   selectedIcon: const _BottomNavIcon(
-          //     path: AppAssets.homeIcon,
-          //     isSelected: true,
-          //   ),
-          //
-          //   label: local.home,
-          // ),
-          //
-          // NavigationDestination(
-          //   icon: const _BottomNavIcon(
-          //     path: AppAssets.categoryIcon,
-          //     isSelected: false,
-          //   ),
-          //
-          //   selectedIcon: const _BottomNavIcon(
-          //     path: AppAssets.categoryIcon,
-          //     isSelected: true,
-          //   ),
-          //
-          //   label: local.categories,
-          // ),
-          //
-          // NavigationDestination(
-          //   icon: const _BottomNavIcon(
-          //     path: AppAssets.cartIcon,
-          //     isSelected: false,
-          //   ),
-          //
-          //   selectedIcon: const _BottomNavIcon(
-          //     path: AppAssets.cartIcon,
-          //     isSelected: true,
-          //   ),
-          //
-          //   label: local.cart,
-          // ),
-          //
-          // NavigationDestination(
-          //   icon: const _BottomNavIcon(
-          //     path: AppAssets.personIcon,
-          //     isSelected: false,
-          //   ),
-          //
-          //   selectedIcon: const _BottomNavIcon(
-          //     path: AppAssets.personIcon,
-          //     isSelected: true,
-          //   ),
-          //
-          //   label: local.profile,
-          // ),
+        destinations: const [
+          NavigationDestination(
+            icon: _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: false,
+            ),
+
+            selectedIcon: _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: true,
+            ),
+
+            label: 'home',
+          ),
+
+          NavigationDestination(
+            icon: const _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: false,
+            ),
+
+            selectedIcon: const _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: true,
+            ),
+
+            label: 'local.categories',
+          ),
+
+          NavigationDestination(
+            icon: const _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: false,
+            ),
+
+            selectedIcon: const _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: true,
+            ),
+
+            label: 'cart',
+          ),
+
+          NavigationDestination(
+            icon: const _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: false,
+            ),
+
+            selectedIcon: const _BottomNavIcon(
+              path: AppAssets.appLogo,
+              isSelected: true,
+            ),
+
+            label: 'profile',
+          ),
         ],
       ),
     );

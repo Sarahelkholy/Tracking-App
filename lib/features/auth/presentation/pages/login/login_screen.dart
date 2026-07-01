@@ -1,3 +1,4 @@
+import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,7 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 builder: (context, state) {
                   final rememberMe = state.rememberMe;
-
                   return Column(
                     children: [
                       LoginForm(
