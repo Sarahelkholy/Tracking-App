@@ -13,6 +13,7 @@
   "passwordTooShort": "Password must be at least 6 characters",
   "passwordValid": "Password must contain uppercase, lowercase, number, and special character",
   "confirmPassword": "Confirm Password",
+  "confirmNewPassword": "Confirm New Password",
   "confirmPasswordRequired": "Please confirm your password",
   "passwordsNotMatch": "Passwords do not match",
   "phoneRequired": "Phone number is required",

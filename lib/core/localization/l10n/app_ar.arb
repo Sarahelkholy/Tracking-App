@@ -13,6 +13,7 @@
   "passwordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
   "passwordValid": "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم ورمز خاص",
   "confirmPassword": "تأكيد كلمة المرور",
+  "confirmNewPassword": "تأكيد كلمة المرور جديدة",
   "confirmPasswordRequired": "يرجى تأكيد كلمة المرور",
   "passwordsNotMatch": "كلمتا المرور غير متطابقتين",
   "phoneRequired": "رقم الهاتف مطلوب",

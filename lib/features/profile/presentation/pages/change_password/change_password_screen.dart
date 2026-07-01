@@ -20,6 +20,7 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final oldPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
+  final confirmNewPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   late final ChangePasswordCubit _cubit;
@@ -105,6 +106,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     decoration: InputDecoration(
                       labelText: local.newPassword,
                       hintText: local.newPassword,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  TextFormField(
+                    controller: confirmNewPasswordController,
+                    obscureText: true,
+                    enabled: !state.changeOldPasswordState.isLoading,
+                    validator: (value) => Validator.confirmPassword(
+                      value,
+                      newPasswordController.text,
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: local.confirmNewPassword,
+                      hintText: local.confirmNewPassword,
                     ),
                   ),
                   const SizedBox(height: 40),
