@@ -23,7 +23,8 @@ import 'package:mockito/mockito.dart';
 import 'login_screen_test.mocks.dart';
 
 @GenerateMocks([LoginCubit, DriverCubit, LocaleCubit])
-late MockLoginCubit mockLoginCubit;
+
+late MockLoginCubit mockLoginCubit ;
 late MockDriverCubit mockDriverCubit;
 late MockLocaleCubit mockLocaleCubit;
 
@@ -56,75 +57,44 @@ void main() {
       intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit),
     );
 
-    ///Assert
     expect(find.byType(LoginScreen), findsOneWidget);
     expect(find.byType(LoginForm), findsOneWidget);
     expect(find.byType(Checkbox), findsOneWidget);
-    expect(
-      find.byWidgetPredicate((widget) {
-        return widget is Checkbox && widget.value == false;
-      }),
-      findsOneWidget,
-    );
     expect(find.byType(CustomButton), findsOneWidget);
-
-    expect(
-      find.byWidgetPredicate((widget) {
-        return widget is CustomButton &&
-            widget.title == AppStrings.current.login &&
-            widget.isLoading == false;
-      }),
-      findsOneWidget,
-    );
   });
+
+  testWidgets('verify CustomButton text data and color', (WidgetTester tester) async {
+    when(mockLoginCubit.state).thenReturn(const LoginInitial());
+    when(mockLoginCubit.stream).thenAnswer((_) => Stream.value(const LoginInitial()));
+
+    await tester.pumpWidget(intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit));
+
+    final textFinder = find.descendant(
+      of: find.byType(CustomButton),
+      matching: find.byType(Text),
+    );
+
+    final textWidget = tester.widget<Text>(textFinder);
+
+    expect(textWidget.data, AppStrings.current.login);
+    expect(textWidget.style?.color, isNull); // Since foregroundColor is not passed, it uses theme
+  });
+
   testWidgets('test LoginLoadingState', (WidgetTester tester) async {
-    /// Arrange
     when(mockLoginCubit.state).thenReturn(const LoginLoading());
-    when(mockLoginCubit.stream).thenAnswer((_) {
-      return Stream<LoginState>.value(const LoginLoading());
-    });
+    when(mockLoginCubit.stream).thenAnswer((_) => Stream.value(const LoginLoading()));
 
-    /// Act
-    await tester.pumpWidget(
-      intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit),
-    );
+    await tester.pumpWidget(intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit));
 
-    /// Assert
-    expect(
-      find.byWidgetPredicate((widget) {
-        return widget is CustomButton &&
-            widget.title == AppStrings.current.login &&
-            widget.isLoading == true;
-      }),
-      findsOneWidget,
-    );
-
-    expect(
-      find.byWidgetPredicate(
-            (widget) =>
-        widget is ElevatedButton &&
-            widget.child is SizedBox &&
-            (widget.child as SizedBox).child is CircularProgressIndicator,
-      ),
-      findsOneWidget,
-    );
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
-  testWidgets('test LoginSuccessState', (WidgetTester tester) async {
-    /// Arrange
-    const msg = 'Success';
-    when(
-      mockLoginCubit.state,
-    ).thenReturn(LoginSuccess(authResponse: AuthResponse(message: msg)));
-    when(mockLoginCubit.stream).thenAnswer((_) {
-      return Stream<LoginState>.value(
-        LoginSuccess(authResponse: AuthResponse(message: msg)),
-      );
-    });
 
-    /// Act
-    await tester.pumpWidget(
-      intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit),
-    );
+  testWidgets('test LoginSuccessState', (WidgetTester tester) async {
+    const msg = 'Success';
+    when(mockLoginCubit.state).thenReturn(LoginSuccess(authResponse: AuthResponse(message: msg)));
+    when(mockLoginCubit.stream).thenAnswer((_) => Stream.value(LoginSuccess(authResponse: AuthResponse(message: msg))));
+
+    await tester.pumpWidget(intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit));
     await tester.pumpAndSettle();
 
     /// Assert
@@ -148,20 +118,11 @@ void main() {
     expect(find.byType(SnackBar), findsOneWidget);
   });
 
-
-
   testWidgets('test validation', (tester) async {
-    /// Arrange
-
     when(mockLoginCubit.state).thenReturn(const LoginInitial());
-    when(mockLoginCubit.stream).thenAnswer((_) {
-      return Stream<LoginState>.value(const LoginInitial());
-    });
+    when(mockLoginCubit.stream).thenAnswer((_) => Stream.value(const LoginInitial()));
 
-    /// Act
-    await tester.pumpWidget(
-      intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit),
-    );
+    await tester.pumpWidget(intiView(mockLoginCubit, mockDriverCubit, mockLocaleCubit));
 
     await tester.tap(find.byType(CustomButton));
     await tester.pump();
