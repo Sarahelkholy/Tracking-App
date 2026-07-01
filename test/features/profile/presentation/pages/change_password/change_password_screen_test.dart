@@ -22,14 +22,13 @@ void main() {
     mockCubit = MockChangePasswordCubit();
     eventController = StreamController<BaseEvent>();
 
-    when(mockCubit.state)
-        .thenReturn(const ChangePasswordState());
+    when(mockCubit.state).thenReturn(const ChangePasswordState());
 
-    when(mockCubit.stream)
-        .thenAnswer((_) => const Stream<ChangePasswordState>.empty());
+    when(
+      mockCubit.stream,
+    ).thenAnswer((_) => const Stream<ChangePasswordState>.empty());
 
-    when(mockCubit.eventStream)
-        .thenAnswer((_) => eventController.stream);
+    when(mockCubit.eventStream).thenAnswer((_) => eventController.stream);
   });
 
   tearDown(() async {
@@ -41,10 +40,8 @@ void main() {
       BlocProvider<ChangePasswordCubit>.value(
         value: mockCubit,
         child: MaterialApp(
-          localizationsDelegates:
-          AppLocalizations.localizationsDelegates,
-          supportedLocales:
-          AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
           builder: (context, child) {
             final localizations = AppLocalizations.of(context);
@@ -66,41 +63,42 @@ void main() {
       await pumpScreen(tester);
 
       ///? Check Text resetPassword
-      expect(find.text(AppStrings.current.resetPassword), findsOneWidget,);
+      expect(find.text(AppStrings.current.resetPassword), findsOneWidget);
 
       ///? Check Text currentPassword
-      expect(find.text(AppStrings.current.currentPassword), findsNWidgets(2),);
+      expect(find.text(AppStrings.current.currentPassword), findsNWidgets(2));
 
       ///? Check Text newPassword
-      expect(find.text(AppStrings.current.newPassword), findsNWidgets(2),);
+      expect(find.text(AppStrings.current.newPassword), findsNWidgets(2));
 
       ///? Check Text Update
-      expect(find.text(AppStrings.current.update), findsOneWidget,);
+      expect(find.text(AppStrings.current.update), findsOneWidget);
 
       ///? Check Number of text form fields
-      expect(find.byType(TextFormField), findsNWidgets(2),);
+      expect(find.byType(TextFormField), findsNWidgets(2));
 
       ///? Check Number of text
-      expect(find.byType(Text), findsNWidgets(6),);
+      expect(find.byType(Text), findsNWidgets(6));
 
       ///? Check form
       expect(find.byType(Form), findsOneWidget);
 
       ///? Password is required
-      expect(find.text(AppStrings.current.passwordRequired), findsNothing,);
+      expect(find.text(AppStrings.current.passwordRequired), findsNothing);
 
       ///? Password must be at least 6 characters
-      expect(find.text(AppStrings.current.passwordTooShort), findsNothing,);
+      expect(find.text(AppStrings.current.passwordTooShort), findsNothing);
 
       ///? "Password must contain uppercase, lowercase, number, and special character
-      expect(find.text(AppStrings.current.passwordValid), findsNothing,);
+      expect(find.text(AppStrings.current.passwordValid), findsNothing);
 
-      ///? 
+      ///?
       expect(
-        find.byWidgetPredicate((widget) =>
-          widget is Text && widget.data ==AppStrings.current.update
-        )
-            ,findsOneWidget
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Text && widget.data == AppStrings.current.update,
+        ),
+        findsOneWidget,
       );
     });
   });

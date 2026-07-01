@@ -1,4 +1,3 @@
-import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';
 import 'package:flower_driver/config/driver/domain/entities/driver_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
