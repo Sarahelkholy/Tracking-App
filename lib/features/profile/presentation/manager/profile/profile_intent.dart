@@ -6,14 +6,14 @@ sealed class ProfileIntent {
   const ProfileIntent();
 }
 
+class LoadProfileData extends ProfileIntent {
+  const LoadProfileData();
+}
+
 class UploadProfilePhotoIntent extends ProfileIntent {
   final File photo;
 
   const UploadProfilePhotoIntent(this.photo);
-}
-
-class LoadProfileData extends ProfileIntent {
-  const LoadProfileData();
 }
 
 class SubmitEditProfile extends ProfileIntent {

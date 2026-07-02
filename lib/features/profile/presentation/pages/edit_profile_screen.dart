@@ -127,8 +127,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         InkWell(
                           onTap: () async {
-                            final result = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
+                            final result = await ImagePicker().pickImage(
+                              source: ImageSource.gallery,
+                            );
                             if (result != null) {
                               final file = File(result.path);
                               if (!context.mounted) return;
