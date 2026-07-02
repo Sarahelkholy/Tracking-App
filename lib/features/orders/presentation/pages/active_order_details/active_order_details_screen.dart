@@ -3,6 +3,8 @@ import 'package:flower_driver/core/helpers/event_handler_mixin.dart';
 import 'package:flower_driver/core/helpers/url_launcher_helper.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
+import 'package:flower_driver/core/shared_widgets/custom_error_widget.dart';
+import 'package:flower_driver/core/shared_widgets/custom_loading_indicator.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
@@ -14,6 +16,7 @@ import 'package:flower_driver/features/orders/presentation/widgets/active_order_
 import 'package:flower_driver/features/orders/presentation/widgets/active_order_details/order_details_row_text.dart';
 import 'package:flower_driver/features/orders/presentation/widgets/active_order_details/order_details_status_section.dart';
 import 'package:flower_driver/features/orders/presentation/widgets/active_order_details/order_status_extension.dart';
+import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -95,29 +98,27 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
     return BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
       builder: (context, state) {
         if (state.getActiveOrderState.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: CustomLoadingIndicator());
         }
 
         final order = state.order;
 
         if (order == null) {
           return Scaffold(
-            appBar: AppBar(title: Text(localizations.orderDetails)),
-            body: const Center(child: Text('No active order found')),
+            appBar: AppBar(
+              key: const Key(KeysStrings.activeOrderAppBar),
+              title: Text(localizations.orderDetails),
+            ),
+            body: CustomErrorWidget(
+              errorMessage: localizations.noActiveOrderFound,
+            ),
           );
         }
 
         return Scaffold(
           appBar: AppBar(
+            key: const Key(KeysStrings.activeOrderAppBar),
             title: Text(localizations.orderDetails),
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back_ios_new),
-            ),
           ),
           body: Column(
             children: [
@@ -132,10 +133,12 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                       children: [
                         const SizedBox(height: 16),
                         OrderStatusProgressBar(
+                          key: const Key(KeysStrings.activeOrderProgressBar),
                           currentStep: order.orderStatus.step,
                         ),
                         const SizedBox(height: 24),
                         OrderDetailsStatusSection(
+                          key: const Key(KeysStrings.activeOrderDetailsStatus),
                           status: order.orderStatus.localized(localizations),
                           orderId: order.orderNumber,
                           orderTime: order.createdAt,
@@ -147,6 +150,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                         ),
                         const SizedBox(height: 16),
                         ContactAddressCard(
+                          key: const Key(KeysStrings.activeOrderPickupAddress),
                           imageUrl: order.store.image,
                           name: order.store.name,
                           address: order.store.address,
@@ -168,6 +172,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                         ),
                         const SizedBox(height: 16),
                         ContactAddressCard(
+                          key: const Key(KeysStrings.activeOrderUserAddress),
                           imageUrl: order.user.photo,
                           name:
                               "${order.user.firstName} ${order.user.lastName}",
@@ -187,6 +192,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                         ),
                         const SizedBox(height: 8),
                         Column(
+                          key: const Key(KeysStrings.activeOrderItemsList),
                           children: List.generate(order.orderItems.length, (
                             index,
                           ) {
@@ -204,11 +210,13 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                         ),
                         const SizedBox(height: 24),
                         OrderDetailsRowText(
+                          key: const Key(KeysStrings.activeOrderTotal),
                           title: localizations.total,
                           value: "${localizations.egp} ${order.totalPrice}",
                         ),
                         const SizedBox(height: 24),
                         OrderDetailsRowText(
+                          key: const Key(KeysStrings.activeOrderPaymentMethod),
                           title: localizations.paymentMethod,
                           value: order.paymentType,
                         ),
@@ -235,6 +243,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                   ],
                 ),
                 child: CustomButton(
+                  key: const Key(KeysStrings.activeOrderButton),
                   isLoading: state.updateOrderStatusState.isLoading,
                   title: order.orderStatus.buttonTitle(localizations),
                   onPressed: order.orderStatus == OrderStatusEnum.delivered

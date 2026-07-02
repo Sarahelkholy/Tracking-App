@@ -1,12 +1,13 @@
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
+import 'package:flower_driver/features/orders/data/data_source/remote/orders_firebase_data_source.dart';
 import 'package:flower_driver/features/orders/data/mapper/active_order_firestore_mapper.dart';
 import 'package:flower_driver/features/orders/data/mapper/orders_mapper.dart';
 import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
-import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../config/error_handling/result.dart';
+import '../../../../core/helpers/custom_logger.dart';
 import '../../domain/entities/orders_entity.dart';
 import '../../domain/repositories/orders_repo.dart';
 import '../data_source/remote/orders_remote_data_source.dart';
@@ -16,8 +17,9 @@ import '../models/responses/orders_response/orders_response.dart';
 @Injectable(as: OrdersRepo)
 class OrdersRepoImpl implements OrdersRepo {
   final OrdersRemoteDataSource _ordersRemoteDataSource;
+  final OrdersFirebaseDataSource _ordersFirebaseDataSource;
 
-  OrdersRepoImpl(this._ordersRemoteDataSource);
+  OrdersRepoImpl(this._ordersRemoteDataSource, this._ordersFirebaseDataSource);
 
   @override
   Future<Result<OrdersEntity>> getAllPendingOrders() async {
@@ -32,25 +34,10 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<OrderEntity?> getActiveOrderIfExist(String driverId) async {
-    final result = await getActiveOrder(driverId);
-
-    if (result is Success<OrderEntity>) {
-      return result.data;
-    }
-    return null;
-  }
-
-  @override
   Future<Result<bool>> acceptOrder(
     OrderEntity selectedOrder,
     String driverId,
   ) async {
-    // Convert to Firestore model for saving
-    debugPrint(
-      "shipping address before mapping : =====> ${selectedOrder.shippingAddress.city}",
-    );
-
     final firestoreModel = ActiveOrderFirestoreResponse(
       id: selectedOrder.id,
       user: selectedOrder.user.toModel(),
@@ -78,30 +65,18 @@ class OrdersRepoImpl implements OrdersRepo {
           : null,
     );
 
-    debugPrint(
-      "shipping address after mapping: =====> ${firestoreModel.shippingAddress?.city}",
-    );
-
-    final result = await _ordersRemoteDataSource.saveActiveOrder(
+    final result = await _ordersFirebaseDataSource.saveActiveOrder(
       selectedOrder.id,
       firestoreModel.toJson(),
     );
 
     if (result is Success) {
-      // Notification logic for acceptance
-      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
-        selectedOrder.user.id,
+      await _sendNotification(
+        userId: selectedOrder.user.id,
+        title: "Order Accepted",
+        body:
+            "Your order #${selectedOrder.orderNumber} has been accepted by the driver",
       );
-
-      if (fcmResult is Success<String?> && fcmResult.data != null) {
-        final fcmToken = fcmResult.data!;
-        await _ordersRemoteDataSource.sendPushNotification(
-          fcmToken: fcmToken,
-          title: "Order Accepted",
-          body:
-              "Your order #${selectedOrder.orderNumber} has been accepted by the driver",
-        );
-      }
     }
 
     switch (result) {
@@ -114,7 +89,7 @@ class OrdersRepoImpl implements OrdersRepo {
 
   @override
   Future<Result<OrderEntity>> getActiveOrder(String driverId) async {
-    final result = await _ordersRemoteDataSource.getActiveOrder(driverId);
+    final result = await _ordersFirebaseDataSource.getActiveOrder(driverId);
 
     switch (result) {
       case Success():
@@ -126,7 +101,9 @@ class OrdersRepoImpl implements OrdersRepo {
 
   @override
   Stream<OrderEntity?> listenToActiveOrder(String orderId) {
-    return _ordersRemoteDataSource.listenToActiveOrder(orderId).map((response) {
+    return _ordersFirebaseDataSource.listenToActiveOrder(orderId).map((
+      response,
+    ) {
       return response?.toEntity();
     });
   }
@@ -144,26 +121,36 @@ class OrdersRepoImpl implements OrdersRepo {
       updateData[FireStoreFieldName.isActive] = isActive;
     }
 
-    final result = await _ordersRemoteDataSource.updateOrderStatus(
+    final result = await _ordersFirebaseDataSource.updateOrderStatus(
       order.id,
       updateData,
     );
 
     if (result is Success) {
-      // Notification logic
-      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
-        order.user.id,
+      await _sendNotification(
+        userId: order.user.id,
+        title: "Order Update",
+        body: "Your order #${order.orderNumber} is now $status",
       );
-
-      if (fcmResult is Success<String?> && fcmResult.data != null) {
-        final fcmToken = fcmResult.data!;
-        await _ordersRemoteDataSource.sendPushNotification(
-          fcmToken: fcmToken,
-          title: "Order Update",
-          body: "Your order #${order.orderNumber} is now $status",
-        );
-      }
     }
     return result;
+  }
+
+  Future<void> _sendNotification({
+    required String userId,
+    required String title,
+    required String body,
+  }) async {
+    final fcmResult = await _ordersFirebaseDataSource.getUserFcmToken(userId);
+
+    CustomLogger.white("FCM Result: ${fcmResult}");
+
+    if (fcmResult is Success<String?> && fcmResult.data != null) {
+      await _ordersFirebaseDataSource.sendPushNotification(
+        fcmToken: fcmResult.data!,
+        title: title,
+        body: body,
+      );
+    }
   }
 }

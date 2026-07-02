@@ -13,6 +13,7 @@
   "passwordTooShort": "Password must be at least 6 characters",
   "passwordValid": "Password must contain uppercase, lowercase, number, and special character",
   "confirmPassword": "Confirm Password",
+  "confirmNewPassword": "Confirm New Password",
   "confirmPasswordRequired": "Please confirm your password",
   "passwordsNotMatch": "Passwords do not match",
   "phoneRequired": "Phone number is required",
@@ -104,7 +105,6 @@
   "changePassword": "Change Password",
   "profileEditedSuccessfully": "Profile Edited Successfully",
   "vehicleEditedSuccessfully": "Vehicle Edited Successfully",
-  "vehicleType": "Vehicle Type",
   "enterVehicleType": "Enter Vehicle Type",
   "vehicleNumber": "Vehicle Number",
   "enterVehicleNumber": "Enter Vehicle Number",
@@ -129,8 +129,8 @@
   "currentPassword":"Current Password",
   "update":"update",
   "oldAndNewPasswordSame": "The new password must be different from the current password",
-  "confirm": "Confirm",
   "orderDetails" : "Order details",
+  "noActiveOrderFound" : "No active order found",
   "status" : "Status :",
   "orderId" : "Order ID : # ",
   "pickupAddress" : "Pickup address",
@@ -143,10 +143,8 @@
   "outForDelivery" : "Out for delivery",
   "arrived" : "Arrived",
   "delivered" : "Delivered",
-
   "arrivedAtPickupPoint" : "Arrived at Pickup point",
   "startDeliver" : "Start deliver",
   "arrivedToTheUser" : "Arrived to the user",
   "deliveredToTheUser" : "Delivered to the user"
-
 }
