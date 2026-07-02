@@ -1,8 +1,10 @@
 import 'dart:async';
+
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/driver/manager/driver_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../config/di/di.dart';
 import '../../../../../config/driver/manager/driver_events.dart';
 import '../../../../../config/route_manager/routes.dart';
@@ -10,6 +12,9 @@ import '../../../../../config/secure_cache/secure_cache/cache_keys.dart';
 import '../../../../../config/secure_cache/secure_cache/secure_cache.dart';
 import '../../../../../core/shared_widgets/svg_wrapper.dart';
 import '../../../../../core/utils/app_assets.dart';
+import '../../manager/splash_cubit/spalsh_events.dart';
+import '../../manager/splash_cubit/splash_cubit.dart';
+import '../../manager/splash_cubit/splash_state.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,12 +30,14 @@ class _SplashScreenState extends State<SplashScreen>
 
   final Completer<void> _animationDone = Completer<void>();
   final Completer<bool> _dataResult = Completer<bool>();
+  final Completer<void> _acceptedOrderDone = Completer<void>();
 
-  bool _stopNavigation = false;
+  late final SplashCubit splashCubit;
 
   @override
   void initState() {
     super.initState();
+    splashCubit = context.read<SplashCubit>();
     _setupAnimation();
     _checkUser();
     _waitAndNavigate();
@@ -68,21 +75,29 @@ class _SplashScreenState extends State<SplashScreen>
       if (!_dataResult.isCompleted) {
         _dataResult.complete(false);
       }
+      if (!_acceptedOrderDone.isCompleted) {
+        _acceptedOrderDone.complete();
+      }
     }
   }
 
-  void _waitAndNavigate() async {
+  Future<void> _waitAndNavigate() async {
     final results = await Future.wait([
       _animationDone.future,
       _dataResult.future,
+      _acceptedOrderDone.future,
     ]);
 
-    if (!mounted || _stopNavigation) return;
+    if (!mounted) return;
 
     final isSuccess = results[1] as bool;
 
     if (isSuccess) {
-      _replaceTo(Routes.bottomNavBarRoute);
+      if (splashCubit.state.acceptedOrder != null) {
+        _replaceTo(Routes.activeOrderDetails);
+      } else {
+        _replaceTo(Routes.bottomNavBarRoute);
+      }
     } else {
       _replaceTo(Routes.onboardingRoute);
     }
@@ -102,25 +117,41 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<DriverCubit, DriverState>(
-        listener: (context, state) {
-          if (state.isUnauthorized) {
-            _stopNavigation = true;
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<DriverCubit, DriverState>(
+            listener: (context, state) {
+              if (state.isUnauthorized) {
+                if (!_dataResult.isCompleted) {
+                  _dataResult.complete(false);
+                }
+                if (!_acceptedOrderDone.isCompleted) {
+                  _acceptedOrderDone.complete();
+                }
+                return;
+              }
 
-            if (!_dataResult.isCompleted) {
-              _dataResult.complete(false);
-            }
-            return;
-          }
+              if (_dataResult.isCompleted) return;
 
-          if (_dataResult.isCompleted) return;
-
-          if (state.driver != null) {
-            _dataResult.complete(true);
-          } else if (state.error != null) {
-            _dataResult.complete(false);
-          }
-        },
+              if (state.driver != null) {
+                splashCubit.doIntent(GetAcceptedOrder(state.driver!.id!));
+                _dataResult.complete(true);
+              } else if (state.error != null) {
+                _dataResult.complete(false);
+                if (!_acceptedOrderDone.isCompleted) {
+                  _acceptedOrderDone.complete();
+                }
+              }
+            },
+          ),
+          BlocListener<SplashCubit, SplashState>(
+            listener: (context, state) {
+              if (!state.isLoading && !_acceptedOrderDone.isCompleted) {
+                _acceptedOrderDone.complete();
+              }
+            },
+          ),
+        ],
         child: Center(
           child: FadeTransition(
             opacity: _fadeAnimation,

@@ -125,5 +125,28 @@
   "failedToLoadProfile": "Failed to load profile",
   "error": "Error",
   "currentLang": "Current Language",
-  "areYouSureYouWantToLogout": "Are you sure you want to logout?"
+  "areYouSureYouWantToLogout": "Are you sure you want to logout?",
+  "currentPassword":"Current Password",
+  "update":"update",
+  "oldAndNewPasswordSame": "The new password must be different from the current password",
+  "confirm": "Confirm",
+  "orderDetails" : "Order details",
+  "status" : "Status :",
+  "orderId" : "Order ID : # ",
+  "pickupAddress" : "Pickup address",
+  "userAddress" : "User address",
+  "egp" : "EGP",
+  "total" : "Total",
+  "paymentMethod" : "Payment method",
+  "accepted" : "Accepted",
+  "picked" : "Picked",
+  "outForDelivery" : "Out for delivery",
+  "arrived" : "Arrived",
+  "delivered" : "Delivered",
+
+  "arrivedAtPickupPoint" : "Arrived at Pickup point",
+  "startDeliver" : "Start deliver",
+  "arrivedToTheUser" : "Arrived to the user",
+  "deliveredToTheUser" : "Delivered to the user"
+
 }

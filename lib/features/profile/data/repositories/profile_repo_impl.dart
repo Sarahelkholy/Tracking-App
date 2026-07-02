@@ -8,16 +8,47 @@ import 'package:flower_driver/features/profile/data/models/response/edit_profile
 import 'package:flower_driver/features/profile/data/models/response/upload_profile_photo_response.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/driver_data_entity.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';
+import 'package:flower_driver/features/profile/data/models/response/change_password_response.dart';
+import 'package:flower_driver/features/profile/domain/entities/change_password/change_password_request_entity.dart';
 import 'package:flower_driver/features/profile/domain/repositories/profile_repo.dart';
 import 'package:injectable/injectable.dart';
+import '../../../../config/cache/secure_cache/secure_cache_helper.dart';
+import '../../../../config/secure_cache/secure_cache/cache_keys.dart';
+import '../mapper/change_password_response_mapper.dart';
 
 @Injectable(as: ProfileRepo)
 class ProfileRepoImpl implements ProfileRepo {
-  final ProfileRemoteDataSource profileRemoteDataSource;
-  ProfileRepoImpl({required this.profileRemoteDataSource});
+  final ProfileRemoteDataSource _dataSource;
+  ProfileRepoImpl(this._dataSource);
+  @override
+  Future<Result<ChangePasswordEntity>> changePassword({
+    required String password,
+    required String newPassword,
+  }) async {
+    final response = await _dataSource.changePassword(
+      password: password,
+      newPassword: newPassword,
+    );
+    switch (response) {
+      case Success<ChangePasswordResponse>():
+        final entity = response.data.toEntity();
+        if (entity.token != null && entity.token!.isNotEmpty) {
+          await SecureCacheHelper.saveData(
+            key: CacheKeys.token,
+            value: entity.token!,
+          );
+        }
+
+        return Success(data: entity);
+
+      case Failure<ChangePasswordResponse>():
+        return Failure(errorMessage: response.errorMessage);
+    }
+  }
+
   @override
   Future<Result<ProfileDriverEntity>> getDriverData() async {
-    final result = await profileRemoteDataSource.getDriverData();
+    final result = await _dataSource.getDriverData();
 
     switch (result) {
       case Success<DriverDataResponse>():
@@ -34,7 +65,7 @@ class ProfileRepoImpl implements ProfileRepo {
 
   @override
   Future<Result<EditProfileEntity>> editProfile(EditProfileRequest body) async {
-    final result = await profileRemoteDataSource.editProfile(body);
+    final result = await _dataSource.editProfile(body);
     switch (result) {
       case Success<EditProfileResponse>():
         return Success(
@@ -53,7 +84,7 @@ class ProfileRepoImpl implements ProfileRepo {
     String id,
     dynamic body,
   ) async {
-    final result = await profileRemoteDataSource.updateVehicle(id, body);
+    final result = await _dataSource.updateVehicle(id, body);
     switch (result) {
       case Success<DriverDataResponse>():
         return Success(
@@ -69,7 +100,7 @@ class ProfileRepoImpl implements ProfileRepo {
 
   @override
   Future<Result<UploadProfilePhotoResponse>> uploadPhoto(File photo) async {
-    final result = await profileRemoteDataSource.uploadPhoto(photo);
+    final result = await _dataSource.uploadPhoto(photo);
     switch (result) {
       case Success<UploadProfilePhotoResponse>():
         return Success(

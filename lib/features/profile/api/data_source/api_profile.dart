@@ -3,15 +3,18 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flower_driver/core/values/api_end_points.dart';
-import 'package:flower_driver/features/profile/data/models/request/edit_profile_request.dart';
-import 'package:flower_driver/features/profile/data/models/response/driver_data_response.dart';
-import 'package:flower_driver/features/profile/data/models/response/edit_profile_response.dart';
 import 'package:flower_driver/features/profile/data/models/response/upload_profile_photo_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../../data/models/request/change_password_request.dart';
+import '../../data/models/request/edit_profile_request.dart';
+import '../../data/models/response/change_password_response.dart';
+import '../../data/models/response/driver_data_response.dart';
+import '../../data/models/response/edit_profile_response.dart';
 part 'api_profile.g.dart';
 
-@injectable
+@lazySingleton
 @RestApi()
 abstract class ApiProfile {
   @factoryMethod
@@ -22,6 +25,11 @@ abstract class ApiProfile {
     @Part(name: "photo") File photo,
   );
 
+  ///? Change password
+  @PATCH(ApiEndPoints.changePassword)
+  Future<ChangePasswordResponse> changePassword(
+    @Body() ChangePasswordRequest changePasswordRequest,
+  );
   @GET(ApiEndPoints.getDriverData)
   Future<DriverDataResponse> getDriverData();
 

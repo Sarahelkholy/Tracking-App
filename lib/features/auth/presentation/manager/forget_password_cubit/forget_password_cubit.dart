@@ -60,7 +60,11 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
           state.copyWith(sendEmailStateParam: const BaseState(isSuccess: true)),
         );
         emitEvent(
-          const NavigationEvent(routeName: Routes.passwordVerifyOtpRoute),
+          NavigationEvent(
+            routeName: Routes.passwordVerifyOtpRoute,
+            type: NavigationType.push,
+            arguments: this,
+          ),
         );
 
       case Failure():
@@ -83,7 +87,13 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
         emit(
           state.copyWith(verifyOtpStateParam: const BaseState(isSuccess: true)),
         );
-        emitEvent(const NavigationEvent(routeName: Routes.resetPasswordRoute));
+        emitEvent(
+          NavigationEvent(
+            routeName: Routes.resetPasswordRoute,
+            type: NavigationType.push,
+            arguments: this,
+          ),
+        );
 
       case Failure():
         emit(
@@ -144,7 +154,12 @@ class ForgetPasswordCubit extends BaseCubit<ForgetPasswordState, BaseEvent> {
             successMsg: "Password Changed Successfully",
           ),
         );
-        // emitEvent(const NavigationEvent(routeName: Routes.loginRoute));
+        emitEvent(
+          const NavigationEvent(
+            routeName: Routes.loginRoute,
+            type: NavigationType.popUntil,
+          ),
+        );
 
       case Failure():
         emit(

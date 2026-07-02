@@ -11,4 +11,8 @@ abstract class AppAssets {
 
   static const String onboardingAnimationImage =
       "$_baseImagesPath/onboarding_animation.json";
+
+  static const String userTestImage = "$_baseImagesPath/user_test_image.png";
+  static const String storeImage = "$_baseImagesPath/store_image.png";
+  static const String whatsAppIcon = "$_baseIconsPath/whats_app_icon.svg";
 }

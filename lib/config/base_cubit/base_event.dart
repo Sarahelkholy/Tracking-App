@@ -16,6 +16,20 @@ class DisplaySuccessEvent extends BaseEvent {
 
 class NavigationEvent extends BaseEvent {
   final String routeName;
+  final NavigationType type;
+  final Object? arguments;
 
-  const NavigationEvent({required this.routeName});
+  const NavigationEvent({
+    required this.routeName,
+    required this.type,
+    this.arguments,
+  });
+}
+
+enum NavigationType {
+  push,
+  pushReplacement,
+  pushReplacementAndRemoveUntil,
+  pop,
+  popUntil,
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
@@ -32,8 +33,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _vehicleTypeController = TextEditingController();
   final _vehicleNumberController = TextEditingController();
 
-  // String _selectedGender = 'Male';
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +49,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _phoneController.text = driver?.phone ?? '';
       _vehicleTypeController.text = driver?.vehicleType ?? '';
       _vehicleNumberController.text = driver?.vehicleNumber ?? '';
-      // _selectedGender = driver?.gender ?? 'Male';
     }
   }
 
@@ -128,17 +126,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: Stack(
                       children: [
                         InkWell(
-                          onTap: () {
-                            ImagePicker()
-                                .pickImage(source: ImageSource.gallery)
-                                .then((result) {
-                                  if (result != null) {
-                                    final file = File(result.path);
-                                    context.read<ProfileCubit>().handleIntent(
-                                      UploadProfilePhotoIntent(file),
-                                    );
-                                  }
-                                });
+                          onTap: () async {
+                            final result = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (result != null) {
+                              final file = File(result.path);
+                              if (!context.mounted) return;
+                              context.read<ProfileCubit>().handleIntent(
+                                UploadProfilePhotoIntent(file),
+                              );
+                            }
                           },
                           child: CircleAvatar(
                             backgroundImage:
@@ -233,7 +230,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hint: local.password,
                     obscureText: true,
                     suffixIcon: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.changPasswordRoute);
+                      },
                       child: Text(
                         local.changePassword,
                         style: AppTextStyles.regular14(
@@ -241,7 +240,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ).copyWith(color: AppColors.primaryColor),
                       ),
                     ),
-                    validator: (v) => null, // Optional unless changing
+                    validator: (v) => null,
                   ),
                   const SizedBox(height: 32),
                   CustomButton(

@@ -5,20 +5,26 @@ import 'package:flower_driver/core/shared_widgets/custom_bottom_nav.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/auth/presentation/manager/login/login_cubit.dart';
 import 'package:flower_driver/features/auth/presentation/manager/logout/logout_cubit.dart';
-import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
-import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_enter_email_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_reset_password_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
+import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
+import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
 import 'package:flower_driver/features/profile/presentation/pages/profile_screen.dart';
+import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
+import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
+import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
+import '../../features/auth/presentation/manager/splash_cubit/splash_cubit.dart';
 import '../../features/auth/presentation/pages/apply/apply_page.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
+import '../../features/profile/presentation/manager/change_password_cubit/change_password_cubit.dart';
+import '../../features/profile/presentation/pages/change_password/change_password_screen.dart';
 import '../../features/profile/presentation/manager/profile/profile_cubit.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
 
@@ -28,7 +34,13 @@ abstract class RouteGenerator {
       switch (settings.name) {
         /// Splash Screen
         case Routes.splashRoute:
-          return MaterialPageRoute(builder: (_) => const SplashScreen());
+          return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.splashRoute),
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<SplashCubit>(),
+              child: const SplashScreen(),
+            ),
+          );
 
         /// onboarding screen
         case Routes.onboardingRoute:
@@ -55,6 +67,7 @@ abstract class RouteGenerator {
         /// Forget Password - Enter Email
         case Routes.forgetPasswordRoute:
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.forgetPasswordRoute),
             builder: (_) => BlocProvider(
               create: (_) => getIt<ForgetPasswordCubit>(),
               child: const PasswordEnterEmailScreen(),
@@ -66,6 +79,7 @@ abstract class RouteGenerator {
           final cubit = settings.arguments as ForgetPasswordCubit;
 
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.passwordVerifyOtpRoute),
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const PasswordVerifyOtpScreen(),
@@ -77,6 +91,7 @@ abstract class RouteGenerator {
           final cubit = settings.arguments as ForgetPasswordCubit;
 
           return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.resetPasswordRoute),
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const PasswordResetPasswordScreen(),
@@ -115,6 +130,28 @@ abstract class RouteGenerator {
             builder: (_) => BlocProvider.value(
               value: cubit,
               child: const EditProfileScreen(),
+            ),
+          );
+
+         /// Change password
+         case Routes.changPasswordRoute:
+           return MaterialPageRoute(
+             builder: (_) => BlocProvider(
+               create: (_) => getIt<ChangePasswordCubit>(),
+               child: const ChangePasswordScreen(),
+             ),
+           );
+
+        /// orders
+        case Routes.ordersRoute:
+          return MaterialPageRoute(builder: (_) => const OrdersScreen());
+
+        /// active order details
+        case Routes.activeOrderDetails:
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<ActiveOrderCubit>(),
+              child: const ActiveOrderDetailsScreen(),
             ),
           );
 
