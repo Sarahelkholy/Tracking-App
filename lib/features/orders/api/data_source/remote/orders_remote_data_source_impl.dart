@@ -3,6 +3,7 @@ import 'package:flower_driver/config/firebase/firestore_collection.dart';
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
 import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/features/orders/data/models/responses/active_order_firestore_response.dart';
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../../config/error_handling/execute_api.dart';
 import '../../../../../config/error_handling/result.dart';
@@ -73,8 +74,8 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
     String orderId,
     Map<String, dynamic> data,
   ) async {
-    print(
-      "shipping address after mapping to json: =====> ${data[ 'shippingAddress']['city']}",
+    debugPrint(
+      "shipping address after mapping to json: =====> ${data['shippingAddress']['city']}",
     );
     return executeApi(
       () => _databaseService.setData(

@@ -3,6 +3,7 @@ import 'package:flower_driver/features/orders/data/mapper/active_order_firestore
 import 'package:flower_driver/features/orders/data/mapper/orders_mapper.dart';
 import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../config/error_handling/result.dart';
@@ -46,7 +47,7 @@ class OrdersRepoImpl implements OrdersRepo {
     String driverId,
   ) async {
     // Convert to Firestore model for saving
-    print(
+    debugPrint(
       "shipping address before mapping : =====> ${selectedOrder.shippingAddress.city}",
     );
 
@@ -77,10 +78,9 @@ class OrdersRepoImpl implements OrdersRepo {
           : null,
     );
 
-    print(
+    debugPrint(
       "shipping address after mapping: =====> ${firestoreModel.shippingAddress?.city}",
     );
-
 
     final result = await _ordersRemoteDataSource.saveActiveOrder(
       selectedOrder.id,
