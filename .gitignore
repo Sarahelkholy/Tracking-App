@@ -59,3 +59,4 @@ app.*.map.json
 /lib/core/localization/l10n/app_localizations_en.dart
 /lib/firebase_options.dart
 **/google-services.json
+/lib/secret_keys.dart
