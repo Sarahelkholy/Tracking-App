@@ -1,3 +1,4 @@
+import 'package:flower_driver/apply_screen.dart';
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/core/shared_widgets/custom_bottom_nav.dart';
@@ -5,6 +6,8 @@ import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_enter_email_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_reset_password_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
+import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
+import 'package:flower_driver/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/localization/l10n/app_localizations.dart';
@@ -64,6 +67,15 @@ abstract class RouteGenerator {
             builder: (_) =>
                 CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
+
+        case Routes.onboardingRoute:
+          return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+
+        case Routes.loginRoute:
+          return MaterialPageRoute(builder: (_) => const LoginScreen());
+
+        case Routes.applyRoute:
+          return MaterialPageRoute(builder: (_) => const ApplyScreen());
 
         /// Default
         default:

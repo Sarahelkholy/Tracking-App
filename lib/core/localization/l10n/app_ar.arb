@@ -58,5 +58,8 @@
   "enterYourPassword": "أدخل كلمة المرور",
   "confirmPassword": "تأكيد كلمة المرور",
   "enterConfirmPassword": "أدخل تأكيد كلمة المرور",
-  "confirm": "تأكيد"
+  "confirm": "تأكيد",
+  "error504": "انتهاء مهلة البوابة",
+  "defaultError": "حدث خطأ ما",
+  "applyNow":"انشاء حساب"
 }

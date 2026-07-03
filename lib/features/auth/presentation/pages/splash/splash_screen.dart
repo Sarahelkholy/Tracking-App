@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
+import 'package:flower_driver/config/driver/manager/driver_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../config/di/di.dart';
-import '../../../../../config/driver/manager/driver_cubit.dart';
 import '../../../../../config/driver/manager/driver_events.dart';
-import '../../../../../config/driver/manager/driver_state.dart';
 import '../../../../../config/route_manager/routes.dart';
 import '../../../../../config/secure_cache/secure_cache/cache_keys.dart';
 import '../../../../../config/secure_cache/secure_cache/secure_cache.dart';
@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _setupAnimation();
-    _checkDriver();
+    _checkUser();
     _waitAndNavigate();
   }
 
@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  void _checkDriver() async {
+  void _checkUser() async {
     final cubit = context.read<DriverCubit>();
     final secureCache = getIt<SecureCache>();
 
@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (isSuccess) {
       _replaceTo(Routes.bottomNavBarRoute);
     } else {
-      _replaceTo(Routes.loginRoute);
+      _replaceTo(Routes.onboardingRoute);
     }
   }
 

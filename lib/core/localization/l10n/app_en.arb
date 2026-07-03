@@ -58,7 +58,9 @@
   "enterYourPassword" : "Enter Your Password",
   "confirmPassword" : "Confirm Password",
   "enterConfirmPassword" : "Enter Confirm Password",
-  "confirm" : "Confirm"
+  "confirm" : "Confirm",
 
 
+  "onboardingText":"Welcome to\nFlowery rider app",
+  "applyNow":"Apply now"
 }

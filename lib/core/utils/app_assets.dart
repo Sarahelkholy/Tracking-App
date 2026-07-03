@@ -8,4 +8,7 @@ abstract class AppAssets {
   static const String personIcon = "$_baseIconsPath/personIcon.svg";
 
   static const String testImage = "$_baseImagesPath/Image_test.png";
+
+  static const String onboardingAnimationImage =
+      "$_baseImagesPath/onboarding_animation.json";
 }
