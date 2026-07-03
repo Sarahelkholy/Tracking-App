@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
+import 'package:flower_driver/config/driver/manager/driver_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../config/di/di.dart';
-import '../../../../../config/driver/manager/driver_cubit.dart';
 import '../../../../../config/driver/manager/driver_events.dart';
-import '../../../../../config/driver/manager/driver_state.dart';
 import '../../../../../config/route_manager/routes.dart';
 import '../../../../../config/secure_cache/secure_cache/cache_keys.dart';
 import '../../../../../config/secure_cache/secure_cache/secure_cache.dart';
@@ -25,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   final Completer<void> _animationDone = Completer<void>();
   final Completer<bool> _dataResult = Completer<bool>();
-  final Completer<bool> _onboardingResult = Completer<bool>();
 
   bool _stopNavigation = false;
 
@@ -33,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _setupAnimation();
-    _checkDriverAndOnboarding();
+    _checkUser();
     _waitAndNavigate();
   }
 
@@ -54,21 +53,9 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  void _checkDriverAndOnboarding() async {
+  void _checkUser() async {
     final cubit = context.read<DriverCubit>();
     final secureCache = getIt<SecureCache>();
-
-    final hasSeenOnboarding = await secureCache.getData(
-      key: CacheKeys.hasSeenOnboarding,
-    );
-
-    if (hasSeenOnboarding != 'true') {
-      _onboardingResult.complete(false);
-      _dataResult.complete(false);
-      return;
-    } else {
-      _onboardingResult.complete(true);
-    }
 
     final token = await secureCache.getData(key: CacheKeys.token);
     final rememberMe = await secureCache.getData(key: CacheKeys.rememberMe);
@@ -88,20 +75,16 @@ class _SplashScreenState extends State<SplashScreen>
     final results = await Future.wait([
       _animationDone.future,
       _dataResult.future,
-      _onboardingResult.future,
     ]);
 
     if (!mounted || _stopNavigation) return;
 
     final isSuccess = results[1] as bool;
-    final hasSeenOnboarding = results[2] as bool;
 
-    if (!hasSeenOnboarding) {
-      _replaceTo(Routes.onboardingRoute);
-    } else if (isSuccess) {
+    if (isSuccess) {
       _replaceTo(Routes.bottomNavBarRoute);
     } else {
-      _replaceTo(Routes.loginRoute);
+      _replaceTo(Routes.onboardingRoute);
     }
   }
 
