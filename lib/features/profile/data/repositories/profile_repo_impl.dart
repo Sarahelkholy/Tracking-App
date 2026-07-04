@@ -78,9 +78,9 @@ class ProfileRepoImpl implements ProfileRepo {
 
   @override
   Future<Result<ProfileDriverEntity>> updateVehicle(
-      String id,
-      dynamic body,
-      ) async {
+    String id,
+    dynamic body,
+  ) async {
     final result = await _dataSource.updateVehicle(id, body);
     switch (result) {
       case Success<DriverDataResponse>():

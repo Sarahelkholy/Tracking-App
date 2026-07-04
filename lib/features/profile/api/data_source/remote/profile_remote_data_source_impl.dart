@@ -12,10 +12,8 @@ import '../api_profile.dart';
 
 @Injectable(as: ProfileRemoteDataSource)
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
-
   final ApiProfile _apiClient;
   ProfileRemoteDataSourceImpl(this._apiClient);
-
 
   /////? Change password
   @override
@@ -25,10 +23,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }) {
     return executeApi(() async {
       final response = await _apiClient.changePassword(
-        ChangePasswordRequest(
-          password: password,
-          newPassword: newPassword,
-        ),
+        ChangePasswordRequest(password: password, newPassword: newPassword),
       );
       return response;
     });

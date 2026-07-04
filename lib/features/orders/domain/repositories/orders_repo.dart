@@ -11,6 +11,9 @@ abstract interface class OrdersRepo {
 
   Stream<OrderEntity?> listenToActiveOrder(String orderId);
 
-  Future<Result<void>> updateOrderStatus(OrderEntity order, String status,
-      {bool? isActive});
+  Future<Result<void>> updateOrderStatus(
+    OrderEntity order,
+    String status, {
+    bool? isActive,
+  });
 }

@@ -18,9 +18,7 @@ void main() {
 
   setUpAll(() {
     provideDummy<Result<ChangePasswordResponse>>(
-      Success(
-        data: ChangePasswordResponse(),
-      ),
+      Success(data: ChangePasswordResponse()),
     );
   });
 
@@ -30,90 +28,68 @@ void main() {
   });
 
   group('Change Password Repo Tests', () {
-    test(
-      'should return Success when datasource returns success',
-          () async {
+    test('should return Success when datasource returns success', () async {
+      final response = ChangePasswordResponse(
+        message: 'Password changed successfully',
+        token: '',
+      );
 
-        final response = ChangePasswordResponse(
-          message: 'Password changed successfully',
-          token: '',
-        );
+      when(
+        mockRemoteDataSource.changePassword(
+          password: anyNamed('password'),
+          newPassword: anyNamed('newPassword'),
+        ),
+      ).thenAnswer(
+        (_) async => Success<ChangePasswordResponse>(data: response),
+      );
 
-        when(
-          mockRemoteDataSource.changePassword(
-            password: anyNamed('password'),
-            newPassword: anyNamed('newPassword'),
-          ),
-        ).thenAnswer(
-              (_) async => Success<ChangePasswordResponse>(
-            data: response,
-          ),
-        );
+      final result = await repo.changePassword(
+        password: 'oldPassword',
+        newPassword: 'newPassword',
+      );
 
-        final result = await repo.changePassword(
+      expect(result, isA<Success<ChangePasswordEntity>>());
+
+      verify(
+        mockRemoteDataSource.changePassword(
           password: 'oldPassword',
           newPassword: 'newPassword',
-        );
+        ),
+      ).called(1);
 
+      verifyNoMoreInteractions(mockRemoteDataSource);
+    });
 
-        expect(
-          result,
-          isA<Success<ChangePasswordEntity>>(),
-        );
+    test('should return Failure when datasource returns failure', () async {
+      when(
+        mockRemoteDataSource.changePassword(
+          password: anyNamed('password'),
+          newPassword: anyNamed('newPassword'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            Failure<ChangePasswordResponse>(errorMessage: 'Invalid password'),
+      );
 
-        verify(
-          mockRemoteDataSource.changePassword(
-            password: 'oldPassword',
-            newPassword: 'newPassword',
-          ),
-        ).called(1);
+      final result = await repo.changePassword(
+        password: 'oldPassword',
+        newPassword: 'newPassword',
+      );
 
-        verifyNoMoreInteractions(mockRemoteDataSource);
-      },
-    );
+      expect(result, isA<Failure<ChangePasswordEntity>>());
 
-    test(
-      'should return Failure when datasource returns failure',
-          () async {
+      final failure = result as Failure<ChangePasswordEntity>;
 
-        when(
-          mockRemoteDataSource.changePassword(
-            password: anyNamed('password'),
-            newPassword: anyNamed('newPassword'),
-          ),
-        ).thenAnswer(
-              (_) async => Failure<ChangePasswordResponse>(
-            errorMessage: 'Invalid password',
-          ),
-        );
+      expect(failure.errorMessage, 'Invalid password');
 
-        final result = await repo.changePassword(
+      verify(
+        mockRemoteDataSource.changePassword(
           password: 'oldPassword',
           newPassword: 'newPassword',
-        );
+        ),
+      ).called(1);
 
-
-        expect(
-          result,
-          isA<Failure<ChangePasswordEntity>>(),
-        );
-
-        final failure = result as Failure<ChangePasswordEntity>;
-
-        expect(
-          failure.errorMessage,
-          'Invalid password',
-        );
-
-        verify(
-          mockRemoteDataSource.changePassword(
-            password: 'oldPassword',
-            newPassword: 'newPassword',
-          ),
-        ).called(1);
-
-        verifyNoMoreInteractions(mockRemoteDataSource);
-      },
-    );
+      verifyNoMoreInteractions(mockRemoteDataSource);
+    });
   });
 }

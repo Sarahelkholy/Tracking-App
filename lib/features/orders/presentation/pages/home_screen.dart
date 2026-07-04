@@ -37,11 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.pendingOrdersState.errorMessage != null) {
-            return Center(
-              child: Text(
-                state.pendingOrdersState.errorMessage!,
-              ),
-            );
+            return Center(child: Text(state.pendingOrdersState.errorMessage!));
           }
           final orders = state.pendingOrdersState.data?.orders;
           if (orders == null || orders.isEmpty) {

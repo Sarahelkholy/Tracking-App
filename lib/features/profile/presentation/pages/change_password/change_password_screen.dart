@@ -42,10 +42,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
         case NavigationEvent():
           if (!mounted) return;
-          Navigator.pushReplacementNamed(
-            context,
-            event.routeName,
-          );
+          Navigator.pushReplacementNamed(context, event.routeName);
       }
     });
   }

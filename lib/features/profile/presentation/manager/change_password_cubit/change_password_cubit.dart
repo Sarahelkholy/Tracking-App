@@ -43,16 +43,10 @@ class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
       case Success<ChangePasswordEntity>():
         emit(
           state.copyWith(
-            changePasswordStateParam: const BaseState(
-              isSuccess: true,
-            ),
+            changePasswordStateParam: const BaseState(isSuccess: true),
           ),
         );
-        emitEvent(
-          DisplaySuccessEvent(
-            successMsg: result.data.message??"",
-          ),
-        );
+        emitEvent(DisplaySuccessEvent(successMsg: result.data.message ?? ""));
 
         emitEvent(
           const NavigationEvent(
@@ -70,11 +64,7 @@ class ChangePasswordCubit extends BaseCubit<ChangePasswordState, BaseEvent> {
             ),
           ),
         );
-        emitEvent(
-          DisplayErrorEvent(
-            errorMsg: result.errorMessage,
-          ),
-        );
+        emitEvent(DisplayErrorEvent(errorMsg: result.errorMessage));
         break;
     }
   }

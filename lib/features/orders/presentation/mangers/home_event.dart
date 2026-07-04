@@ -1,4 +1,3 @@
-
 import '../../domain/entities/order_entity.dart';
 
 sealed class HomeEvent {}

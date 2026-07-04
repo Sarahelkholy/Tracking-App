@@ -9,7 +9,7 @@ class ChangePasswordRequest {
   @JsonKey(name: "newPassword")
   final String? newPassword;
 
-  ChangePasswordRequest({ this.password, this.newPassword});
+  ChangePasswordRequest({this.password, this.newPassword});
 
   factory ChangePasswordRequest.fromJson(Map<String, dynamic> json) {
     return _$ChangePasswordRequestFromJson(json);

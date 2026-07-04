@@ -61,8 +61,10 @@ extension ActiveOrderFirestoreResponseMapper on ActiveOrderFirestoreResponse {
           : OrderStatusEnum.pending,
       currentLocation: driverLocation != null
           ? Position(
-              longitude: (driverLocation?['longitude'] as num?)?.toDouble() ?? 0.0,
-              latitude: (driverLocation?['latitude'] as num?)?.toDouble() ?? 0.0,
+              longitude:
+                  (driverLocation?['longitude'] as num?)?.toDouble() ?? 0.0,
+              latitude:
+                  (driverLocation?['latitude'] as num?)?.toDouble() ?? 0.0,
               timestamp: DateTime.now(),
               accuracy: 0.0,
               altitude: 0.0,

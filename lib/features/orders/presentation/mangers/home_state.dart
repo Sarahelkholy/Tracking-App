@@ -13,7 +13,10 @@ class HomeState extends Equatable {
   final BaseState<OrdersEntity> pendingOrdersState;
   final BaseState<OrderEntity> selectedOrder;
 
-  HomeState copyWith({BaseState<OrdersEntity>? pendingOrdersState , BaseState<OrderEntity>? selectedOrder}) {
+  HomeState copyWith({
+    BaseState<OrdersEntity>? pendingOrdersState,
+    BaseState<OrderEntity>? selectedOrder,
+  }) {
     return HomeState(
       pendingOrdersState: pendingOrdersState ?? this.pendingOrdersState,
       selectedOrder: selectedOrder ?? this.selectedOrder,

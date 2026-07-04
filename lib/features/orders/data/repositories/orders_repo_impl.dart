@@ -19,8 +19,7 @@ class OrdersRepoImpl implements OrdersRepo {
   final OrdersRemoteDataSource _ordersRemoteDataSource;
   final OrdersFirebaseDataSource _ordersFirebaseDataSource;
 
-  OrdersRepoImpl(this._ordersRemoteDataSource,
-      this._ordersFirebaseDataSource,);
+  OrdersRepoImpl(this._ordersRemoteDataSource, this._ordersFirebaseDataSource);
 
   @override
   Future<Result<OrdersEntity>> getAllPendingOrders() async {
@@ -76,8 +75,7 @@ class OrdersRepoImpl implements OrdersRepo {
         userId: selectedOrder.user.id,
         title: "Order Accepted",
         body:
-        "Your order #${selectedOrder
-            .orderNumber} has been accepted by the driver",
+            "Your order #${selectedOrder.orderNumber} has been accepted by the driver",
       );
     }
 
@@ -104,7 +102,8 @@ class OrdersRepoImpl implements OrdersRepo {
   @override
   Stream<OrderEntity?> listenToActiveOrder(String orderId) {
     return _ordersFirebaseDataSource.listenToActiveOrder(orderId).map((
-        response,) {
+      response,
+    ) {
       return response?.toEntity();
     });
   }
@@ -144,7 +143,7 @@ class OrdersRepoImpl implements OrdersRepo {
   }) async {
     final fcmResult = await _ordersFirebaseDataSource.getUserFcmToken(userId);
 
-    CustomLogger.white("FCM Result: ${fcmResult}");
+    CustomLogger.white("FCM Result: $fcmResult");
 
     if (fcmResult is Success<String?> && fcmResult.data != null) {
       await _ordersFirebaseDataSource.sendPushNotification(

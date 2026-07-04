@@ -12,8 +12,8 @@ import 'package:mockito/mockito.dart';
 import 'profile_remote_data_source_impl_test.mocks.dart';
 
 @GenerateMocks([ApiProfile])
-void main(){
-  late   ProfileRemoteDataSourceImpl remoteDataSource;
+void main() {
+  late ProfileRemoteDataSourceImpl remoteDataSource;
   late MockApiProfile mockApiClient;
 
   setUpAll(() {
@@ -27,66 +27,46 @@ void main(){
 
   group("Change Password Test", () {
     test("Should return Success when API call succeeds", () async {
-
       final response = ChangePasswordResponse(
         message: "Password changed successfully",
         token: "123456",
       );
 
-      when(mockApiClient.changePassword(any),).thenAnswer((_) async => response);
-
-
-      final result = await remoteDataSource.changePassword(password: "oldPassword", newPassword: "newPassword",);
-
-      expect(result, isA<Success<ChangePasswordResponse>>());
-
-      final success = result as Success<ChangePasswordResponse>;
-
-      expect(
-        success.data.message,
-        "Password changed successfully",
-      );
-
-      verify(
-        mockApiClient.changePassword(
-          argThat(
-            isA<ChangePasswordRequest>()
-                .having(
-                  (e) => e.password,
-              'password',
-              'oldPassword',
-            )
-                .having(
-                  (e) => e.newPassword,
-              'newPassword',
-              'newPassword',
-            ),
-          ),
-        ),
-      ).called(1);
-    });
-
-    test("Should return Failure when API throws Exception", () async {
-
-      when(
-        mockApiClient.changePassword(any),
-      ).thenThrow(Exception());
-
+      when(mockApiClient.changePassword(any)).thenAnswer((_) async => response);
 
       final result = await remoteDataSource.changePassword(
         password: "oldPassword",
         newPassword: "newPassword",
       );
 
+      expect(result, isA<Success<ChangePasswordResponse>>());
 
-      expect(
-        result,
-        isA<Failure<ChangePasswordResponse>>(),
-      );
+      final success = result as Success<ChangePasswordResponse>;
+
+      expect(success.data.message, "Password changed successfully");
 
       verify(
-        mockApiClient.changePassword(any),
+        mockApiClient.changePassword(
+          argThat(
+            isA<ChangePasswordRequest>()
+                .having((e) => e.password, 'password', 'oldPassword')
+                .having((e) => e.newPassword, 'newPassword', 'newPassword'),
+          ),
+        ),
       ).called(1);
+    });
+
+    test("Should return Failure when API throws Exception", () async {
+      when(mockApiClient.changePassword(any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.changePassword(
+        password: "oldPassword",
+        newPassword: "newPassword",
+      );
+
+      expect(result, isA<Failure<ChangePasswordResponse>>());
+
+      verify(mockApiClient.changePassword(any)).called(1);
     });
   });
 }

@@ -115,14 +115,14 @@ abstract class RouteGenerator {
             ),
           );
 
-         /// Change password
-         case Routes.changPasswordRoute:
-           return MaterialPageRoute(
-             builder: (_) => BlocProvider(
-               create: (_) => getIt<ChangePasswordCubit>(),
-               child: const ChangePasswordScreen(),
-             ),
-           );
+        /// Change password
+        case Routes.changPasswordRoute:
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (_) => getIt<ChangePasswordCubit>(),
+              child: const ChangePasswordScreen(),
+            ),
+          );
 
         /// orders
         case Routes.ordersRoute:

@@ -70,16 +70,16 @@ class ApplyState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isSuccess,
-        errorMessage,
-        message,
-        driver,
-        token,
-        selectedCountry,
-        selectedVehicleType,
-        selectedGender,
-        vehicleLicensePath,
-        nidImagePath,
-      ];
+    isLoading,
+    isSuccess,
+    errorMessage,
+    message,
+    driver,
+    token,
+    selectedCountry,
+    selectedVehicleType,
+    selectedGender,
+    vehicleLicensePath,
+    nidImagePath,
+  ];
 }

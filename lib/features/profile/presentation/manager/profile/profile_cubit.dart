@@ -15,7 +15,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   final EditProfileUsecase _editProfileUsecase;
 
   ProfileCubit(this._getDriverDataUsecase, this._editProfileUsecase)
-      : super(const ProfileInitial());
+    : super(const ProfileInitial());
 
   void handleIntent(ProfileIntent intent) {
     switch (intent) {
