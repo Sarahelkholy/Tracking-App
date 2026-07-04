@@ -36,28 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
           if (state.pendingOrdersState.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
+          if (state.pendingOrdersState.errorMessage != null) {
+            return Center(
+              child: Text(
+                state.pendingOrdersState.errorMessage!,
+              ),
+            );
+          }
+          final orders = state.pendingOrdersState.data?.orders;
+          if (orders == null || orders.isEmpty) {
+            return const Center(child: Text('No pending orders available'));
+          }
           return SafeArea(
             child: ListView.builder(
-              itemCount: state.pendingOrdersState.data?.orders.length,
+              itemCount: orders.length,
               itemBuilder: (context, index) {
+                final order = orders[index];
                 return OrderCard(
-                  storeName:
-                      state.pendingOrdersState.data!.orders[index].store.name,
-                  storeAddress: state
-                      .pendingOrdersState
-                      .data!
-                      .orders[index]
-                      .shippingAddress
-                      .address,
-                  userName: state
-                      .pendingOrdersState
-                      .data!
-                      .orders[index]
-                      .user
-                      .firstName,
+                  storeName: order.store.name,
+                  storeAddress: order.shippingAddress.address,
+                  userName: order.user.firstName,
                   userAddress: '20th st, Sheikh Zayed, Giza',
-                  price: state.pendingOrdersState.data!.orders[index].totalPrice
-                      .toString(),
+                  price: order.totalPrice.toString(),
                   onAccept: () {
                     final driverId = context
                         .read<DriverCubit>()
@@ -66,8 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ?.id;
                     _homeCubit.doIntent(
                       SelectOrder(
-                        selectedOrder:
-                            state.pendingOrdersState.data!.orders[index],
+                        selectedOrder: order,
                         driverId: driverId ?? "",
                       ),
                     );

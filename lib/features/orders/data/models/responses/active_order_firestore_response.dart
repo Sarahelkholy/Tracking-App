@@ -22,7 +22,7 @@ class ActiveOrderFirestoreResponse {
   final DateTime? paidAt;
   final String? orderStatus;
   final String? driverId;
-  final Map<String, dynamic>? currentLocation;
+  final Map<String, dynamic>? driverLocation;
   final bool? isActive;
 
   ActiveOrderFirestoreResponse({
@@ -43,7 +43,7 @@ class ActiveOrderFirestoreResponse {
     this.paidAt,
     this.orderStatus,
     this.driverId,
-    this.currentLocation,
+    this.driverLocation,
     this.isActive,
   });
 
@@ -83,7 +83,7 @@ class ActiveOrderFirestoreResponse {
       paidAt: parseDate(json['paidAt']),
       orderStatus: json['orderStatus'] as String?,
       driverId: json['driverId'] as String?,
-      currentLocation: json['currentLocation'] as Map<String, dynamic>?,
+      driverLocation: json['driverLocation'] as Map<String, dynamic>?,
       isActive: json['isActive'] as bool?,
     );
   }
@@ -107,7 +107,7 @@ class ActiveOrderFirestoreResponse {
       'paidAt': paidAt?.toIso8601String(),
       'orderStatus': orderStatus,
       'driverId': driverId,
-      'currentLocation': currentLocation,
+      'driverLocation': driverLocation,
       'isActive': isActive,
     };
   }

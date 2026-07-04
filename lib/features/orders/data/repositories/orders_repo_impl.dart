@@ -58,7 +58,7 @@ class OrdersRepoImpl implements OrdersRepo {
       orderStatus: OrderStatusEnum.accepted.name,
       driverId: driverId,
       isActive: true,
-      currentLocation: selectedOrder.currentLocation != null
+      driverLocation: selectedOrder.currentLocation != null
           ? {
               'latitude': selectedOrder.currentLocation!.latitude,
               'longitude': selectedOrder.currentLocation!.longitude,

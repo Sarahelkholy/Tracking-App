@@ -61,4 +61,3 @@ app.*.map.json
 /lib/secret_keys.dart
 /firebase.json
 C:\flutter_projects\Tracking-App\android\app\google-services.json
-C:\flutter_projects\Tracking-App\ios\GoogleService-Info.plist
