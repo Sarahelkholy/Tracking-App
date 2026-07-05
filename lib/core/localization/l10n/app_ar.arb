@@ -117,5 +117,9 @@
   "arrivedAtPickupPoint": "تم الوصول إلى نقطة الاستلام",
   "startDeliver": "بدء التوصيل",
   "arrivedToTheUser": "تم الوصول إلى العميل",
-  "deliveredToTheUser": "تم التسليم للعميل"
+  "deliveredToTheUser": "تم التسليم للعميل",
+  "orderAcceptedTitle": "تم قبول الطلب",
+  "orderAcceptedBody": "تم قبول طلبك رقم {orderNumber} من قبل السائق",
+  "orderUpdateTitle": "تحديث حالة الطلب",
+  "orderUpdateBody": "طلبك رقم {orderNumber} هو الآن {status}"
 }

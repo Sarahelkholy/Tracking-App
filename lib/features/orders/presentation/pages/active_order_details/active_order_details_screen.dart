@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/core/helpers/event_handler_mixin.dart';
 import 'package:flower_driver/core/helpers/url_launcher_helper.dart';
@@ -59,33 +60,31 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
     switch (order.orderStatus) {
       case OrderStatusEnum.accepted:
         cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: order,
-            status: OrderStatusEnum.picked.name,
-          ),
+          UpdateOrderStatusEvent(order: order, status: OrderStatusEnum.picked),
         );
+        break;
       case OrderStatusEnum.picked:
         cubit.doEvents(
           UpdateOrderStatusEvent(
             order: order,
-            status: OrderStatusEnum.outForDelivery.name,
+            status: OrderStatusEnum.outForDelivery,
           ),
         );
+        break;
       case OrderStatusEnum.outForDelivery:
         cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: order,
-            status: OrderStatusEnum.arrived.name,
-          ),
+          UpdateOrderStatusEvent(order: order, status: OrderStatusEnum.arrived),
         );
+        break;
       case OrderStatusEnum.arrived:
         cubit.doEvents(
           UpdateOrderStatusEvent(
             order: order,
-            status: OrderStatusEnum.delivered.name,
+            status: OrderStatusEnum.delivered,
             isActive: false,
           ),
         );
+        break;
       case OrderStatusEnum.delivered:
         break;
       default:
@@ -155,12 +154,12 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           name: order.store.name,
                           address: order.store.address,
                           onCallPressed: () {
-                            UrlLauncherHelper.callPhone(
+                            getIt<UrlLauncherHelper>().callPhone(
                               order.store.phoneNumber,
                             );
                           },
                           onWhatsappPressed: () {
-                            UrlLauncherHelper.launchWhatsApp(
+                            getIt<UrlLauncherHelper>().launchWhatsApp(
                               order.store.phoneNumber,
                             );
                           },
@@ -179,10 +178,14 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           address:
                               "${order.shippingAddress.street}, ${order.shippingAddress.city}",
                           onCallPressed: () {
-                            UrlLauncherHelper.callPhone(order.user.phone);
+                            getIt<UrlLauncherHelper>().callPhone(
+                              order.user.phone,
+                            );
                           },
                           onWhatsappPressed: () {
-                            UrlLauncherHelper.launchWhatsApp(order.user.phone);
+                            getIt<UrlLauncherHelper>().launchWhatsApp(
+                              order.user.phone,
+                            );
                           },
                         ),
                         const SizedBox(height: 16),

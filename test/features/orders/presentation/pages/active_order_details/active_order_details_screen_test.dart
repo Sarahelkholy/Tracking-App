@@ -6,8 +6,11 @@ import 'package:flower_driver/config/driver/domain/entities/driver_entity.dart';
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/driver/manager/driver_state.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
+import 'package:flower_driver/core/shared_widgets/svg_wrapper.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/core/values/keys_strings.dart';
+import 'package:flower_driver/config/di/di.dart';
+import 'package:flower_driver/core/helpers/url_launcher_helper.dart';
 import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_item_entity.dart';
@@ -29,10 +32,11 @@ import 'package:mockito/mockito.dart';
 
 import 'active_order_details_screen_test.mocks.dart';
 
-@GenerateMocks([ActiveOrderCubit, DriverCubit])
+@GenerateMocks([ActiveOrderCubit, DriverCubit, UrlLauncherHelper])
 void main() {
   late MockActiveOrderCubit mockActiveOrderCubit;
   late MockDriverCubit mockDriverCubit;
+  late MockUrlLauncherHelper mockUrlLauncherHelper;
   late StreamController<BaseEvent> eventController;
 
   final tDriver = DriverEntity(
@@ -126,7 +130,10 @@ void main() {
   setUp(() {
     mockActiveOrderCubit = MockActiveOrderCubit();
     mockDriverCubit = MockDriverCubit();
+    mockUrlLauncherHelper = MockUrlLauncherHelper();
     eventController = StreamController<BaseEvent>();
+
+    getIt.registerSingleton<UrlLauncherHelper>(mockUrlLauncherHelper);
 
     when(mockDriverCubit.state).thenReturn(DriverState(driver: tDriver));
     when(mockDriverCubit.stream).thenAnswer((_) => const Stream.empty());
@@ -143,6 +150,7 @@ void main() {
 
   tearDown(() async {
     await eventController.close();
+    getIt.reset();
   });
 
   Future<void> pumpScreen(WidgetTester tester) async {
@@ -553,5 +561,73 @@ void main() {
       );
       expect(progressBar.currentStep, 2);
     });
+  });
+
+  group('ActiveOrderDetailsScreen Contact Actions Tests', () {
+    testWidgets('should call callPhone when store call button is pressed', (
+      tester,
+    ) async {
+      await pumpScreen(tester);
+
+      final callIcon = find.descendant(
+        of: find.byKey(const Key(KeysStrings.activeOrderPickupAddress)),
+        matching: find.byIcon(Icons.call_outlined),
+      );
+
+      await tester.tap(callIcon);
+      await tester.pump();
+
+      verify(mockUrlLauncherHelper.callPhone('0122222222')).called(1);
+    });
+
+    testWidgets(
+      'should call launchWhatsApp when store whatsapp button is pressed',
+      (tester) async {
+        await pumpScreen(tester);
+
+        final whatsappIcon = find.descendant(
+          of: find.byKey(const Key(KeysStrings.activeOrderPickupAddress)),
+          matching: find.byType(SvgWrapper),
+        );
+
+        await tester.tap(whatsappIcon);
+        await tester.pump();
+
+        verify(mockUrlLauncherHelper.launchWhatsApp('0122222222')).called(1);
+      },
+    );
+
+    testWidgets('should call callPhone when user call button is pressed', (
+      tester,
+    ) async {
+      await pumpScreen(tester);
+
+      final callIcon = find.descendant(
+        of: find.byKey(const Key(KeysStrings.activeOrderUserAddress)),
+        matching: find.byIcon(Icons.call_outlined),
+      );
+
+      await tester.tap(callIcon);
+      await tester.pump();
+
+      verify(mockUrlLauncherHelper.callPhone('0111111111')).called(1);
+    });
+
+    testWidgets(
+      'should call launchWhatsApp when user whatsapp button is pressed',
+      (tester) async {
+        await pumpScreen(tester);
+
+        final whatsappIcon = find.descendant(
+          of: find.byKey(const Key(KeysStrings.activeOrderUserAddress)),
+          matching: find.byType(SvgWrapper),
+        );
+
+        await tester.tap(whatsappIcon);
+        await tester.pump();
+
+        verify(mockUrlLauncherHelper.launchWhatsApp('0111111111')).called(1);
+      },
+    );
   });
 }

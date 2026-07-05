@@ -6,6 +6,7 @@ import 'package:flower_driver/features/orders/domain/entities/order_product_enti
 import 'package:flower_driver/features/orders/domain/entities/order_store_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_user_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/shipping_address_entity.dart';
+import 'package:flower_driver/features/orders/domain/entities/user_notification_entity.dart';
 import 'package:flower_driver/features/orders/domain/repositories/orders_repo.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -89,6 +90,18 @@ void main() {
     orderStatus: OrderStatusEnum.accepted,
   );
 
+  const tUserNotification = UserNotificationEntity(
+    fcmToken: 'token',
+    language: 'en',
+  );
+
+  final tParams = UpdateOrderStatusParams(
+    order: tOrder,
+    status: OrderStatusEnum.picked.name,
+    userNotification: tUserNotification,
+    isActive: true,
+  );
+
   setUpAll(() {
     errorMessage = "Something went wrong";
 
@@ -103,47 +116,27 @@ void main() {
   group("Update Order Status UseCase", () {
     test("success", () async {
       when(
-        mockRepo.updateOrderStatus(any, any, isActive: anyNamed('isActive')),
+        mockRepo.updateOrderStatus(any),
       ).thenAnswer((_) async => Success<void>(data: null));
 
-      final result = await useCase(
-        tOrder,
-        OrderStatusEnum.picked.name,
-        isActive: true,
-      );
+      final result = await useCase(tParams);
 
       expect(result, isA<Success<void>>());
 
-      verify(
-        mockRepo.updateOrderStatus(
-          tOrder,
-          OrderStatusEnum.picked.name,
-          isActive: true,
-        ),
-      ).called(1);
+      verify(mockRepo.updateOrderStatus(tParams)).called(1);
     });
 
     test("failure", () async {
       when(
-        mockRepo.updateOrderStatus(any, any, isActive: anyNamed('isActive')),
+        mockRepo.updateOrderStatus(any),
       ).thenAnswer((_) async => Failure<void>(errorMessage: errorMessage));
 
-      final result = await useCase(
-        tOrder,
-        OrderStatusEnum.picked.name,
-        isActive: true,
-      );
+      final result = await useCase(tParams);
 
       expect(result, isA<Failure<void>>());
       expect((result as Failure<void>).errorMessage, errorMessage);
 
-      verify(
-        mockRepo.updateOrderStatus(
-          tOrder,
-          OrderStatusEnum.picked.name,
-          isActive: true,
-        ),
-      ).called(1);
+      verify(mockRepo.updateOrderStatus(tParams)).called(1);
     });
   });
 }
