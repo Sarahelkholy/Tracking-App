@@ -6,18 +6,17 @@ import 'package:flower_driver/features/orders/domain/entities/order_product_enti
 import 'package:flower_driver/features/orders/domain/entities/order_store_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_user_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/shipping_address_entity.dart';
-import 'package:flower_driver/features/orders/domain/entities/user_notification_entity.dart';
 import 'package:flower_driver/features/orders/domain/repositories/orders_repo.dart';
-import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/accept_order_use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'update_order_status_use_case_test.mocks.dart';
+import 'accept_order_use_case_test.mocks.dart';
 
 @GenerateMocks([OrdersRepo])
 void main() {
-  late UpdateOrderStatusUseCase useCase;
+  late AcceptOrderUseCase useCase;
   late MockOrdersRepo mockRepo;
 
   late String errorMessage;
@@ -90,52 +89,41 @@ void main() {
     orderStatus: OrderStatusEnum.accepted,
   );
 
-  const tUserNotification = UserNotificationEntity(
-    fcmToken: 'token',
-    language: 'en',
-  );
-
-  final tParams = UpdateOrderStatusParams(
-    order: tOrder,
-    status: OrderStatusEnum.picked,
-    userNotification: tUserNotification,
-    isActive: true,
-  );
-
   setUpAll(() {
     errorMessage = "Something went wrong";
-    provideDummy<Result<void>>(Success<void>(data: null));
+    provideDummy<Result<bool>>(Success<bool>(data: true));
   });
 
   setUp(() {
     mockRepo = MockOrdersRepo();
-    useCase = UpdateOrderStatusUseCase(mockRepo);
+    useCase = AcceptOrderUseCase(mockRepo);
   });
 
-  group("Update Order Status UseCase", () {
+  group("Accept Order UseCase", () {
     test("success", () async {
       when(
-        mockRepo.updateOrderStatus(any),
-      ).thenAnswer((_) async => Success<void>(data: null));
+        mockRepo.acceptOrder(any, any),
+      ).thenAnswer((_) async => Success<bool>(data: true));
 
-      final result = await useCase(tParams);
+      final result = await useCase(tOrder, "driver_id");
 
-      expect(result, isA<Success<void>>());
+      expect(result, isA<Success<bool>>());
+      expect((result as Success<bool>).data, true);
 
-      verify(mockRepo.updateOrderStatus(tParams)).called(1);
+      verify(mockRepo.acceptOrder(tOrder, "driver_id")).called(1);
     });
 
     test("failure", () async {
       when(
-        mockRepo.updateOrderStatus(any),
-      ).thenAnswer((_) async => Failure<void>(errorMessage: errorMessage));
+        mockRepo.acceptOrder(any, any),
+      ).thenAnswer((_) async => Failure<bool>(errorMessage: errorMessage));
 
-      final result = await useCase(tParams);
+      final result = await useCase(tOrder, "driver_id");
 
-      expect(result, isA<Failure<void>>());
-      expect((result as Failure<void>).errorMessage, errorMessage);
+      expect(result, isA<Failure<bool>>());
+      expect((result as Failure<bool>).errorMessage, errorMessage);
 
-      verify(mockRepo.updateOrderStatus(tParams)).called(1);
+      verify(mockRepo.acceptOrder(tOrder, "driver_id")).called(1);
     });
   });
 }

@@ -309,11 +309,9 @@ void main() {
       verify(
         mockActiveOrderCubit.doEvents(
           argThat(
-            isA<UpdateOrderStatusEvent>().having(
-              (e) => e.status,
-              'status',
-              OrderStatusEnum.picked.name,
-            ),
+            isA<UpdateOrderStatusEvent>()
+                .having((e) => e.status, 'status', OrderStatusEnum.picked)
+                .having((e) => e.isActive, 'isActive', true),
           ),
         ),
       ).called(1);
@@ -335,11 +333,13 @@ void main() {
         verify(
           mockActiveOrderCubit.doEvents(
             argThat(
-              isA<UpdateOrderStatusEvent>().having(
-                (e) => e.status,
-                'status',
-                OrderStatusEnum.outForDelivery.name,
-              ),
+              isA<UpdateOrderStatusEvent>()
+                  .having(
+                    (e) => e.status,
+                    'status',
+                    OrderStatusEnum.outForDelivery,
+                  )
+                  .having((e) => e.isActive, 'isActive', true),
             ),
           ),
         ).called(1);
@@ -362,11 +362,9 @@ void main() {
         verify(
           mockActiveOrderCubit.doEvents(
             argThat(
-              isA<UpdateOrderStatusEvent>().having(
-                (e) => e.status,
-                'status',
-                OrderStatusEnum.arrived.name,
-              ),
+              isA<UpdateOrderStatusEvent>()
+                  .having((e) => e.status, 'status', OrderStatusEnum.arrived)
+                  .having((e) => e.isActive, 'isActive', true),
             ),
           ),
         ).called(1);
@@ -390,11 +388,7 @@ void main() {
           mockActiveOrderCubit.doEvents(
             argThat(
               isA<UpdateOrderStatusEvent>()
-                  .having(
-                    (e) => e.status,
-                    'status',
-                    OrderStatusEnum.delivered.name,
-                  )
+                  .having((e) => e.status, 'status', OrderStatusEnum.delivered)
                   .having((e) => e.isActive, 'isActive', false),
             ),
           ),
