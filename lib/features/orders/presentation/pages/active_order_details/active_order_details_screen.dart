@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/core/helpers/event_handler_mixin.dart';
 import 'package:flower_driver/core/helpers/url_launcher_helper.dart';
@@ -56,71 +57,44 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
 
   void _onButtonPressed(BuildContext context, OrderEntity order) {
     final cubit = context.read<ActiveOrderCubit>();
-    switch (order.orderStatus) {
-      case OrderStatusEnum.accepted:
-        cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: order,
-            status: OrderStatusEnum.picked.name,
-          ),
-        );
-      case OrderStatusEnum.picked:
-        cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: order,
-            status: OrderStatusEnum.outForDelivery.name,
-          ),
-        );
-      case OrderStatusEnum.outForDelivery:
-        cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: order,
-            status: OrderStatusEnum.arrived.name,
-          ),
-        );
-      case OrderStatusEnum.arrived:
-        cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: order,
-            status: OrderStatusEnum.delivered.name,
-            isActive: false,
-          ),
-        );
-      case OrderStatusEnum.delivered:
-        break;
-      default:
-        break;
+    final nextStatus = order.orderStatus.nextStatus;
+    if (nextStatus != null) {
+      cubit.doEvents(
+        UpdateOrderStatusEvent(
+          order: order,
+          status: nextStatus,
+          isActive: order.orderStatus.isActiveNext,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
-      builder: (context, state) {
-        if (state.getActiveOrderState.isLoading) {
-          return const Scaffold(body: CustomLoadingIndicator());
-        }
+    return Scaffold(
+      appBar: AppBar(
+        key: const Key(KeysStrings.activeOrderAppBar),
+        title: Text(localizations.orderDetails),
+      ),
+      body: BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
+        buildWhen: (previous, current) =>
+            previous.getActiveOrderState.isLoading !=
+                current.getActiveOrderState.isLoading ||
+            (previous.order == null && current.order != null),
+        builder: (context, state) {
+          if (state.getActiveOrderState.isLoading) {
+            return const CustomLoadingIndicator();
+          }
 
-        final order = state.order;
+          final order = state.order;
 
-        if (order == null) {
-          return Scaffold(
-            appBar: AppBar(
-              key: const Key(KeysStrings.activeOrderAppBar),
-              title: Text(localizations.orderDetails),
-            ),
-            body: CustomErrorWidget(
+          if (order == null) {
+            return CustomErrorWidget(
               errorMessage: localizations.noActiveOrderFound,
-            ),
-          );
-        }
+            );
+          }
 
-        return Scaffold(
-          appBar: AppBar(
-            key: const Key(KeysStrings.activeOrderAppBar),
-            title: Text(localizations.orderDetails),
-          ),
-          body: Column(
+          return Column(
             children: [
               Expanded(
                 child: SingleChildScrollView(
@@ -132,16 +106,33 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-                        OrderStatusProgressBar(
-                          key: const Key(KeysStrings.activeOrderProgressBar),
-                          currentStep: order.orderStatus.step,
-                        ),
-                        const SizedBox(height: 24),
-                        OrderDetailsStatusSection(
-                          key: const Key(KeysStrings.activeOrderDetailsStatus),
-                          status: order.orderStatus.localized(localizations),
-                          orderId: order.orderNumber,
-                          orderTime: order.createdAt,
+                        BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
+                          buildWhen: (p, c) =>
+                              p.order?.orderStatus != c.order?.orderStatus,
+                          builder: (context, state) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                OrderStatusProgressBar(
+                                  key: const Key(
+                                    KeysStrings.activeOrderProgressBar,
+                                  ),
+                                  currentStep: state.order!.orderStatus.step,
+                                ),
+                                const SizedBox(height: 24),
+                                OrderDetailsStatusSection(
+                                  key: const Key(
+                                    KeysStrings.activeOrderDetailsStatus,
+                                  ),
+                                  status: state.order!.orderStatus.localized(
+                                    localizations,
+                                  ),
+                                  orderId: state.order!.orderNumber,
+                                  orderTime: state.order!.createdAt,
+                                ),
+                              ],
+                            );
+                          },
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -155,12 +146,12 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           name: order.store.name,
                           address: order.store.address,
                           onCallPressed: () {
-                            UrlLauncherHelper.callPhone(
+                            getIt<UrlLauncherHelper>().callPhone(
                               order.store.phoneNumber,
                             );
                           },
                           onWhatsappPressed: () {
-                            UrlLauncherHelper.launchWhatsApp(
+                            getIt<UrlLauncherHelper>().launchWhatsApp(
                               order.store.phoneNumber,
                             );
                           },
@@ -179,10 +170,14 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           address:
                               "${order.shippingAddress.street}, ${order.shippingAddress.city}",
                           onCallPressed: () {
-                            UrlLauncherHelper.callPhone(order.user.phone);
+                            getIt<UrlLauncherHelper>().callPhone(
+                              order.user.phone,
+                            );
                           },
                           onWhatsappPressed: () {
-                            UrlLauncherHelper.launchWhatsApp(order.user.phone);
+                            getIt<UrlLauncherHelper>().launchWhatsApp(
+                              order.user.phone,
+                            );
                           },
                         ),
                         const SizedBox(height: 16),
@@ -226,35 +221,46 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                   ),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 24,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black100.withValues(alpha: 0.2),
-                      blurRadius: 4,
-                      offset: const Offset(0, -2),
+              BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
+                buildWhen: (p, c) =>
+                    p.order?.orderStatus != c.order?.orderStatus ||
+                    p.updateOrderStatusState.isLoading !=
+                        c.updateOrderStatusState.isLoading,
+                builder: (context, state) {
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 24,
                     ),
-                  ],
-                ),
-                child: CustomButton(
-                  key: const Key(KeysStrings.activeOrderButton),
-                  isLoading: state.updateOrderStatusState.isLoading,
-                  title: order.orderStatus.buttonTitle(localizations),
-                  onPressed: order.orderStatus == OrderStatusEnum.delivered
-                      ? null
-                      : () => _onButtonPressed(context, order),
-                ),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.black100.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: CustomButton(
+                      key: const Key(KeysStrings.activeOrderButton),
+                      isLoading: state.updateOrderStatusState.isLoading,
+                      title: state.order!.orderStatus.buttonTitle(
+                        localizations,
+                      ),
+                      onPressed:
+                          state.order!.orderStatus == OrderStatusEnum.delivered
+                          ? null
+                          : () => _onButtonPressed(context, state.order!),
+                    ),
+                  );
+                },
               ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

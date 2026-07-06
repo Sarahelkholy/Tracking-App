@@ -3,7 +3,7 @@ import 'product_response.dart';
 
 part 'order_item_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class OrderItemResponse {
   @JsonKey(name: "product")
   ProductResponse? product;

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../data/models/responses/orders_response/product_response.dart';
 
 class OrderProductEntity extends Equatable {
   final String id;
@@ -42,6 +43,30 @@ class OrderProductEntity extends Equatable {
     required this.updatedAt,
     required this.v,
   });
+
+  ProductResponse toModel() {
+    return ProductResponse(
+      id: id,
+      title: title,
+      slug: slug,
+      description: description,
+      imgCover: imgCover,
+      images: images,
+      price: price,
+      priceAfterDiscount: priceAfterDiscount,
+      discount: discount,
+      rateAvg: rateAvg,
+      rateCount: rateCount,
+      sold: sold,
+      quantity: quantity,
+      category: category,
+      occasion: occasion,
+      isSuperAdmin: isSuperAdmin,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      v: v,
+    );
+  }
 
   @override
   List<Object?> get props => [

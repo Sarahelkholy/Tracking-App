@@ -1,15 +1,19 @@
 import '../../../../config/error_handling/result.dart';
+import '../../domain/entities/user_notification_entity.dart';
 import '../entities/order_entity.dart';
 import '../entities/orders_entity.dart';
+import '../use_cases/update_order_status_use_case.dart';
 
 abstract interface class OrdersRepo {
   Future<Result<OrdersEntity>> getAllPendingOrders();
-  Future<OrderEntity?> getParsedDoc(String path, String field);
+
+  Future<Result<bool>> acceptOrder(OrderEntity selectedOrder, String driverId);
 
   Future<Result<OrderEntity>> getActiveOrder(String driverId);
 
   Stream<OrderEntity?> listenToActiveOrder(String orderId);
 
-  Future<Result<void>> updateOrderStatus(OrderEntity order, String status,
-      {bool? isActive});
+  Stream<UserNotificationEntity?> watchUserNotificationInfo(String userId);
+
+  Future<Result<void>> updateOrderStatus(UpdateOrderStatusParams params);
 }

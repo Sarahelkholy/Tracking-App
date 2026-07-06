@@ -13,6 +13,7 @@
   "passwordTooShort": "Password must be at least 6 characters",
   "passwordValid": "Password must contain uppercase, lowercase, number, and special character",
   "confirmPassword": "Confirm Password",
+  "confirmNewPassword": "Confirm New Password",
   "confirmPasswordRequired": "Please confirm your password",
   "passwordsNotMatch": "Passwords do not match",
   "phoneRequired": "Phone number is required",
@@ -93,6 +94,10 @@
   "enterYourPassword": "Enter Your Password",
   "enterConfirmPassword": "Enter Confirm Password",
   "confirm": "Confirm",
+  "currentPassword":"Current Password",
+  "update":"update",
+  "oldAndNewPasswordSame": "The new password must be different from the current password",
+  "confirm": "Confirm",
 
   "orderDetails" : "Order details",
   "noActiveOrderFound" : "No active order found",
@@ -112,6 +117,9 @@
   "arrivedAtPickupPoint" : "Arrived at Pickup point",
   "startDeliver" : "Start deliver",
   "arrivedToTheUser" : "Arrived to the user",
-  "deliveredToTheUser" : "Delivered to the user"
-
+  "deliveredToTheUser" : "Delivered to the user",
+  "orderAcceptedTitle": "Order Accepted",
+  "orderAcceptedBody": "Your order {orderNumber} has been accepted by the driver",
+  "orderUpdateTitle": "Order Update",
+  "orderUpdateBody": "Your order {orderNumber} is now {status}"
 }

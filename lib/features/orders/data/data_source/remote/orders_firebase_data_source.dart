@@ -1,5 +1,7 @@
 import '../../../../../config/error_handling/result.dart';
 import '../../models/responses/active_order_firestore_response.dart';
+import '../../models/responses/notification_firestore_model.dart';
+import '../../models/responses/user_firestore_model.dart';
 
 abstract interface class OrdersFirebaseDataSource {
   Future<Result<ActiveOrderFirestoreResponse>> getActiveOrder(String driverId);
@@ -11,7 +13,19 @@ abstract interface class OrdersFirebaseDataSource {
     Map<String, dynamic> data,
   );
 
-  Future<Result<String?>> getUserFcmToken(String userId);
+  Future<Result<void>> saveActiveOrder(
+    String orderId,
+    ActiveOrderFirestoreResponse data,
+  );
+
+  Future<Result<UserFirestoreModel?>> getUserInfo(String userId);
+
+  Stream<UserFirestoreModel?> watchUserInfo(String userId);
+
+  Future<Result<void>> saveNotification(
+    String userId,
+    NotificationFirestoreModel notification,
+  );
 
   Future<Result<void>> sendPushNotification({
     required String fcmToken,

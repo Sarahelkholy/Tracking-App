@@ -6,7 +6,7 @@ import 'user_response.dart';
 
 part 'order_data_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class OrderDataResponse {
   @JsonKey(name: "_id")
   String? id;
@@ -57,6 +57,7 @@ class OrderDataResponse {
     this.store,
     this.shippingAddress,
     this.paidAt,
+    this.orderStatus,
   });
 
   factory OrderDataResponse.fromJson(Map<String, dynamic> json) =>

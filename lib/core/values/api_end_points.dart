@@ -8,7 +8,10 @@ abstract class ApiEndPoints {
   static const String forgetPassword = "/drivers/forgotPassword";
   static const String verifyResetCode = "/drivers/verifyResetCode";
   static const String resetPassword = "/drivers/resetPassword";
-
   static const String getDriverData = "/drivers/profile-data";
+
   static const String pendingOrders = "/orders/pending-orders";
+
+  static const String fcmBaseUrl = 'https://fcm.googleapis.com';
+  static const String fcmSendPath = '/v1/projects/{projectId}/messages:send';
 }
