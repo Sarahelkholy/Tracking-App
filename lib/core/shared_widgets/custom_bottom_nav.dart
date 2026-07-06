@@ -13,14 +13,9 @@ import '../utils/app_assets.dart';
 import '../utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
-  const CustomBottomNavBar({
-    super.key,
-    this.initialIndex = 0,
-    this.categoryIndex = 0,
-  });
+  const CustomBottomNavBar({super.key, this.initialIndex = 0});
 
   final int initialIndex;
-  final int categoryIndex;
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
