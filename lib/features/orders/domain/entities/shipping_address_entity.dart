@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../data/models/responses/orders_response/shipping_address_response.dart';
 
 class ShippingAddressEntity extends Equatable {
   final String street;
@@ -17,4 +18,16 @@ class ShippingAddressEntity extends Equatable {
 
   @override
   List<Object?> get props => [street, city, phone, lat, long];
+
+  String get address => '$street, $city';
+
+  ShippingAddressResponse toModel() {
+    return ShippingAddressResponse(
+      street: street,
+      city: city,
+      phone: phone,
+      lat: lat,
+      long: long,
+    );
+  }
 }

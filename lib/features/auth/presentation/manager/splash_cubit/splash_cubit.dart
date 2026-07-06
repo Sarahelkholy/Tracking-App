@@ -1,11 +1,11 @@
-import 'package:flower_driver/config/firebase/firestore_collection.dart';
 import 'package:flower_driver/features/auth/presentation/manager/splash_cubit/spalsh_events.dart';
 import 'package:flower_driver/features/auth/presentation/manager/splash_cubit/splash_state.dart';
 import 'package:flower_driver/features/orders/domain/repositories/orders_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../config/firebase/firestore_field_name.dart';
+import '../../../../../config/error_handling/result.dart';
+import '../../../../orders/domain/entities/order_entity.dart';
 
 @LazySingleton()
 class SplashCubit extends Cubit<SplashState> {
@@ -16,16 +16,18 @@ class SplashCubit extends Cubit<SplashState> {
   void doIntent(SplashEvents event) {
     switch (event) {
       case GetAcceptedOrder():
-        _getAcceptedOrder();
+        _getAcceptedOrder(event.driverId);
     }
   }
 
-  Future<void> _getAcceptedOrder() async {
+  Future<void> _getAcceptedOrder(String driverId) async {
     emit(const SplashState(isLoading: true));
-    var acceptedOrderEntity = await _ordersRepo.getParsedDoc(
-      FireStoreCollection.orderCollectionPath,
-      FireStoreFieldName.orderStatus,
-    );
-    emit(SplashState(acceptedOrder: acceptedOrderEntity));
+    final result = await _ordersRepo.getActiveOrder(driverId);
+
+    if (result is Success<OrderEntity>) {
+      emit(SplashState(acceptedOrder: result.data));
+    } else {
+      emit(const SplashState(acceptedOrder: null));
+    }
   }
 }

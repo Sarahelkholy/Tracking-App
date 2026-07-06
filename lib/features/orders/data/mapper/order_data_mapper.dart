@@ -56,8 +56,8 @@ extension OrderDataResponseMapper on OrderDataResponse {
           ),
       paidAt: paidAt ?? DateTime.fromMillisecondsSinceEpoch(0),
         orderStatus: orderStatus != null
-            ? OrderStatusExtension.fromString(orderStatus!)
-            : OrderStatusEnum.pending,
+          ? OrderStatusEnumHelper.fromString(orderStatus!)
+          : OrderStatusEnum.pending,
     );
   }
 }

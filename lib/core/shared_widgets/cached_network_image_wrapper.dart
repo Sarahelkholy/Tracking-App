@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flower_driver/core/shared_widgets/shimmer_box.dart';
+import 'package:flower_driver/core/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 
 class CachedNetworkImageWrapper extends StatelessWidget {
@@ -24,7 +25,12 @@ class CachedNetworkImageWrapper extends StatelessWidget {
         height: height ?? double.infinity,
         width: width ?? double.infinity,
       ),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
+      errorWidget: (context, url, error) => Image.asset(
+        AppAssets.userTestImage,
+        width: width,
+        height: height,
+        fit: fit,
+      ),
       width: width,
       height: height,
       fit: fit,

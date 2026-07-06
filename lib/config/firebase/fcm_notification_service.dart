@@ -1,0 +1,30 @@
+import 'package:flower_driver/config/firebase/api/fcm_api_client.dart';
+import 'package:flower_driver/config/firebase/data/models/fcm_request.dart';
+import 'package:flower_driver/core/values/api_strings.dart';
+import 'package:flower_driver/secret_keys.dart';
+import 'package:injectable/injectable.dart';
+
+@lazySingleton
+class FcmNotificationService {
+  final FcmApiClient _fcmApiClient;
+
+  FcmNotificationService(this._fcmApiClient);
+
+  Future<void> sendNotification({
+    required String fcmToken,
+    required String title,
+    required String body,
+  }) async {
+    final projectId = SecretKeys.serviceAccountJson[ApiStrings.projectId] ?? '';
+
+    await _fcmApiClient.sendNotification(
+      projectId,
+      FcmRequest(
+        message: FcmMessage(
+          token: fcmToken,
+          notification: FcmNotification(title: title, body: body),
+        ),
+      ),
+    );
+  }
+}

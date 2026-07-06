@@ -39,4 +39,15 @@ abstract class KeysStrings {
   static const resetPasswordTitle = 'reset_password_title';
 
   static const resetPasswordSubtitle = 'reset_password_subtitle';
+
+  // Active Order Details Screen
+  static const activeOrderAppBar = 'active_order_app_bar';
+  static const activeOrderProgressBar = 'active_order_progress_bar';
+  static const activeOrderDetailsStatus = 'active_order_details_status';
+  static const activeOrderPickupAddress = 'active_order_pickup_address';
+  static const activeOrderUserAddress = 'active_order_user_address';
+  static const activeOrderItemsList = 'active_order_items_list';
+  static const activeOrderTotal = 'active_order_total';
+  static const activeOrderPaymentMethod = 'active_order_payment_method';
+  static const activeOrderButton = 'active_order_button';
 }

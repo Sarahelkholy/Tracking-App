@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
-
 import '../data_base/data_base_service.dart';
 
 @LazySingleton(as: DatabaseService)
@@ -9,102 +8,130 @@ class FirebaseService implements DatabaseService {
 
   FirebaseService(this._firestore);
 
-  // Get a reference to a collection
-  @override
-  CollectionReference<Map<String, dynamic>> getCollection(String path) {
-    return _firestore.collection(path);
+  /// Helper for creating a typed [DocumentReference] intended for reading.
+  /// The [toFirestore] is intentionally unimplemented as this ref is for reads.
+  DocumentReference<T> _getReadDocRef<T>(
+    String path,
+    T Function(Map<String, dynamic> json) fromFirestore,
+  ) {
+    return _firestore
+        .doc(path)
+        .withConverter<T>(
+          fromFirestore: (snapshot, _) => fromFirestore(snapshot.data() ?? {}),
+          toFirestore: (_, _) =>
+              throw UnimplementedError("Read-only reference"),
+        );
+  }
+
+  /// Helper for creating a typed [CollectionReference] intended for reading.
+  CollectionReference<T> _getReadCollectionRef<T>(
+    String path,
+    T Function(Map<String, dynamic> json) fromFirestore,
+  ) {
+    return _firestore
+        .collection(path)
+        .withConverter<T>(
+          fromFirestore: (snapshot, _) => fromFirestore(snapshot.data() ?? {}),
+          toFirestore: (_, _) =>
+              throw UnimplementedError("Read-only reference"),
+        );
   }
 
   @override
-  Future<Map<String, dynamic>> getCollectionWhere({
+  Future<T?> getDocument<T>({
     required String path,
-    required String field,
-    dynamic isEqualTo,
-    dynamic isNotEqualTo,
-    int limit = 1,
+    required T Function(Map<String, dynamic> json) fromFirestore,
   }) async {
-    try {
-      Query<Map<String, dynamic>> query = _firestore.collection(path);
+    final docRef = _getReadDocRef<T>(path, fromFirestore);
+    final snapshot = await docRef.get();
+    return snapshot.data();
+  }
 
-      if (isEqualTo != null) {
-        query = query.where(field, isEqualTo: isEqualTo);
-      }
+  @override
+  Future<List<T>> getCollection<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromFirestore,
+    Map<String, dynamic>? queryParams,
+    int? limit,
+  }) async {
+    Query<T> query = _getReadCollectionRef<T>(path, fromFirestore);
 
-      if (isNotEqualTo != null) {
-        query = query.where(field, isNotEqualTo: isNotEqualTo);
-      }
-
-      final snapshot = await query.limit(limit).get();
-
-      if (snapshot.docs.isEmpty) {
-        return {};
-      }
-
-      return snapshot.docs.first.data();
-    } catch (e) {
-      return {};
+    if (queryParams != null) {
+      queryParams.forEach((field, value) {
+        query = query.where(field, isEqualTo: value);
+      });
     }
+
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  // Get a reference to a document
   @override
-  DocumentReference<Map<String, dynamic>> getDocument(String path) {
-    return _firestore.doc(path);
-  }
-
-  // Add data to a collection
-  @override
-  Future<DocumentReference<Map<String, dynamic>>> addData(
-    String collectionPath,
-    Map<String, dynamic> data,
-  ) {
-    return _firestore.collection(collectionPath).add(data);
-  }
-
-  // Set data for a document
-  @override
-  Future<void> setData(
-    String path,
-    Map<String, dynamic> data, {
+  Future<void> setData<T>({
+    required String path,
+    required T data,
+    required Map<String, dynamic> Function(T value) toFirestore,
     bool merge = true,
+  }) async {
+    // For writing, we don't need withConverter's fromFirestore.
+    // We manually map the data to a map and use the raw Firestore API.
+    await _firestore.doc(path).set(toFirestore(data), SetOptions(merge: merge));
+  }
+
+  @override
+  Future<void> updateData({
+    required String path,
+    required Map<String, dynamic> data,
+  }) async {
+    await _firestore.doc(path).update(data);
+  }
+
+  @override
+  Future<String> addData<T>({
+    required String collectionPath,
+    required T data,
+    required Map<String, dynamic> Function(T value) toFirestore,
+  }) async {
+    final docRef = await _firestore
+        .collection(collectionPath)
+        .add(toFirestore(data));
+    return docRef.id;
+  }
+
+  @override
+  Future<void> deleteData(String path) async {
+    await _firestore.doc(path).delete();
+  }
+
+  @override
+  Stream<T?> watchDocument<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromFirestore,
   }) {
-    return _firestore.doc(path).set(data, SetOptions(merge: merge));
-  }
-
-  // Update data for a document
-  @override
-  Future<void> updateData(String path, Map<String, dynamic> data) {
-    return _firestore.doc(path).update(data);
-  }
-
-  // Delete a document
-  @override
-  Future<void> deleteData(String path) {
-    return _firestore.doc(path).delete();
-  }
-
-  // Get a stream of a collection
-  @override
-  Stream<QuerySnapshot<Map<String, dynamic>>> getCollectionStream(String path) {
-    return _firestore.collection(path).snapshots();
-  }
-
-  // Get a stream of a document
-  @override
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getDocumentStream(
-    String path,
-  ) {
-    return _firestore.doc(path).snapshots();
-  }
-
-  // Get data once
-  @override
-  Future<DocumentSnapshot<Map<String, dynamic>>> getDocumentData(String path) {
-    return _firestore.doc(path).get();
+    return _getReadDocRef<T>(
+      path,
+      fromFirestore,
+    ).snapshots().map((s) => s.data());
   }
 
   @override
-  Stream<Map<String, dynamic>?> listenDocument(String path) {
-    return _firestore.doc(path).snapshots().map((event) => event.data());
+  Stream<List<T>> watchCollection<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromFirestore,
+    Map<String, dynamic>? queryParams,
+  }) {
+    Query<T> query = _getReadCollectionRef<T>(path, fromFirestore);
+
+    if (queryParams != null) {
+      queryParams.forEach((field, value) {
+        query = query.where(field, isEqualTo: value);
+      });
+    }
+
+    return query.snapshots().map((s) => s.docs.map((d) => d.data()).toList());
   }
 }

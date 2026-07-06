@@ -7,28 +7,32 @@ enum OrderStatusEnum {
   delivered,
 }
 
-extension OrderStatusExtension on OrderStatusEnum {
-  String get displayName {
+extension OrderStatusEnumHelper on OrderStatusEnum {
+  static OrderStatusEnum fromString(String value) {
+    return OrderStatusEnum.values.firstWhere(
+      (status) => status.name == value,
+      orElse: () => OrderStatusEnum.pending,
+    );
+  }
+
+  OrderStatusEnum? get nextStatus {
     switch (this) {
-      case OrderStatusEnum.pending:
-        return 'Pending';
       case OrderStatusEnum.accepted:
-        return 'Accepted';
+        return OrderStatusEnum.picked;
       case OrderStatusEnum.picked:
-        return 'Picked';
+        return OrderStatusEnum.outForDelivery;
       case OrderStatusEnum.outForDelivery:
-        return 'Out for Delivery';
+        return OrderStatusEnum.arrived;
       case OrderStatusEnum.arrived:
-        return 'Arrived';
-      case OrderStatusEnum.delivered:
-        return 'Delivered';
+        return OrderStatusEnum.delivered;
+      default:
+        return null;
     }
   }
 
-  static OrderStatusEnum fromString(String value) {
-    return OrderStatusEnum.values.firstWhere(
-          (status) => status.name == value,
-      orElse: () => OrderStatusEnum.pending,
-    );
+  bool? get isActiveNext {
+    if (this == OrderStatusEnum.arrived) return false;
+    if (nextStatus != null) return true;
+    return null;
   }
 }
