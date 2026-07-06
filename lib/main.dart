@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Flower Driver APP',
 
-            initialRoute: Routes.activeOrderDetails,
+            initialRoute: Routes.splashRoute,
             onGenerateRoute: RouteGenerator.getRoute,
 
             locale: locale,
