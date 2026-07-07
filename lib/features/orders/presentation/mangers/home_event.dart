@@ -7,7 +7,8 @@ sealed class HomeEvent {}
 class GetPendingOrders extends HomeEvent {}
 
 class SelectOrder extends HomeEvent {
-  SelectOrder({required this.selectedOrder});
+  SelectOrder({required this.selectedOrder, required this.driverId});
 
   final OrderEntity selectedOrder;
+  final String driverId;
 }

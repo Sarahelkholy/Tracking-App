@@ -10,6 +10,8 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
+import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
+import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
 import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +21,10 @@ import '../../features/auth/presentation/manager/forget_password_cubit/forget_pa
 import '../../features/auth/presentation/manager/splash_cubit/splash_cubit.dart';
 import '../../features/auth/presentation/pages/apply/apply_page.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
+import '../../features/profile/presentation/manager/change_password_cubit/change_password_cubit.dart';
+import '../../features/profile/presentation/pages/change_password/change_password_screen.dart';
+import '../../features/profile/presentation/manager/profile/profile_cubit.dart';
+import '../../features/profile/presentation/pages/edit_profile_screen.dart';
 
 abstract class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -99,9 +105,37 @@ abstract class RouteGenerator {
                 CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
 
+        /// Edit Profile Screen
+        case Routes.editProfileRoute:
+          final cubit = settings.arguments as ProfileCubit;
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: const EditProfileScreen(),
+            ),
+          );
+
+         /// Change password
+         case Routes.changPasswordRoute:
+           return MaterialPageRoute(
+             builder: (_) => BlocProvider(
+               create: (_) => getIt<ChangePasswordCubit>(),
+               child: const ChangePasswordScreen(),
+             ),
+           );
+
         /// orders
         case Routes.ordersRoute:
           return MaterialPageRoute(builder: (_) => const OrdersScreen());
+
+        /// active order details
+        case Routes.activeOrderDetails:
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) => getIt<ActiveOrderCubit>(),
+              child: const ActiveOrderDetailsScreen(),
+            ),
+          );
 
         /// Default
         default:

@@ -1,3 +1,4 @@
 abstract class FireStoreCollection {
-  static String orderCollectionPath = "orders";
+  static const String orderCollectionPath = "orders";
+  static const String usersCollectionPath = "users";
 }

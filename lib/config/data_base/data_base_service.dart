@@ -19,6 +19,12 @@ abstract class DatabaseService {
     Map<String, dynamic> data,
   );
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getCollectionWhereMultiple({
+    required String path,
+    required Map<String, dynamic> queryParams,
+    int limit = 1,
+  });
+
   Future<void> setData(
     String path,
     Map<String, dynamic> data, {

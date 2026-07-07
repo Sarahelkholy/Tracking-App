@@ -7,9 +7,9 @@ import 'package:injectable/injectable.dart';
 class AcceptOrderUseCase {
   AcceptOrderUseCase(this._repo);
 
-  OrdersRepo _repo;
+  final OrdersRepo _repo;
 
-  Future<Result<bool>> call(OrderEntity selectedOrder) async {
-    return _repo.acceptOrder(selectedOrder);
+  Future<Result<bool>> call(OrderEntity selectedOrder, String driverId) async {
+    return _repo.acceptOrder(selectedOrder, driverId);
   }
 }

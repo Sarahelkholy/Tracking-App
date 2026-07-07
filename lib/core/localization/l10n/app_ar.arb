@@ -92,5 +92,28 @@
   "newPassword": "كلمة المرور الجديدة",
   "enterYourPassword": "أدخل كلمة المرور",
   "enterConfirmPassword": "أدخل تأكيد كلمة المرور",
-  "confirm": "تأكيد"
+  "confirm": "تأكيد",
+  "currentPassword":"كلمة المرور الحالية",
+  "update":"تحديث",
+  "oldAndNewPasswordSame": "يجب أن تكون كلمة المرور الجديدة \nمختلفة عن كلمة المرور الحالية",
+  "confirm": "تأكيد",
+
+  "orderDetails": "تفاصيل الطلب",
+    "status": "الحالة :",
+    "orderId": "رقم الطلب : # ",
+    "pickupAddress": "عنوان الاستلام",
+    "userAddress": "عنوان العميل",
+    "egp": "ج.م",
+    "total": "الإجمالي",
+    "paymentMethod": "طريقة الدفع",
+    "accepted": "تم القبول",
+    "picked": "تم الاستلام",
+    "outForDelivery": "قيد التوصيل",
+    "arrived": "تم الوصول",
+    "delivered": "تم التسليم",
+
+    "arrivedAtPickupPoint": "تم الوصول إلى نقطة الاستلام",
+    "startDeliver": "بدء التوصيل",
+    "arrivedToTheUser": "تم الوصول إلى العميل",
+    "deliveredToTheUser": "تم التسليم للعميل"
 }
