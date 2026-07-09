@@ -32,19 +32,29 @@ final class LoginLoading extends LoginState {
 
 final class LoginSuccess extends LoginState {
   final AuthResponse authResponse;
+  final bool hasActiveOrder;
 
-  const LoginSuccess({required this.authResponse, super.rememberMe});
+  const LoginSuccess({
+    required this.authResponse,
+    super.rememberMe,
+    this.hasActiveOrder = false,
+  });
 
   @override
-  LoginSuccess copyWith({bool? rememberMe, AuthResponse? authEntity}) {
+  LoginSuccess copyWith({
+    bool? rememberMe,
+    AuthResponse? authEntity,
+    bool? hasActiveOrder,
+  }) {
     return LoginSuccess(
       authResponse: authEntity ?? authResponse,
       rememberMe: rememberMe ?? this.rememberMe,
+      hasActiveOrder: hasActiveOrder ?? this.hasActiveOrder,
     );
   }
 
   @override
-  List<Object> get props => [authResponse, rememberMe];
+  List<Object> get props => [authResponse, rememberMe, hasActiveOrder];
 }
 
 final class LoginFailure extends LoginState {
