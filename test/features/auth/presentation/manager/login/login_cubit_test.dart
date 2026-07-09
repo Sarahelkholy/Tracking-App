@@ -38,7 +38,7 @@ void main() {
   late MockDriverCubit mockDriverCubit;
 
   final tAuthResponse = AuthResponse(message: "Success", token: "token");
-  final tDriver = DriverEntity(id: "driver_id");
+  const tDriver = DriverEntity(id: "driver_id");
 
   final tOrder = OrderEntity(
     id: 'order_id',
