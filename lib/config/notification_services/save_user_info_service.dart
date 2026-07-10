@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flower_driver/config/notification_services/driver_firestore_model.dart';
-
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
@@ -24,7 +23,13 @@ class SaveUserInfoService {
         toFirestore: (user, _) => user.toJson(),
       );
 
-  Future<void> initUserDevice(String userId) async {
+  Future<void> initUserDevice({
+    required String userId,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? phone,
+  }) async {
     final fcmToken = await firebaseMessaging.getToken();
     final language = PlatformDispatcher.instance.locale.languageCode;
 
@@ -32,6 +37,10 @@ class SaveUserInfoService {
       userId: userId,
       fcmToken: fcmToken,
       language: language,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
     );
 
     _listenToTokenChanges(userId);
@@ -41,6 +50,10 @@ class SaveUserInfoService {
     required String userId,
     required String? fcmToken,
     required String language,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? phone,
   }) async {
     try {
       await usersRef
@@ -50,6 +63,10 @@ class SaveUserInfoService {
               fcmToken: fcmToken,
               language: language,
               updatedAt: Timestamp.now(),
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              phone: phone,
             ),
             SetOptions(merge: true),
           );
