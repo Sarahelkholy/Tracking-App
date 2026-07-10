@@ -19,11 +19,12 @@ import 'package:flower_driver/features/orders/presentation/widgets/active_order_
 import 'package:flower_driver/core/values/keys_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../../../../../core/utils/app_constants.dart';
 import '../../../../../core/utils/app_text_styles.dart';
 import '../../widgets/active_order_details/order_status_progress_bar.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import '../../../../../config/osrm_service/osrm_service.dart';
 
 class ActiveOrderDetailsScreen extends StatefulWidget {
   const ActiveOrderDetailsScreen({super.key});
@@ -36,7 +37,11 @@ class ActiveOrderDetailsScreen extends StatefulWidget {
 class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
     with EventHandlerMixin<ActiveOrderDetailsScreen> {
   late AppLocalizations localizations;
-  GoogleMapController? _mapController;
+  final MapController _mapController = MapController();
+  final OsrmService _osrmService = OsrmService();
+  Future<List<LatLng>>? _routeFuture;
+  LatLng? _lastStart;
+  LatLng? _lastEnd;
 
   @override
   void initState() {
@@ -133,11 +138,10 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
       },
       listener: (context, state) {
         final location = state.order?.currentLocation;
-        if (location != null && _mapController != null) {
-          _mapController!.animateCamera(
-            CameraUpdate.newLatLng(
-              LatLng(location.latitude, location.longitude),
-            ),
+        if (location != null) {
+          _mapController.move(
+            LatLng(location.latitude, location.longitude),
+            _mapController.camera.zoom,
           );
         }
       },
@@ -172,60 +176,54 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
           order.shippingAddress.long,
         );
 
-        Set<Marker> markers = {};
-        if (driverLatLng != null) {
-          markers.add(
+        final markers = <Marker>[
+          if (driverLatLng != null)
             Marker(
-              markerId: const MarkerId('driver'),
-              position: driverLatLng,
-              infoWindow: const InfoWindow(title: 'Driver Location'),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueBlue,
+              point: driverLatLng,
+              width: 50,
+              height: 50,
+              child: const Icon(
+                Icons.local_shipping,
+                color: Colors.blue,
+                size: 36,
               ),
             ),
-          );
-        }
-        if (storeLatLng != null) {
-          markers.add(
-            Marker(
-              markerId: const MarkerId('pickup'),
-              position: storeLatLng,
-              infoWindow: const InfoWindow(title: 'Pickup Location'),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
-            ),
-          );
-        }
-        if (userLatLng != null) {
-          markers.add(
-            Marker(
-              markerId: const MarkerId('dropoff'),
-              position: userLatLng,
-              infoWindow: const InfoWindow(title: 'Dropoff Location'),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
-            ),
-          );
-        }
 
-        Set<Polyline> polylines = {};
-        if (driverLatLng != null && storeLatLng != null && userLatLng != null) {
-          List<LatLng> points = [];
-          if (order.orderStatus.step < OrderStatusEnum.picked.step) {
-            points = [driverLatLng, storeLatLng];
-          } else {
-            points = [driverLatLng, userLatLng];
-          }
-          polylines.add(
-            Polyline(
-              polylineId: const PolylineId('route'),
-              points: points,
-              color: AppColors.primaryColor,
-              width: 4,
+          if (storeLatLng != null)
+            Marker(
+              point: storeLatLng,
+              width: 50,
+              height: 50,
+              child: const Icon(Icons.store, color: Colors.red, size: 36),
             ),
-          );
+
+          if (userLatLng != null)
+            Marker(
+              point: userLatLng,
+              width: 50,
+              height: 50,
+              child: const Icon(
+                Icons.location_on,
+                color: Colors.green,
+                size: 36,
+              ),
+            ),
+        ];
+
+        final startLatLng = driverLatLng;
+        final endLatLng = order.orderStatus.step < OrderStatusEnum.picked.step
+            ? storeLatLng
+            : userLatLng;
+
+        if (startLatLng != null && endLatLng != null) {
+          if (startLatLng != _lastStart || endLatLng != _lastEnd) {
+            _lastStart = startLatLng;
+            _lastEnd = endLatLng;
+            _routeFuture = _osrmService.getRoute(
+              start: startLatLng,
+              end: endLatLng,
+            );
+          }
         }
 
         return Scaffold(
@@ -236,213 +234,42 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
           body: Stack(
             fit: StackFit.expand,
             children: [
-              GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target:
+              FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter:
                       driverLatLng ??
                       storeLatLng ??
                       userLatLng ??
                       const LatLng(30.0, 31.0),
-                  zoom: 14.0,
+                  initialZoom: 14,
                 ),
-                markers: markers,
-                polylines: polylines,
-                onMapCreated: (controller) => _mapController = controller,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-              ),
-              DraggableScrollableSheet(
-                initialChildSize: 0.5,
-                minChildSize: 0.15,
-                maxChildSize: 0.9,
-                builder: (context, scrollController) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(24),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.black100.withValues(alpha: 0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, -5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 12),
-                        Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: AppColors.black100.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppConstants.paddingHorizontal,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  OrderStatusProgressBar(
-                                    key: const Key(
-                                      KeysStrings.activeOrderProgressBar,
-                                    ),
-                                    currentStep: order.orderStatus.step,
-                                  ),
-                                  const SizedBox(height: 24),
-                                  OrderDetailsStatusSection(
-                                    key: const Key(
-                                      KeysStrings.activeOrderDetailsStatus,
-                                    ),
-                                    status: order.orderStatus.localized(
-                                      localizations,
-                                    ),
-                                    orderId: order.orderNumber,
-                                    orderTime: order.createdAt,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    localizations.pickupAddress,
-                                    style: AppTextStyles.medium18(context),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ContactAddressCard(
-                                    key: const Key(
-                                      KeysStrings.activeOrderPickupAddress,
-                                    ),
-                                    imageUrl: order.store.image,
-                                    name: order.store.name,
-                                    address: order.store.address,
-                                    onCallPressed: () {
-                                      UrlLauncherHelper.callPhone(
-                                        order.store.phoneNumber,
-                                      );
-                                    },
-                                    onWhatsappPressed: () {
-                                      UrlLauncherHelper.launchWhatsApp(
-                                        order.store.phoneNumber,
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    localizations.userAddress,
-                                    style: AppTextStyles.medium18(context),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ContactAddressCard(
-                                    key: const Key(
-                                      KeysStrings.activeOrderUserAddress,
-                                    ),
-                                    imageUrl: order.user.photo,
-                                    name:
-                                        "${order.user.firstName} ${order.user.lastName}",
-                                    address:
-                                        "${order.shippingAddress.street}, ${order.shippingAddress.city}",
-                                    onCallPressed: () {
-                                      UrlLauncherHelper.callPhone(
-                                        order.user.phone,
-                                      );
-                                    },
-                                    onWhatsappPressed: () {
-                                      UrlLauncherHelper.launchWhatsApp(
-                                        order.user.phone,
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    localizations.orderDetails,
-                                    style: AppTextStyles.medium18(context),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Column(
-                                    key: const Key(
-                                      KeysStrings.activeOrderItemsList,
-                                    ),
-                                    children: List.generate(
-                                      order.orderItems.length,
-                                      (index) {
-                                        final item = order.orderItems[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 8.0,
-                                          ),
-                                          child: OrderDetailsItem(
-                                            imageUrl: item.product.imgCover,
-                                            title: item.product.title,
-                                            price: item.price.toString(),
-                                            numberOfItem: item.quantity.toInt(),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  OrderDetailsRowText(
-                                    key: const Key(
-                                      KeysStrings.activeOrderTotal,
-                                    ),
-                                    title: localizations.total,
-                                    value:
-                                        "${localizations.egp} ${order.totalPrice}",
-                                  ),
-                                  const SizedBox(height: 24),
-                                  OrderDetailsRowText(
-                                    key: const Key(
-                                      KeysStrings.activeOrderPaymentMethod,
-                                    ),
-                                    title: localizations.paymentMethod,
-                                    value: order.paymentType,
-                                  ),
-                                  const SizedBox(height: 16),
-                                ],
-                              ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.flower.driver',
+                  ),
+
+                  if (startLatLng != null && endLatLng != null)
+                    FutureBuilder<List<LatLng>>(
+                      future: _routeFuture,
+                      builder: (context, snapshot) {
+                        final points = snapshot.data ?? [startLatLng, endLatLng];
+                        return PolylineLayer(
+                          polylines: [
+                            Polyline(
+                              points: points,
+                              color: AppColors.primaryColor,
+                              strokeWidth: 5,
                             ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.black100.withValues(
-                                  alpha: 0.1,
-                                ),
-                                blurRadius: 4,
-                                offset: const Offset(0, -2),
-                              ),
-                            ],
-                          ),
-                          child: CustomButton(
-                            key: const Key(KeysStrings.activeOrderButton),
-                            isLoading: state.updateOrderStatusState.isLoading,
-                            title: order.orderStatus.buttonTitle(localizations),
-                            onPressed:
-                                order.orderStatus == OrderStatusEnum.delivered
-                                ? null
-                                : () => _onButtonPressed(context, order),
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
-                  );
-                },
+
+                  MarkerLayer(markers: markers),
+                ],
               ),
             ],
           ),

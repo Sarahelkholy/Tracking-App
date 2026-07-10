@@ -30,10 +30,13 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     switch (event) {
       case GetActiveOrderEvent():
         _getActiveOrder(event.driverId);
+        return;
       case UpdateOrderStatusEvent():
         _updateOrderStatus(event);
+        return;
       case OrderUpdatedEvent():
         emit(state.copyWith(orderParam: event.order));
+        return;
     }
   }
 

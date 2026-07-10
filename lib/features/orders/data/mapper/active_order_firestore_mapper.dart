@@ -1,5 +1,4 @@
 import 'package:flower_driver/features/orders/data/mapper/order_item_mapper.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flower_driver/features/orders/data/mapper/shipping_address_mapper.dart';
 import 'package:flower_driver/features/orders/data/mapper/store_mapper.dart';
 import 'package:flower_driver/features/orders/data/mapper/user_mapper.dart';
@@ -9,9 +8,14 @@ import 'package:flower_driver/features/orders/domain/entities/order_entity.dart'
 import 'package:flower_driver/features/orders/domain/entities/order_store_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_user_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/shipping_address_entity.dart';
+import 'package:geolocator/geolocator.dart';
 
 extension ActiveOrderFirestoreResponseMapper on ActiveOrderFirestoreResponse {
   OrderEntity toEntity() {
+    final latitude = (driverLocation?['latitude'] as num?)?.toDouble();
+
+    final longitude = (driverLocation?['longitude'] as num?)?.toDouble();
+
     return OrderEntity(
       id: id ?? '',
       user:
@@ -59,20 +63,18 @@ extension ActiveOrderFirestoreResponseMapper on ActiveOrderFirestoreResponse {
       orderStatus: orderStatus != null
           ? OrderStatusEnumHelper.fromString(orderStatus!)
           : OrderStatusEnum.pending,
-      currentLocation: driverLocation != null
+      currentLocation: latitude != null && longitude != null
           ? Position(
-              longitude:
-                  (driverLocation?['longitude'] as num?)?.toDouble() ?? 0.0,
-              latitude:
-                  (driverLocation?['latitude'] as num?)?.toDouble() ?? 0.0,
+              latitude: latitude,
+              longitude: longitude,
               timestamp: DateTime.now(),
-              accuracy: 0.0,
-              altitude: 0.0,
-              heading: 0.0,
-              speed: 0.0,
-              speedAccuracy: 0.0,
-              altitudeAccuracy: 0.0,
-              headingAccuracy: 0.0,
+              accuracy: 0,
+              altitude: 0,
+              heading: 0,
+              speed: 0,
+              speedAccuracy: 0,
+              altitudeAccuracy: 0,
+              headingAccuracy: 0,
             )
           : null,
     );

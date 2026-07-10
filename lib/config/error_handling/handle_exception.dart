@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 
 class NetworkException {
-  static String getMessageError(Exception exception) {
+  static String getMessageError(dynamic exception) {
     if (exception is DioException) {
       switch (exception.type) {
         case DioExceptionType.connectionTimeout:
