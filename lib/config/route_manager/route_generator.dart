@@ -14,6 +14,7 @@ import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_suc
 import 'package:flower_driver/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
 import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
+import 'package:flower_driver/features/orders/presentation/pages/active_order_details/order_success_screen.dart';
 import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -154,6 +155,10 @@ abstract class RouteGenerator {
               child: const ActiveOrderDetailsScreen(),
             ),
           );
+
+        /// order success
+        case Routes.orderSuccess:
+          return MaterialPageRoute(builder: (_) => const OrderSuccessScreen());
 
         /// Default
         default:
