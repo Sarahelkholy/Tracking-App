@@ -30,17 +30,13 @@ abstract class LocationHelper {
     );
   }
 
-
   Future<String> getAddressFromLatLong(String latLong) async {
     final parts = latLong.split(',');
 
     final latitude = double.parse(parts[0]);
     final longitude = double.parse(parts[1]);
 
-    final placemarks = await placemarkFromCoordinates(
-      latitude,
-      longitude,
-    );
+    final placemarks = await placemarkFromCoordinates(latitude, longitude);
 
     if (placemarks.isEmpty) return 'Unknown location';
 

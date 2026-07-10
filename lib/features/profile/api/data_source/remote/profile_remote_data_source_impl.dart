@@ -26,10 +26,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }) {
     return executeApi(() async {
       final response = await _apiClient.changePassword(
-        ChangePasswordRequest(
-          password: password,
-          newPassword: newPassword,
-        ),
+        ChangePasswordRequest(password: password, newPassword: newPassword),
       );
       return response;
     });
@@ -55,6 +52,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       return await _apiClient.updateVehicle(id, body);
     });
   }
+
   @override
   Future<Result<UploadProfilePhotoResponse>> uploadPhoto(File photo) {
     return executeApi(() async {

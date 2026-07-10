@@ -11,7 +11,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final bool readOnly;
-  
+
   const CustomTextFormField({
     super.key,
     required this.controller,

@@ -11,7 +11,7 @@ abstract class ApiEndPoints {
   static const String getDriverData = "/drivers/profile-data";
 
   ///? Chang password
-  static const String changePassword ="/drivers/change-password";
+  static const String changePassword = "/drivers/change-password";
 
   static const String editProfile = "/drivers/editProfile";
   static const String uploadPhoto = "/drivers/upload-photo";

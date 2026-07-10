@@ -143,7 +143,7 @@ class OrdersRepoImpl implements OrdersRepo {
   }) async {
     final fcmResult = await _ordersFirebaseDataSource.getUserFcmToken(userId);
 
-    CustomLogger.white("FCM Result: ${fcmResult}");
+    CustomLogger.white("FCM Result: $fcmResult");
 
     if (fcmResult is Success<String?> && fcmResult.data != null) {
       await _ordersFirebaseDataSource.sendPushNotification(
