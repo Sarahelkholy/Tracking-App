@@ -1,29 +1,36 @@
-import 'package:dio/dio.dart';
+import 'package:flower_driver/secret_keys.dart';
+import 'package:open_route_service/open_route_service.dart';
 import 'package:latlong2/latlong.dart';
 
 class OsrmService {
-  final Dio _dio = Dio();
+  // TODO: Replace with your actual OpenRouteService API Key
+  final OpenRouteService client = OpenRouteService(
+    apiKey: SecretKeys.openRouteService,
+  );
 
   Future<List<LatLng>> getRoute({
     required LatLng start,
     required LatLng end,
   }) async {
-    final response = await _dio.get(
-      'https://router.project-osrm.org/route/v1/driving/'
-      '${start.longitude},${start.latitude};'
-      '${end.longitude},${end.latitude}',
-      queryParameters: {'overview': 'full', 'geometries': 'geojson'},
-    );
+    try {
+      final List<ORSCoordinate> routeCoordinates = await client
+          .directionsRouteCoordsGet(
+            startCoordinate: ORSCoordinate(
+              latitude: start.latitude,
+              longitude: start.longitude,
+            ),
+            endCoordinate: ORSCoordinate(
+              latitude: end.latitude,
+              longitude: end.longitude,
+            ),
+          );
 
-    final coordinates = response.data['routes'][0]['geometry']['coordinates'];
-
-    return coordinates
-        .map<LatLng>(
-          (point) => LatLng(
-            (point[1] as num).toDouble(),
-            (point[0] as num).toDouble(),
-          ),
-        )
-        .toList();
+      return routeCoordinates
+          .map<LatLng>((point) => LatLng(point.latitude, point.longitude))
+          .toList();
+    } catch (e) {
+      print('Error getting route: $e');
+      return [];
+    }
   }
 }

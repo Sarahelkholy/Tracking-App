@@ -12,6 +12,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../../config/error_handling/result.dart';
 import 'active_order_event.dart';
 import 'active_order_state.dart';
+import '../../../../../core/helpers/location_helper.dart';
 
 @injectable
 class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
@@ -107,9 +108,14 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
       ),
     );
 
+    final currentLocation = await LocationHelper.getCurrentLocation();
+    final editedOrder = event.order.copyWith(
+      currentLocation: currentLocation,
+    );
+
     final result = await _updateOrderStatusUseCase.call(
       UpdateOrderStatusParams(
-        order: event.order,
+        order: editedOrder,
         userNotification: state.userNotification,
         status: event.status,
         isActive: event.isActive,
