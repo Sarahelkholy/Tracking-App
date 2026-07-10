@@ -1,5 +1,4 @@
 import 'package:flower_driver/config/notification_services/save_user_info_service.dart';
-import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -56,7 +55,14 @@ class DriverCubit extends Cubit<DriverState> {
         emit(state.copyWith(isLoading: false, driver: driver));
         if (driver != null && !_deviceInitialized) {
           _deviceInitialized = true;
-          await saveUserInfoService.initUserDevice(driver.id ?? '');
+
+          await saveUserInfoService.initUserDevice(
+            userId: driver.id ?? '',
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            email: driver.email,
+            phone: driver.phone,
+          );
         }
 
         break;
