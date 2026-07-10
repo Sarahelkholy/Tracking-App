@@ -27,9 +27,31 @@ class OrdersRepoImpl implements OrdersRepo {
   final OrdersFirebaseDataSource _ordersFirebaseDataSource;
   final NotificationLocalizer _notificationLocalizer;
 
-  OrdersRepoImpl(this._ordersRemoteDataSource,
-      this._ordersFirebaseDataSource,
-      this._notificationLocalizer,);
+  OrdersRepoImpl(
+    this._ordersRemoteDataSource,
+    this._ordersFirebaseDataSource,
+    this._notificationLocalizer,
+  );
+
+  @override
+  Future<Result<void>> updateOrderLocation(
+    String orderId, {
+    required double latitude,
+    required double longitude,
+  }) async {
+    final result = await _ordersFirebaseDataSource.updateOrderStatus(orderId, {
+      FireStoreFieldName.currentLocation: {
+        'latitude': latitude,
+        'longitude': longitude,
+      },
+    });
+    switch (result) {
+      case Success():
+        return Success<void>(data: null);
+      case Failure():
+        return Failure<void>(errorMessage: result.errorMessage);
+    }
+  }
 
   @override
   Future<Result<OrdersEntity>> getAllPendingOrders() async {
@@ -107,15 +129,10 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<Result<OrderEntity>> getActiveOrder(String driverId) async {
-    final result = await _ordersFirebaseDataSource.getActiveOrder(driverId);
-
-    switch (result) {
-      case Success():
-        return Success(data: result.data.toEntity());
-      case Failure():
-        return Failure(errorMessage: result.errorMessage);
-    }
+  Stream<OrderEntity?> getActiveOrder(String driverId) {
+    return _ordersFirebaseDataSource.getActiveOrder(driverId).map((response) {
+      return response?.toEntity();
+    });
   }
 
   @override
@@ -184,7 +201,10 @@ class OrdersRepoImpl implements OrdersRepo {
       body: event == _NotificationEvent.accepted
           ? _notificationLocalizer.getOrderAcceptedBody('en', orderNumber)
           : _notificationLocalizer.getOrderUpdateBody(
-          'en', orderNumber, status),
+              'en',
+              orderNumber,
+              status,
+            ),
     );
 
     // Send push notification in user's current language
@@ -195,7 +215,10 @@ class OrdersRepoImpl implements OrdersRepo {
       body: event == _NotificationEvent.accepted
           ? _notificationLocalizer.getOrderAcceptedBody('ar', orderNumber)
           : _notificationLocalizer.getOrderUpdateBody(
-          'ar', orderNumber, status),
+              'ar',
+              orderNumber,
+              status,
+            ),
     );
 
     // Send push notification in user's current language

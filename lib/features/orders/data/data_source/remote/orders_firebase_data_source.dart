@@ -4,7 +4,7 @@ import '../../models/responses/notification_firestore_model.dart';
 import '../../models/responses/user_firestore_model.dart';
 
 abstract interface class OrdersFirebaseDataSource {
-  Future<Result<ActiveOrderFirestoreResponse>> getActiveOrder(String driverId);
+  Stream<ActiveOrderFirestoreResponse?> getActiveOrder(String driverId);
 
   Stream<ActiveOrderFirestoreResponse?> listenToActiveOrder(String orderId);
 

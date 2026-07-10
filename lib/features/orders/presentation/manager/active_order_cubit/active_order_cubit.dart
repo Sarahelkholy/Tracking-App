@@ -7,6 +7,7 @@ import 'package:flower_driver/features/orders/domain/use_cases/get_active_order_
 import 'package:flower_driver/features/orders/domain/use_cases/listen_to_active_order_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/listen_to_user_notification_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../config/error_handling/result.dart';
@@ -30,6 +31,7 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
 
   StreamSubscription? _orderSubscription;
   StreamSubscription? _userSubscription;
+  StreamSubscription<Position>? _locationSubscription;
 
   void doEvents(ActiveOrderEvents event) {
     switch (event) {
@@ -52,29 +54,27 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
       ),
     );
 
-    final result = await _getActiveOrderUseCase.call(driverId);
+    try {
+      final order = await _getActiveOrderUseCase.call(driverId).first;
 
-    switch (result) {
-      case Success():
-        emit(
-          state.copyWith(
-            getActiveOrderStateParam: BaseState(
-              isSuccess: true,
-              data: result.data,
-            ),
-            orderParam: result.data,
-          ),
-        );
-        _startListening(result.data.id, result.data.user.id);
-      case Failure():
-        emit(
-          state.copyWith(
-            getActiveOrderStateParam: BaseState(
-              errorMessage: result.errorMessage,
-            ),
-          ),
-        );
-        emitEvent(DisplayErrorEvent(errorMsg: result.errorMessage));
+      emit(
+        state.copyWith(
+          getActiveOrderStateParam: BaseState(isSuccess: true, data: order),
+          orderParam: order,
+        ),
+      );
+
+      if (order != null) {
+        _startListening(order.id, order.user.id);
+        _startTrackingLocation();
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          getActiveOrderStateParam: BaseState(errorMessage: e.toString()),
+        ),
+      );
+      emitEvent(DisplayErrorEvent(errorMsg: e.toString()));
     }
   }
 
@@ -101,6 +101,36 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     });
   }
 
+  void _startTrackingLocation() {
+    _locationSubscription?.cancel();
+    _locationSubscription =
+        Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 10,
+          ),
+        ).listen((position) {
+          final currentOrder = state.order;
+          if (currentOrder != null) {
+            final updatedOrder = currentOrder.copyWith(
+              currentLocation: position,
+            );
+
+            // We only want to update Firebase driverLocation continuously.
+            // We can reuse _updateOrderStatusUseCase passing the same status.
+            _updateOrderStatusUseCase.call(
+              UpdateOrderStatusParams(
+                order: updatedOrder,
+                status: currentOrder.orderStatus,
+              ),
+            );
+
+            // Update UI locally immediately
+            emit(state.copyWith(orderParam: updatedOrder));
+          }
+        });
+  }
+
   Future<void> _updateOrderStatus(UpdateOrderStatusEvent event) async {
     emit(
       state.copyWith(
@@ -109,9 +139,7 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     );
 
     final currentLocation = await LocationHelper.getCurrentLocation();
-    final editedOrder = event.order.copyWith(
-      currentLocation: currentLocation,
-    );
+    final editedOrder = event.order.copyWith(currentLocation: currentLocation);
 
     final result = await _updateOrderStatusUseCase.call(
       UpdateOrderStatusParams(
@@ -145,6 +173,7 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
   Future<void> close() {
     _orderSubscription?.cancel();
     _userSubscription?.cancel();
+    _locationSubscription?.cancel();
     return super.close();
   }
 }

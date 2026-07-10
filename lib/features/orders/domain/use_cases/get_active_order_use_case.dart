@@ -9,7 +9,7 @@ class GetActiveOrderUseCase {
 
   GetActiveOrderUseCase(this._ordersRepo);
 
-  Future<Result<OrderEntity>> call(String driverId) {
+  Stream<OrderEntity?> call(String driverId) {
     return _ordersRepo.getActiveOrder(driverId);
   }
 }

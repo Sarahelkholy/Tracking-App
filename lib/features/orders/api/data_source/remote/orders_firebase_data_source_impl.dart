@@ -23,27 +23,23 @@ class OrdersFirebaseDataSourceImpl implements OrdersFirebaseDataSource {
   );
 
   @override
-  Future<Result<ActiveOrderFirestoreResponse>> getActiveOrder(
-    String driverId,
-  ) async {
-    return executeApi(() async {
-      final docs = await _databaseService
-          .getCollection<ActiveOrderFirestoreResponse>(
-            path: FireStoreCollection.orderCollectionPath,
-            queryParams: {
-              FireStoreFieldName.driverId: driverId,
-              FireStoreFieldName.isActive: true,
-            },
-            limit: 1,
-            fromFirestore: ActiveOrderFirestoreResponse.fromJson,
-          );
+  Stream<ActiveOrderFirestoreResponse?> getActiveOrder(String driverId) {
+    return _databaseService
+        .watchCollection<ActiveOrderFirestoreResponse>(
+          path: FireStoreCollection.orderCollectionPath,
+          queryParams: {
+            FireStoreFieldName.driverId: driverId,
+            FireStoreFieldName.isActive: true,
+          },
 
-      if (docs.isEmpty) {
-        throw Exception(AppStrings.current.noActiveOrderFound);
-      }
-
-      return docs.first;
-    });
+          fromFirestore: ActiveOrderFirestoreResponse.fromJson,
+        )
+        .map((event) {
+          if (event.isEmpty) {
+            return null;
+          }
+          return event.first;
+        });
   }
 
   @override

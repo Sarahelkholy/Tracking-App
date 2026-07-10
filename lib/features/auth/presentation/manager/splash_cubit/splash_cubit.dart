@@ -22,11 +22,10 @@ class SplashCubit extends Cubit<SplashState> {
 
   Future<void> _getAcceptedOrder(String driverId) async {
     emit(const SplashState(isLoading: true));
-    final result = await _ordersRepo.getActiveOrder(driverId);
-
-    if (result is Success<OrderEntity>) {
-      emit(SplashState(acceptedOrder: result.data));
-    } else {
+    try {
+      final order = await _ordersRepo.getActiveOrder(driverId).first;
+      emit(SplashState(acceptedOrder: order));
+    } catch (e) {
       emit(const SplashState(acceptedOrder: null));
     }
   }

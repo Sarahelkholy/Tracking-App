@@ -9,11 +9,17 @@ abstract interface class OrdersRepo {
 
   Future<Result<bool>> acceptOrder(OrderEntity selectedOrder, String driverId);
 
-  Future<Result<OrderEntity>> getActiveOrder(String driverId);
+  Stream<OrderEntity?> getActiveOrder(String driverId);
 
   Stream<OrderEntity?> listenToActiveOrder(String orderId);
 
   Stream<UserNotificationEntity?> watchUserNotificationInfo(String userId);
 
   Future<Result<void>> updateOrderStatus(UpdateOrderStatusParams params);
+
+  Future<Result<void>> updateOrderLocation(
+    String orderId, {
+    required double latitude,
+    required double longitude,
+  });
 }
