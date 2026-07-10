@@ -21,7 +21,7 @@ class OrderSuccessScreen extends StatelessWidget {
             padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
                 const Spacer(),
                 _buildSuccessIcon(),
