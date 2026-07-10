@@ -129,10 +129,14 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Stream<OrderEntity?> getActiveOrder(String driverId) {
-    return _ordersFirebaseDataSource.getActiveOrder(driverId).map((response) {
-      return response?.toEntity();
-    });
+  Future<Result<OrderEntity?>> getActiveOrder(String driverId) async {
+    final result = await _ordersFirebaseDataSource.getActiveOrder(driverId);
+    switch (result) {
+      case Success<ActiveOrderFirestoreResponse?>():
+        return Success(data: result.data?.toEntity());
+      case Failure<ActiveOrderFirestoreResponse?>():
+        return Failure(errorMessage: result.errorMessage);
+    }
   }
 
   @override

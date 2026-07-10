@@ -54,27 +54,30 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
       ),
     );
 
-    try {
-      final order = await _getActiveOrderUseCase.call(driverId).first;
+    final result = await _getActiveOrderUseCase.call(driverId);
 
-      emit(
-        state.copyWith(
-          getActiveOrderStateParam: BaseState(isSuccess: true, data: order),
-          orderParam: order,
-        ),
-      );
-
-      if (order != null) {
-        _startListening(order.id, order.user.id);
-        _startTrackingLocation();
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
-          getActiveOrderStateParam: BaseState(errorMessage: e.toString()),
-        ),
-      );
-      emitEvent(DisplayErrorEvent(errorMsg: e.toString()));
+    switch (result) {
+      case Success():
+        final order = result.data;
+        emit(
+          state.copyWith(
+            getActiveOrderStateParam: BaseState(isSuccess: true, data: order),
+            orderParam: order,
+          ),
+        );
+        if (order != null) {
+          _startListening(order.id, order.user.id);
+          _startTrackingLocation();
+        }
+      case Failure():
+        emit(
+          state.copyWith(
+            getActiveOrderStateParam: BaseState(
+              errorMessage: result.errorMessage,
+            ),
+          ),
+        );
+        emitEvent(DisplayErrorEvent(errorMsg: result.errorMessage));
     }
   }
 

@@ -9,7 +9,7 @@ abstract interface class OrdersRepo {
 
   Future<Result<bool>> acceptOrder(OrderEntity selectedOrder, String driverId);
 
-  Stream<OrderEntity?> getActiveOrder(String driverId);
+  Future<Result<OrderEntity?>> getActiveOrder(String driverId);
 
   Stream<OrderEntity?> listenToActiveOrder(String orderId);
 

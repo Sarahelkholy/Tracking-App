@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/auth/presentation/manager/splash_cubit/spalsh_events.dart';
 import 'package:flower_driver/features/auth/presentation/manager/splash_cubit/splash_state.dart';
 import 'package:flower_driver/features/orders/domain/repositories/orders_repo.dart';
@@ -19,11 +20,12 @@ class SplashCubit extends Cubit<SplashState> {
 
   Future<void> _getAcceptedOrder(String driverId) async {
     emit(const SplashState(isLoading: true));
-    try {
-      final order = await _ordersRepo.getActiveOrder(driverId).first;
-      emit(SplashState(acceptedOrder: order));
-    } catch (e) {
-      emit(const SplashState(acceptedOrder: null));
+    final result = await _ordersRepo.getActiveOrder(driverId);
+    switch (result) {
+      case Success():
+        emit(SplashState(acceptedOrder: result.data));
+      case Failure():
+        emit(const SplashState(acceptedOrder: null));
     }
   }
 }
