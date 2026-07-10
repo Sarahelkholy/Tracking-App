@@ -82,8 +82,8 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
         ),
         body: BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
           buildWhen: (previous, current) =>
-          previous.getActiveOrderState.isLoading !=
-              current.getActiveOrderState.isLoading ||
+              previous.getActiveOrderState.isLoading !=
+                  current.getActiveOrderState.isLoading ||
               (previous.order == null && current.order != null),
           builder: (context, state) {
             if (state.getActiveOrderState.isLoading) {
@@ -112,7 +112,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           const SizedBox(height: 16),
                           BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
                             buildWhen: (p, c) =>
-                            p.order?.orderStatus != c.order?.orderStatus,
+                                p.order?.orderStatus != c.order?.orderStatus,
                             builder: (context, state) {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,8 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           const SizedBox(height: 16),
                           ContactAddressCard(
                             key: const Key(
-                                KeysStrings.activeOrderPickupAddress),
+                              KeysStrings.activeOrderPickupAddress,
+                            ),
                             imageUrl: order.store.image,
                             name: order.store.name,
                             address: order.store.address,
@@ -171,10 +172,9 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                             key: const Key(KeysStrings.activeOrderUserAddress),
                             imageUrl: order.user.photo,
                             name:
-                            "${order.user.firstName} ${order.user.lastName}",
+                                "${order.user.firstName} ${order.user.lastName}",
                             address:
-                            "${order.shippingAddress.street}, ${order
-                                .shippingAddress.city}",
+                                "${order.shippingAddress.street}, ${order.shippingAddress.city}",
                             onCallPressed: () {
                               getIt<UrlLauncherHelper>().callPhone(
                                 order.user.phone,
@@ -194,8 +194,9 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           const SizedBox(height: 8),
                           Column(
                             key: const Key(KeysStrings.activeOrderItemsList),
-                            children: List.generate(
-                                order.orderItems.length, (index,) {
+                            children: List.generate(order.orderItems.length, (
+                              index,
+                            ) {
                               final item = order.orderItems[index];
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
@@ -217,7 +218,8 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           const SizedBox(height: 24),
                           OrderDetailsRowText(
                             key: const Key(
-                                KeysStrings.activeOrderPaymentMethod),
+                              KeysStrings.activeOrderPaymentMethod,
+                            ),
                             title: localizations.paymentMethod,
                             value: order.paymentType,
                           ),
@@ -229,7 +231,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                 ),
                 BlocBuilder<ActiveOrderCubit, ActiveOrderState>(
                   buildWhen: (p, c) =>
-                  p.order?.orderStatus != c.order?.orderStatus ||
+                      p.order?.orderStatus != c.order?.orderStatus ||
                       p.updateOrderStatusState.isLoading !=
                           c.updateOrderStatusState.isLoading,
                   builder: (context, state) {
@@ -256,7 +258,8 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                           localizations,
                         ),
                         onPressed:
-                        state.order!.orderStatus == OrderStatusEnum.delivered
+                            state.order!.orderStatus ==
+                                OrderStatusEnum.delivered
                             ? null
                             : () => _onButtonPressed(context, state.order!),
                       ),

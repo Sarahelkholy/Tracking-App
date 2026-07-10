@@ -16,4 +16,12 @@ abstract interface class OrdersRepo {
   Stream<UserNotificationEntity?> watchUserNotificationInfo(String userId);
 
   Future<Result<void>> updateOrderStatus(UpdateOrderStatusParams params);
+
+  Future<Result<void>> updateDriverLocation(
+    String orderId,
+    double latitude,
+    double longitude,
+  );
+
+  Future<Result<void>> completeOrder(String orderId);
 }

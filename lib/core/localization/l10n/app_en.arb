@@ -121,5 +121,8 @@
   "orderAcceptedTitle": "Order Accepted",
   "orderAcceptedBody": "Your order {orderNumber} has been accepted by the driver",
   "orderUpdateTitle": "Order Update",
-  "orderUpdateBody": "Your order {orderNumber} is now {status}"
+  "orderUpdateBody": "Your order {orderNumber} is now {status}",
+  "thankYou": "Thank you!!",
+  "orderDeliveredSuccessfully": "The order delivered successfully",
+  "done": "Done"
 }
