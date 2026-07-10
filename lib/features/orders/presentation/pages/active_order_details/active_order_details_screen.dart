@@ -129,6 +129,8 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                 LatLng(location.latitude, location.longitude),
                 _mapController.camera.zoom,
               );
+              debugPrint('location: ${location.latitude}');
+              debugPrint('location: ${location.longitude}');
             }
           },
           buildWhen: (previous, current) =>
@@ -168,7 +170,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                   height: 50,
                   child: const Icon(
                     Icons.local_shipping,
-                    color: Colors.blue,
+                    color: AppColors.blue,
                     size: 36,
                   ),
                 ),
@@ -177,7 +179,11 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                   point: storeLatLng,
                   width: 50,
                   height: 50,
-                  child: const Icon(Icons.store, color: Colors.red, size: 36),
+                  child: const Icon(
+                    Icons.store,
+                    color: AppColors.red,
+                    size: 36,
+                  ),
                 ),
               if (userLatLng != null)
                 Marker(
@@ -186,7 +192,7 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                   height: 50,
                   child: const Icon(
                     Icons.location_on,
-                    color: Colors.green,
+                    color: AppColors.green,
                     size: 36,
                   ),
                 ),
@@ -196,10 +202,26 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
             final endLatLng =
                 order.orderStatus.step < OrderStatusEnum.picked.step
                 ? storeLatLng
-                : userLatLng;
+                : (userLatLng ?? storeLatLng);
 
             if (startLatLng != null && endLatLng != null) {
-              if (startLatLng != _lastStart || endLatLng != _lastEnd) {
+              bool shouldFetch = false;
+              if (_lastStart == null || _lastEnd == null) {
+                shouldFetch = true;
+              } else if (endLatLng != _lastEnd) {
+                shouldFetch = true;
+              } else {
+                final distance = const Distance().as(
+                  LengthUnit.Meter,
+                  startLatLng,
+                  _lastStart!,
+                );
+                if (distance > 50) {
+                  shouldFetch = true;
+                }
+              }
+
+              if (shouldFetch) {
                 _lastStart = startLatLng;
                 _lastEnd = endLatLng;
                 _routeFuture = _osrmService.getRoute(
@@ -217,102 +239,111 @@ class _ActiveOrderDetailsScreenState extends State<ActiveOrderDetailsScreen>
                     children: [
                       FlutterMap(
                         mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter:
-                          driverLatLng ??
-                          storeLatLng ??
-                          userLatLng ??
-                          const LatLng(30.0444, 31.2357), // Cairo, Egypt
-                      initialZoom: 14,
-                      onMapReady: () {
-                        if (mounted) {
-                          setState(() {
-                            _isMapReady = true;
-                          });
-                        }
-                      },
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.flower.driver',
-                      ),
-                      if (startLatLng != null && endLatLng != null)
-                        FutureBuilder<List<LatLng>>(
-                          future: _routeFuture,
-                          builder: (context, snapshot) {
-                            final points =
-                                snapshot.data ?? [startLatLng, endLatLng];
-                            return PolylineLayer(
-                              polylines: [
-                                Polyline(
-                                  points: points,
-                                  color: AppColors.primaryColor,
-                                  strokeWidth: 5,
-                                ),
-                              ],
-                            );
+                        options: MapOptions(
+                          initialCenter:
+                              driverLatLng ??
+                              storeLatLng ??
+                              userLatLng ??
+                              const LatLng(30.0444, 31.2357), // Cairo, Egypt
+                          initialZoom: 14,
+                          onMapReady: () {
+                            if (mounted) {
+                              setState(() {
+                                _isMapReady = true;
+                              });
+                            }
                           },
                         ),
-                      MarkerLayer(markers: markers),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.flower.driver',
+                          ),
+                          if (startLatLng != null && endLatLng != null)
+                            FutureBuilder<List<LatLng>>(
+                              future: _routeFuture,
+                              builder: (context, snapshot) {
+                                final points =
+                                    snapshot.data ?? [startLatLng, endLatLng];
+                                return PolylineLayer(
+                                  polylines: [
+                                    Polyline(
+                                      points: points,
+                                      color: AppColors.primaryColor,
+                                      strokeWidth: 5,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          MarkerLayer(markers: markers),
+                        ],
+                      ),
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FloatingActionButton(
+                              heroTag: "zoom_in_btn",
+                              mini: true,
+                              backgroundColor: AppColors.white,
+                              onPressed: () {
+                                if (_isMapReady) {
+                                  _mapController.move(
+                                    _mapController.camera.center,
+                                    _mapController.camera.zoom + 1,
+                                  );
+                                }
+                              },
+                              child: const Icon(
+                                Icons.add,
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            FloatingActionButton(
+                              heroTag: "zoom_out_btn",
+                              mini: true,
+                              backgroundColor: AppColors.white,
+                              onPressed: () {
+                                if (_isMapReady) {
+                                  _mapController.move(
+                                    _mapController.camera.center,
+                                    _mapController.camera.zoom - 1,
+                                  );
+                                }
+                              },
+                              child: const Icon(
+                                Icons.remove,
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            if (driverLatLng != null) ...[
+                              const SizedBox(height: 8),
+                              FloatingActionButton(
+                                heroTag: "my_location_btn",
+                                mini: true,
+                                backgroundColor: AppColors.white,
+                                onPressed: () {
+                                  if (_isMapReady) {
+                                    _mapController.move(driverLatLng, 15);
+                                  }
+                                },
+                                child: const Icon(
+                                  Icons.my_location,
+                                  color: AppColors.primaryColor,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                  Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FloatingActionButton(
-                          heroTag: "zoom_in_btn",
-                          mini: true,
-                          backgroundColor: AppColors.white,
-                          onPressed: () {
-                            if (_isMapReady) {
-                              _mapController.move(
-                                _mapController.camera.center,
-                                _mapController.camera.zoom + 1,
-                              );
-                            }
-                          },
-                          child: const Icon(Icons.add, color: AppColors.primaryColor),
-                        ),
-                        const SizedBox(height: 8),
-                        FloatingActionButton(
-                          heroTag: "zoom_out_btn",
-                          mini: true,
-                          backgroundColor: AppColors.white,
-                          onPressed: () {
-                            if (_isMapReady) {
-                              _mapController.move(
-                                _mapController.camera.center,
-                                _mapController.camera.zoom - 1,
-                              );
-                            }
-                          },
-                          child: const Icon(Icons.remove, color: AppColors.primaryColor),
-                        ),
-                        if (driverLatLng != null) ...[
-                          const SizedBox(height: 8),
-                          FloatingActionButton(
-                            heroTag: "my_location_btn",
-                            mini: true,
-                            backgroundColor: AppColors.white,
-                            onPressed: () {
-                              if (_isMapReady) {
-                                _mapController.move(driverLatLng, 15);
-                              }
-                            },
-                            child: const Icon(Icons.my_location, color: AppColors.primaryColor),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(

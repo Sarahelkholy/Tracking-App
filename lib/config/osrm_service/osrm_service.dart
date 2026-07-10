@@ -30,7 +30,7 @@ class OsrmService {
           .toList();
     } catch (e) {
       print('Error getting route: $e');
-      return [];
+      return [start, end];
     }
   }
 }
