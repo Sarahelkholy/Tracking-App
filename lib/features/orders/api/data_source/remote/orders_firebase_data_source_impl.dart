@@ -2,7 +2,6 @@ import 'package:flower_driver/config/data_base/data_base_service.dart';
 import 'package:flower_driver/config/firebase/fcm_notification_service.dart';
 import 'package:flower_driver/config/firebase/firestore_collection.dart';
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
-import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/features/orders/data/data_source/remote/orders_firebase_data_source.dart';
 import 'package:flower_driver/features/orders/data/models/responses/active_order_firestore_response.dart';
 import 'package:flower_driver/features/orders/data/models/responses/notification_firestore_model.dart';

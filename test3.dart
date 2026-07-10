@@ -8,8 +8,14 @@ void main() async {
   try {
     print('Testing SF route');
     final routeCoordinates = await client.directionsRouteCoordsGet(
-      startCoordinate: const ORSCoordinate(latitude: 37.4219983, longitude: -122.084),
-      endCoordinate: const ORSCoordinate(latitude: 37.7749, longitude: -122.4194),
+      startCoordinate: const ORSCoordinate(
+        latitude: 37.4219983,
+        longitude: -122.084,
+      ),
+      endCoordinate: const ORSCoordinate(
+        latitude: 37.7749,
+        longitude: -122.4194,
+      ),
     );
     print("Success: \${routeCoordinates.length} points");
   } catch (e) {

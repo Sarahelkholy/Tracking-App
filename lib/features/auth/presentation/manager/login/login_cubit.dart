@@ -57,7 +57,7 @@ class LoginCubit extends Cubit<LoginState> {
           case Success<DriverEntity>():
             _driverCubit.doEvent(SetDriverDataEvent(driver: driverResult.data));
 
-            final activeOrderResult = await _getActiveOrderUseCase.call(
+            final activeOrderResult = _getActiveOrderUseCase.call(
               driverResult.data.id ?? "",
             );
 

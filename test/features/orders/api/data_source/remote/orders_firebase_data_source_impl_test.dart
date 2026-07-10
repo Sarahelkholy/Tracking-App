@@ -45,7 +45,7 @@ void main() {
         ),
       ).thenAnswer((_) async => [response]);
 
-      final result = await dataSource.getActiveOrder("driver_123");
+      final result = dataSource.getActiveOrder("driver_123");
 
       expect(result, isA<Success<ActiveOrderFirestoreResponse>>());
       expect(
@@ -64,7 +64,7 @@ void main() {
         ),
       ).thenAnswer((_) async => []);
 
-      final result = await dataSource.getActiveOrder("driver_123");
+      final result = dataSource.getActiveOrder("driver_123");
 
       expect(result, isA<Failure<ActiveOrderFirestoreResponse>>());
       expect(

@@ -4,9 +4,6 @@ import 'package:flower_driver/features/orders/domain/repositories/orders_repo.da
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../config/error_handling/result.dart';
-import '../../../../orders/domain/entities/order_entity.dart';
-
 @LazySingleton()
 class SplashCubit extends Cubit<SplashState> {
   SplashCubit(this._ordersRepo) : super(const SplashState());

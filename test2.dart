@@ -8,7 +8,10 @@ void main() async {
   try {
     print('Testing original (lat, lon)');
     final routeCoordinates = await client.directionsRouteCoordsGet(
-      startCoordinate: const ORSCoordinate(latitude: 30.0444, longitude: 31.2357),
+      startCoordinate: const ORSCoordinate(
+        latitude: 30.0444,
+        longitude: 31.2357,
+      ),
       endCoordinate: const ORSCoordinate(latitude: 31.2001, longitude: 29.9187),
     );
     print(
@@ -21,7 +24,10 @@ void main() async {
   try {
     print('Testing swapped (lon, lat)');
     final routeCoordinates = await client.directionsRouteCoordsGet(
-      startCoordinate: const ORSCoordinate(latitude: 31.2357, longitude: 30.0444),
+      startCoordinate: const ORSCoordinate(
+        latitude: 31.2357,
+        longitude: 30.0444,
+      ),
       endCoordinate: const ORSCoordinate(latitude: 29.9187, longitude: 31.2001),
     );
     print(

@@ -106,7 +106,7 @@ void main() {
         mockRepo.getActiveOrder(any),
       ).thenAnswer((_) async => Success<OrderEntity>(data: tOrder));
 
-      final result = await useCase("driver_id");
+      final result = useCase("driver_id");
 
       expect(result, isA<Success<OrderEntity>>());
       expect((result as Success<OrderEntity>).data, tOrder);
@@ -119,7 +119,7 @@ void main() {
         (_) async => Failure<OrderEntity>(errorMessage: errorMessage),
       );
 
-      final result = await useCase("driver_id");
+      final result = useCase("driver_id");
 
       expect(result, isA<Failure<OrderEntity>>());
       expect((result as Failure<OrderEntity>).errorMessage, errorMessage);

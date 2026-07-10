@@ -31,19 +31,19 @@ class ThankYouScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.success.withOpacity(0.1),
+                    color: AppColors.success.withValues(alpha: 0.1),
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.success.withOpacity(0.2),
+                      color: AppColors.success.withValues(alpha: 0.2),
                     ),
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.success.withOpacity(0.4),
+                        color: AppColors.success.withValues(alpha: 0.4),
                       ),
                       child: const Icon(
                         Icons.check_rounded,
@@ -58,7 +58,7 @@ class ThankYouScreen extends StatelessWidget {
               Text(
                 localizations.thankYou,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.success,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class ThankYouScreen extends StatelessWidget {
               Text(
                 localizations.theOrderDeliveredSuccessfully,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.black90,
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
