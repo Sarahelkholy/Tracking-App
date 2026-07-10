@@ -8,8 +8,10 @@ import 'package:flower_driver/features/orders/domain/entities/order_product_enti
 import 'package:flower_driver/features/orders/domain/entities/order_store_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_user_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/shipping_address_entity.dart';
+import 'package:flower_driver/features/orders/domain/entities/user_notification_entity.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/get_active_order_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/listen_to_active_order_use_case.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/listen_to_user_notification_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
 import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
 import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_event.dart';
@@ -24,6 +26,7 @@ import 'active_order_cubit_test.mocks.dart';
   GetActiveOrderUseCase,
   ListenToActiveOrderUseCase,
   UpdateOrderStatusUseCase,
+  ListenToUserNotificationUseCase,
 ])
 void main() {
   late ActiveOrderCubit cubit;
@@ -31,6 +34,7 @@ void main() {
   late MockGetActiveOrderUseCase mockGetActiveOrderUseCase;
   late MockListenToActiveOrderUseCase mockListenToActiveOrderUseCase;
   late MockUpdateOrderStatusUseCase mockUpdateOrderStatusUseCase;
+  late MockListenToUserNotificationUseCase mockListenToUserNotificationUseCase;
 
   late String errorMessage;
 
@@ -102,6 +106,11 @@ void main() {
     orderStatus: OrderStatusEnum.accepted,
   );
 
+  const tUserNotification = UserNotificationEntity(
+    fcmToken: 'fcm_token',
+    language: 'en',
+  );
+
   setUpAll(() {
     errorMessage = "Something went wrong";
 
@@ -113,11 +122,13 @@ void main() {
     mockGetActiveOrderUseCase = MockGetActiveOrderUseCase();
     mockListenToActiveOrderUseCase = MockListenToActiveOrderUseCase();
     mockUpdateOrderStatusUseCase = MockUpdateOrderStatusUseCase();
+    mockListenToUserNotificationUseCase = MockListenToUserNotificationUseCase();
 
     cubit = ActiveOrderCubit(
       mockGetActiveOrderUseCase,
       mockListenToActiveOrderUseCase,
       mockUpdateOrderStatusUseCase,
+      mockListenToUserNotificationUseCase,
     );
   });
 
@@ -139,6 +150,9 @@ void main() {
         when(
           mockListenToActiveOrderUseCase.call(any),
         ).thenAnswer((_) => const Stream.empty());
+        when(
+          mockListenToUserNotificationUseCase.call(any),
+        ).thenAnswer((_) => const Stream.empty());
       },
       build: () => cubit,
       act: (cubit) {
@@ -156,6 +170,9 @@ void main() {
       verify: (_) {
         verify(mockGetActiveOrderUseCase.call("driver_id")).called(1);
         verify(mockListenToActiveOrderUseCase.call(tOrder.id)).called(1);
+        verify(
+          mockListenToUserNotificationUseCase.call(tOrder.user.id),
+        ).called(1);
       },
     );
 
@@ -184,20 +201,13 @@ void main() {
       "update order status success",
       setUp: () {
         when(
-          mockUpdateOrderStatusUseCase.call(
-            any,
-            any,
-            isActive: anyNamed('isActive'),
-          ),
+          mockUpdateOrderStatusUseCase.call(any),
         ).thenAnswer((_) async => Success<void>(data: null));
       },
       build: () => cubit,
       act: (cubit) {
         cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: tOrder,
-            status: OrderStatusEnum.picked.name,
-          ),
+          UpdateOrderStatusEvent(order: tOrder, status: OrderStatusEnum.picked),
         );
       },
       expect: () => [
@@ -211,9 +221,11 @@ void main() {
       verify: (_) {
         verify(
           mockUpdateOrderStatusUseCase.call(
-            tOrder,
-            OrderStatusEnum.picked.name,
-            isActive: null,
+            argThat(
+              isA<UpdateOrderStatusParams>()
+                  .having((p) => p.order, 'order', tOrder)
+                  .having((p) => p.status, 'status', OrderStatusEnum.picked),
+            ),
           ),
         ).called(1);
       },
@@ -223,20 +235,13 @@ void main() {
       "update order status failure",
       setUp: () {
         when(
-          mockUpdateOrderStatusUseCase.call(
-            any,
-            any,
-            isActive: anyNamed('isActive'),
-          ),
+          mockUpdateOrderStatusUseCase.call(any),
         ).thenAnswer((_) async => Failure<void>(errorMessage: errorMessage));
       },
       build: () => cubit,
       act: (cubit) {
         cubit.doEvents(
-          UpdateOrderStatusEvent(
-            order: tOrder,
-            status: OrderStatusEnum.picked.name,
-          ),
+          UpdateOrderStatusEvent(order: tOrder, status: OrderStatusEnum.picked),
         );
       },
       expect: () => [
@@ -251,11 +256,43 @@ void main() {
 
     blocTest<ActiveOrderCubit, ActiveOrderState>(
       "order updated event updates state with new order",
+      setUp: () {
+        when(
+          mockListenToUserNotificationUseCase.call(any),
+        ).thenAnswer((_) => const Stream.empty());
+      },
       build: () => cubit,
       act: (cubit) {
         cubit.doEvents(OrderUpdatedEvent(tOrder));
       },
       expect: () => [const ActiveOrderState().copyWith(orderParam: tOrder)],
+    );
+
+    blocTest<ActiveOrderCubit, ActiveOrderState>(
+      "user notification update from stream",
+      setUp: () {
+        when(
+          mockListenToUserNotificationUseCase.call(any),
+        ).thenAnswer((_) => Stream.value(tUserNotification));
+        when(
+          mockGetActiveOrderUseCase.call(any),
+        ).thenAnswer((_) async => Success<OrderEntity>(data: tOrder));
+        when(
+          mockListenToActiveOrderUseCase.call(any),
+        ).thenAnswer((_) => const Stream.empty());
+      },
+      build: () => cubit,
+      act: (cubit) {
+        cubit.doEvents(GetActiveOrderEvent(driverId: "driver_id"));
+      },
+      skip: 2,
+      expect: () => [
+        const ActiveOrderState().copyWith(
+          getActiveOrderStateParam: BaseState(isSuccess: true, data: tOrder),
+          orderParam: tOrder,
+          userNotificationParam: tUserNotification,
+        ),
+      ],
     );
   });
 }

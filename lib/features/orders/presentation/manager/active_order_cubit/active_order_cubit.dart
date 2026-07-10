@@ -5,6 +5,7 @@ import 'package:flower_driver/config/base_cubit/base_event.dart';
 import 'package:flower_driver/config/base_state/base_state.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/get_active_order_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/listen_to_active_order_use_case.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/listen_to_user_notification_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
 import 'package:injectable/injectable.dart';
 
@@ -18,13 +19,16 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     this._getActiveOrderUseCase,
     this._listenToActiveOrderUseCase,
     this._updateOrderStatusUseCase,
+    this._listenToUserNotificationUseCase,
   ) : super(const ActiveOrderState());
 
   final GetActiveOrderUseCase _getActiveOrderUseCase;
   final ListenToActiveOrderUseCase _listenToActiveOrderUseCase;
   final UpdateOrderStatusUseCase _updateOrderStatusUseCase;
+  final ListenToUserNotificationUseCase _listenToUserNotificationUseCase;
 
   StreamSubscription? _orderSubscription;
+  StreamSubscription? _userSubscription;
 
   void doEvents(ActiveOrderEvents event) {
     switch (event) {
@@ -60,7 +64,7 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
             orderParam: result.data,
           ),
         );
-        _listenToOrder(result.data.id);
+        _startListening(result.data.id, result.data.user.id);
       case Failure():
         emit(
           state.copyWith(
@@ -73,12 +77,26 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     }
   }
 
-  void _listenToOrder(String orderId) {
+  void _startListening(String orderId, String userId) {
     _orderSubscription?.cancel();
     _orderSubscription = _listenToActiveOrderUseCase.call(orderId).listen((
       order,
     ) {
       doEvents(OrderUpdatedEvent(order));
+      if (order != null) {
+        _listenToUser(order.user.id);
+      }
+    });
+
+    _listenToUser(userId);
+  }
+
+  void _listenToUser(String userId) {
+    _userSubscription?.cancel();
+    _userSubscription = _listenToUserNotificationUseCase.call(userId).listen((
+      userNotification,
+    ) {
+      emit(state.copyWith(userNotificationParam: userNotification));
     });
   }
 
@@ -90,9 +108,12 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
     );
 
     final result = await _updateOrderStatusUseCase.call(
-      event.order,
-      event.status,
-      isActive: event.isActive,
+      UpdateOrderStatusParams(
+        order: event.order,
+        userNotification: state.userNotification,
+        status: event.status,
+        isActive: event.isActive,
+      ),
     );
 
     switch (result) {
@@ -117,6 +138,7 @@ class ActiveOrderCubit extends BaseCubit<ActiveOrderState, BaseEvent> {
   @override
   Future<void> close() {
     _orderSubscription?.cancel();
+    _userSubscription?.cancel();
     return super.close();
   }
 }

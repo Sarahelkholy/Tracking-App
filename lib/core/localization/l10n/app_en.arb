@@ -117,6 +117,9 @@
   "arrivedAtPickupPoint" : "Arrived at Pickup point",
   "startDeliver" : "Start deliver",
   "arrivedToTheUser" : "Arrived to the user",
-  "deliveredToTheUser" : "Delivered to the user"
-
+  "deliveredToTheUser" : "Delivered to the user",
+  "orderAcceptedTitle": "Order Accepted",
+  "orderAcceptedBody": "Your order {orderNumber} has been accepted by the driver",
+  "orderUpdateTitle": "Order Update",
+  "orderUpdateBody": "Your order {orderNumber} is now {status}"
 }

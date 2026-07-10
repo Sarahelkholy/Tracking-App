@@ -16,4 +16,7 @@ abstract class ApiEndPoints {
   static const String editProfile = "/drivers/editProfile";
   static const String updateVehicle = '/vehicle';
   static const String pendingOrders = "/orders/pending-orders";
+
+  static const String fcmBaseUrl = 'https://fcm.googleapis.com';
+  static const String fcmSendPath = '/v1/projects/{projectId}/messages:send';
 }
