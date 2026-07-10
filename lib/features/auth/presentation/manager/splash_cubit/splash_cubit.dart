@@ -4,6 +4,9 @@ import 'package:flower_driver/features/orders/domain/repositories/orders_repo.da
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../config/error_handling/result.dart';
+import '../../../../orders/domain/entities/order_entity.dart';
+
 @LazySingleton()
 class SplashCubit extends Cubit<SplashState> {
   SplashCubit(this._ordersRepo) : super(const SplashState());
@@ -19,7 +22,12 @@ class SplashCubit extends Cubit<SplashState> {
 
   Future<void> _getAcceptedOrder(String driverId) async {
     emit(const SplashState(isLoading: true));
-    var acceptedOrderEntity = await _ordersRepo.getActiveOrderIfExist(driverId);
-    emit(SplashState(acceptedOrder: acceptedOrderEntity));
+    final result = await _ordersRepo.getActiveOrder(driverId);
+
+    if (result is Success<OrderEntity>) {
+      emit(SplashState(acceptedOrder: result.data));
+    } else {
+      emit(const SplashState(acceptedOrder: null));
+    }
   }
 }

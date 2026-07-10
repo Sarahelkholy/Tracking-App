@@ -1,8 +1,8 @@
+import 'package:flower_driver/core/helpers/date_time_extension.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class OrderDetailsStatusSection extends StatelessWidget {
   const OrderDetailsStatusSection({
@@ -58,7 +58,7 @@ class OrderDetailsStatusSection extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            DateFormat('EEE, dd MMM yyyy, hh:mm a').format(orderTime),
+            orderTime.toDayMonthYearTime(),
             style: AppTextStyles.medium14(
               context,
             ).copyWith(color: AppColors.grayDark),

@@ -1,6 +1,5 @@
 import '../../../../config/error_handling/result.dart';
 import '../entities/change_password/change_password_request_entity.dart';
-import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/profile/data/models/request/edit_profile_request.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/driver_data_entity.dart';
 import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';

@@ -1,8 +1,17 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
+import 'package:flower_driver/core/helpers/notification_localizer.dart';
+import 'package:flower_driver/features/orders/data/data_source/remote/orders_firebase_data_source.dart';
 import 'package:flower_driver/features/orders/data/mapper/active_order_firestore_mapper.dart';
 import 'package:flower_driver/features/orders/data/mapper/orders_mapper.dart';
+import 'package:flower_driver/features/orders/data/mapper/user_notification_mapper.dart';
+import 'package:flower_driver/features/orders/data/models/responses/notification_firestore_model.dart';
+import 'package:flower_driver/features/orders/data/models/responses/user_firestore_model.dart';
 import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
+import 'package:flower_driver/features/orders/domain/entities/user_notification_entity.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../config/error_handling/result.dart';
@@ -15,8 +24,12 @@ import '../models/responses/orders_response/orders_response.dart';
 @Injectable(as: OrdersRepo)
 class OrdersRepoImpl implements OrdersRepo {
   final OrdersRemoteDataSource _ordersRemoteDataSource;
+  final OrdersFirebaseDataSource _ordersFirebaseDataSource;
+  final NotificationLocalizer _notificationLocalizer;
 
-  OrdersRepoImpl(this._ordersRemoteDataSource);
+  OrdersRepoImpl(this._ordersRemoteDataSource,
+      this._ordersFirebaseDataSource,
+      this._notificationLocalizer,);
 
   @override
   Future<Result<OrdersEntity>> getAllPendingOrders() async {
@@ -31,25 +44,10 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<OrderEntity?> getActiveOrderIfExist(String driverId) async {
-    final result = await getActiveOrder(driverId);
-
-    if (result is Success<OrderEntity>) {
-      return result.data;
-    }
-    return null;
-  }
-
-  @override
   Future<Result<bool>> acceptOrder(
     OrderEntity selectedOrder,
     String driverId,
   ) async {
-    // Convert to Firestore model for saving
-    print(
-      "shipping address before mapping : =====> ${selectedOrder.shippingAddress.city}",
-    );
-
     final firestoreModel = ActiveOrderFirestoreResponse(
       id: selectedOrder.id,
       user: selectedOrder.user.toModel(),
@@ -77,29 +75,25 @@ class OrdersRepoImpl implements OrdersRepo {
           : null,
     );
 
-    print(
-      "shipping address after mapping: =====> ${firestoreModel.shippingAddress?.city}",
-    );
-
-
-    final result = await _ordersRemoteDataSource.saveActiveOrder(
+    final result = await _ordersFirebaseDataSource.saveActiveOrder(
       selectedOrder.id,
-      firestoreModel.toJson(),
+      firestoreModel,
     );
 
     if (result is Success) {
-      // Notification logic for acceptance
-      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
+      final userResult = await _ordersFirebaseDataSource.getUserInfo(
         selectedOrder.user.id,
       );
-
-      if (fcmResult is Success<String?> && fcmResult.data != null) {
-        final fcmToken = fcmResult.data!;
-        await _ordersRemoteDataSource.sendPushNotification(
-          fcmToken: fcmToken,
-          title: "Order Accepted",
-          body:
-              "Your order #${selectedOrder.orderNumber} has been accepted by the driver",
+      if (userResult is Success<UserFirestoreModel?> &&
+          userResult.data != null) {
+        unawaited(
+          _sendLocalizedNotification(
+            userId: selectedOrder.user.id,
+            orderNumber: selectedOrder.orderNumber,
+            userNotification: userResult.data!.toNotificationEntity(),
+            event: _NotificationEvent.accepted,
+            status: OrderStatusEnum.accepted,
+          ),
         );
       }
     }
@@ -114,7 +108,7 @@ class OrdersRepoImpl implements OrdersRepo {
 
   @override
   Future<Result<OrderEntity>> getActiveOrder(String driverId) async {
-    final result = await _ordersRemoteDataSource.getActiveOrder(driverId);
+    final result = await _ordersFirebaseDataSource.getActiveOrder(driverId);
 
     switch (result) {
       case Success():
@@ -126,44 +120,97 @@ class OrdersRepoImpl implements OrdersRepo {
 
   @override
   Stream<OrderEntity?> listenToActiveOrder(String orderId) {
-    return _ordersRemoteDataSource.listenToActiveOrder(orderId).map((response) {
+    return _ordersFirebaseDataSource.listenToActiveOrder(orderId).map((
+        response,) {
       return response?.toEntity();
     });
   }
 
   @override
-  Future<Result<void>> updateOrderStatus(
-    OrderEntity order,
-    String status, {
-    bool? isActive,
-  }) async {
+  Stream<UserNotificationEntity?> watchUserNotificationInfo(String userId) {
+    return _ordersFirebaseDataSource.watchUserInfo(userId).map((model) {
+      return model?.toNotificationEntity();
+    });
+  }
+
+  @override
+  Future<Result<void>> updateOrderStatus(UpdateOrderStatusParams params) async {
     final updateData = <String, dynamic>{
-      FireStoreFieldName.orderStatus: status,
+      FireStoreFieldName.orderStatus: params.status.name,
     };
-    if (isActive != null) {
-      updateData[FireStoreFieldName.isActive] = isActive;
+    if (params.isActive != null) {
+      updateData[FireStoreFieldName.isActive] = params.isActive;
     }
 
-    final result = await _ordersRemoteDataSource.updateOrderStatus(
-      order.id,
+    final result = await _ordersFirebaseDataSource.updateOrderStatus(
+      params.order.id,
       updateData,
     );
 
-    if (result is Success) {
-      // Notification logic
-      final fcmResult = await _ordersRemoteDataSource.getUserFcmToken(
-        order.user.id,
+    if (result is Success && params.userNotification != null) {
+      unawaited(
+        _sendLocalizedNotification(
+          userId: params.order.user.id,
+          orderNumber: params.order.orderNumber,
+          userNotification: params.userNotification!,
+          event: _NotificationEvent.update,
+          status: params.status,
+        ),
       );
-
-      if (fcmResult is Success<String?> && fcmResult.data != null) {
-        final fcmToken = fcmResult.data!;
-        await _ordersRemoteDataSource.sendPushNotification(
-          fcmToken: fcmToken,
-          title: "Order Update",
-          body: "Your order #${order.orderNumber} is now $status",
-        );
-      }
     }
     return result;
   }
+
+  Future<void> _sendLocalizedNotification({
+    required String userId,
+    required String orderNumber,
+    required UserNotificationEntity userNotification,
+    required _NotificationEvent event,
+    required OrderStatusEnum status,
+  }) async {
+    // Generate English content
+    final enContent = NotificationContentModel(
+      title: event == _NotificationEvent.accepted
+          ? _notificationLocalizer.getOrderAcceptedTitle('en')
+          : _notificationLocalizer.getOrderUpdateTitle('en'),
+      body: event == _NotificationEvent.accepted
+          ? _notificationLocalizer.getOrderAcceptedBody('en', orderNumber)
+          : _notificationLocalizer.getOrderUpdateBody(
+          'en', orderNumber, status),
+    );
+
+    // Generate Arabic content
+    final arContent = NotificationContentModel(
+      title: event == _NotificationEvent.accepted
+          ? _notificationLocalizer.getOrderAcceptedTitle('ar')
+          : _notificationLocalizer.getOrderUpdateTitle('ar'),
+      body: event == _NotificationEvent.accepted
+          ? _notificationLocalizer.getOrderAcceptedBody('ar', orderNumber)
+          : _notificationLocalizer.getOrderUpdateBody(
+          'ar', orderNumber, status),
+    );
+
+    // Send push notification in user's current language
+    final pushContent = userNotification.language == 'ar'
+        ? arContent
+        : enContent;
+
+    await _ordersFirebaseDataSource.sendPushNotification(
+      fcmToken: userNotification.fcmToken,
+      title: pushContent.title,
+      body: pushContent.body,
+    );
+
+    // Save notification history with nested language objects
+    final notification = NotificationFirestoreModel(
+      id: '', // Generated by data source
+      en: enContent,
+      ar: arContent,
+      createdAt: Timestamp.now(),
+    );
+
+    await _ordersFirebaseDataSource.saveNotification(userId, notification);
+  }
 }
+
+enum _NotificationEvent { accepted, update }

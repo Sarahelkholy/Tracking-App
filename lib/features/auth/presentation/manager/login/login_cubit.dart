@@ -1,4 +1,9 @@
+import 'package:flower_driver/config/driver/domain/entities/driver_entity.dart';
+import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
+import 'package:flower_driver/config/driver/manager/driver_events.dart';
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/get_active_order_use_case.dart';
+import 'package:flower_driver/config/driver/domain/use_cases/get_driver_data_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -11,8 +16,14 @@ import 'login_state.dart';
 @injectable
 class LoginCubit extends Cubit<LoginState> {
   final LoginUseCase _loginUseCase;
+  final GetDriverDataUseCase _getDriverDataUseCase;
+  final GetActiveOrderUseCase _getActiveOrderUseCase;
+  final DriverCubit _driverCubit;
 
-  LoginCubit(this._loginUseCase) : super(const LoginInitial());
+  LoginCubit(this._loginUseCase,
+      this._getDriverDataUseCase,
+      this._getActiveOrderUseCase,
+      this._driverCubit,) : super(const LoginInitial());
 
   void doEvents(LoginEvents event) {
     switch (event) {
@@ -38,9 +49,35 @@ class LoginCubit extends Cubit<LoginState> {
 
     switch (result) {
       case Success<AuthResponse>():
-        emit(
-          LoginSuccess(authResponse: result.data, rememberMe: event.rememberMe),
-        );
+        final driverResult = await _getDriverDataUseCase.call();
+
+        switch (driverResult) {
+          case Success<DriverEntity>():
+            _driverCubit.doEvent(SetDriverDataEvent(driver: driverResult.data));
+
+            final activeOrderResult =
+            await _getActiveOrderUseCase.call(driverResult.data.id ?? "");
+
+            bool hasActiveOrder = false;
+            if (activeOrderResult is Success) {
+              hasActiveOrder = true;
+            }
+
+            emit(
+              LoginSuccess(
+                authResponse: result.data,
+                rememberMe: event.rememberMe,
+                hasActiveOrder: hasActiveOrder,
+              ),
+            );
+          case Failure<DriverEntity>():
+            emit(
+              LoginFailure(
+                errorMessage: driverResult.errorMessage,
+                rememberMe: event.rememberMe,
+              ),
+            );
+        }
         break;
 
       case Failure<AuthResponse>():
