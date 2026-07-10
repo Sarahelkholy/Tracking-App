@@ -14,4 +14,10 @@ abstract class OrdersApiClient {
 
   @GET(ApiEndPoints.pendingOrders)
   Future<OrdersResponse> getAllPendingOrders();
+
+  @PUT("${ApiEndPoints.updateOrderState}{orderId}")
+  Future<void> updateOrderState(
+    @Path("orderId") String orderId,
+    @Body() Map<String, dynamic> body,
+  );
 }

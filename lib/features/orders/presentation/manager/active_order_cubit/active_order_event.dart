@@ -26,3 +26,15 @@ class OrderUpdatedEvent extends ActiveOrderEvents {
 
   OrderUpdatedEvent(this.order);
 }
+
+class UpdateDriverLocationEvent extends ActiveOrderEvents {
+  final String orderId;
+  final double latitude;
+  final double longitude;
+
+  UpdateDriverLocationEvent({
+    required this.orderId,
+    required this.latitude,
+    required this.longitude,
+  });
+}

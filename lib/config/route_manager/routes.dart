@@ -17,4 +17,5 @@ abstract class Routes {
   static const String changPasswordRoute = "/changePassword";
 
   static const String activeOrderDetails = "/activeOrderDetails";
+  static const String orderSuccess = "/orderSuccess";
 }

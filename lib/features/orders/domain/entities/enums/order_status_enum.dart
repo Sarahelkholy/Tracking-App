@@ -5,6 +5,7 @@ enum OrderStatusEnum {
   outForDelivery,
   arrived,
   delivered,
+  completed,
 }
 
 extension OrderStatusEnumHelper on OrderStatusEnum {
@@ -31,7 +32,7 @@ extension OrderStatusEnumHelper on OrderStatusEnum {
   }
 
   bool? get isActiveNext {
-    if (this == OrderStatusEnum.arrived) return false;
+    if (this == OrderStatusEnum.arrived) return true;
     if (nextStatus != null) return true;
     return null;
   }
