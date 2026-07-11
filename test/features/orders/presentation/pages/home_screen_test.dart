@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flower_driver/config/base_state/base_state.dart';
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/driver/manager/driver_state.dart';
+import 'package:flower_driver/features/orders/domain/entities/orders_entity.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_event.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
+
 class MockDriverCubit extends MockCubit<DriverState> implements DriverCubit {}
 
 class FakeHomeEvent extends Fake implements HomeEvent {}
@@ -46,15 +48,17 @@ void main() {
     );
   }
 
-  testWidgets('renders No pending orders found when state is empty', (WidgetTester tester) async {
+  testWidgets('renders No pending orders found when state is empty',
+      (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetUnderTest());
     expect(find.text('No pending orders found.'), findsOneWidget);
   });
 
-  testWidgets('renders loading indicator when state is loading', (WidgetTester tester) async {
+  testWidgets('renders loading indicator when state is loading',
+      (WidgetTester tester) async {
     when(() => mockHomeCubit.state).thenReturn(
       const HomeState().copyWith(
-        pendingOrdersState: const BaseState(isLoading: true),
+        pendingOrdersState: const BaseState<OrdersEntity>(isLoading: true),
       ),
     );
 
