@@ -1,9 +1,10 @@
-
 import '../../domain/entities/order_entity.dart';
 
 sealed class HomeEvent {}
 
-class GetPendingOrders extends HomeEvent {}
+class GetPendingOrders extends HomeEvent {
+  GetPendingOrders();
+}
 
 class SelectOrder extends HomeEvent {
   SelectOrder({required this.selectedOrder, required this.driverId});
