@@ -121,9 +121,5 @@
   "orderAcceptedTitle": "تم قبول الطلب",
   "orderAcceptedBody": "تم قبول طلبك رقم {orderNumber} من قبل السائق",
   "orderUpdateTitle": "تحديث حالة الطلب",
-  "orderUpdateBody": "طلبك رقم {orderNumber} هو الآن {status}",
-  "yourLocation": "موقعك الحالي",
-  "thankYou": "شكرا لك!!",
-  "theOrderDeliveredSuccessfully": "تم توصيل الطلب بنجاح",
-  "done": "تم"
+  "orderUpdateBody": "طلبك رقم {orderNumber} هو الآن {status}"
 }

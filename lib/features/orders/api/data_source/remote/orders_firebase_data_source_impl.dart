@@ -26,14 +26,15 @@ class OrdersFirebaseDataSourceImpl implements OrdersFirebaseDataSource {
     String driverId,
   ) {
     return executeApi(() async {
-      final results = await _databaseService.getCollection<ActiveOrderFirestoreResponse>(
-        path: FireStoreCollection.orderCollectionPath,
-        queryParams: {
-          FireStoreFieldName.driverId: driverId,
-          FireStoreFieldName.isActive: true,
-        },
-        fromFirestore: ActiveOrderFirestoreResponse.fromJson,
-      );
+      final results = await _databaseService
+          .getCollection<ActiveOrderFirestoreResponse>(
+            path: FireStoreCollection.orderCollectionPath,
+            queryParams: {
+              FireStoreFieldName.driverId: driverId,
+              FireStoreFieldName.isActive: true,
+            },
+            fromFirestore: ActiveOrderFirestoreResponse.fromJson,
+          );
       return results.isEmpty ? null : results.first;
     });
   }

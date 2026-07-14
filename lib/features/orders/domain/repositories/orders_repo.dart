@@ -16,10 +16,4 @@ abstract interface class OrdersRepo {
   Stream<UserNotificationEntity?> watchUserNotificationInfo(String userId);
 
   Future<Result<void>> updateOrderStatus(UpdateOrderStatusParams params);
-
-  Future<Result<void>> updateOrderLocation(
-    String orderId, {
-    required double latitude,
-    required double longitude,
-  });
 }

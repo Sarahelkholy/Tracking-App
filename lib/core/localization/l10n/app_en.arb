@@ -122,8 +122,8 @@
   "orderAcceptedBody": "Your order {orderNumber} has been accepted by the driver",
   "orderUpdateTitle": "Order Update",
   "orderUpdateBody": "Your order {orderNumber} is now {status}",
-  "yourLocation": "Your location",
-  "thankYou": "Thank you!!",
-  "theOrderDeliveredSuccessfully": "The order delivered successfully",
-  "done": "Done"
+  "done":"Done" ,
+  "thankYou": "thankYou",
+  "theOrderDeliveredSuccessfully": "The Order Delivered Successfully"
+
 }

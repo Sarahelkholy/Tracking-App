@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 class OsrmService {
   // TODO: Replace with your actual OpenRouteService API Key
   final OpenRouteService client = OpenRouteService(
-    apiKey: SecretKeys.openRouteServiceApiKey,
+    apiKey: SecretKeys.openRouteService,
   );
 
   Future<List<LatLng>> getRoute({
