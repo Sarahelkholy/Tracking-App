@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flower_driver/config/firebase/firestore_field_name.dart';
 import 'package:flower_driver/core/helpers/notification_localizer.dart';
+import 'package:flower_driver/core/values/api_strings.dart';
 import 'package:flower_driver/features/orders/data/data_source/remote/orders_firebase_data_source.dart';
 import 'package:flower_driver/features/orders/data/mapper/active_order_firestore_mapper.dart';
 import 'package:flower_driver/features/orders/data/mapper/orders_mapper.dart';
@@ -188,6 +189,28 @@ class OrdersRepoImpl implements OrdersRepo {
       );
     }
     return result;
+  }
+
+  @override
+  Future<Result<void>> updateDriverLocation(
+    String orderId,
+    double latitude,
+    double longitude,
+  ) {
+    return _ordersFirebaseDataSource.updateOrderStatus(orderId, {
+      FireStoreFieldName.currentLocation: {
+        'latitude': latitude,
+        'longitude': longitude,
+      },
+    });
+  }
+
+  @override
+  Future<Result<void>> completeOrder(String orderId) {
+    return _ordersRemoteDataSource.updateOrderState(
+      orderId,
+      ApiStrings.completed,
+    );
   }
 
   Future<void> _sendLocalizedNotification({

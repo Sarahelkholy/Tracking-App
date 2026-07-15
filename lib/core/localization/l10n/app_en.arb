@@ -97,7 +97,7 @@
   "currentPassword":"Current Password",
   "update":"update",
   "oldAndNewPasswordSame": "The new password must be different from the current password",
-  "confirm": "Confirm",
+
 
   "orderDetails" : "Order details",
   "noActiveOrderFound" : "No active order found",
@@ -122,8 +122,7 @@
   "orderAcceptedBody": "Your order {orderNumber} has been accepted by the driver",
   "orderUpdateTitle": "Order Update",
   "orderUpdateBody": "Your order {orderNumber} is now {status}",
-  "done":"Done" ,
-  "thankYou": "thankYou",
-  "theOrderDeliveredSuccessfully": "The Order Delivered Successfully"
-
+  "thankYou": "Thank you!!",
+  "orderDeliveredSuccessfully": "The order delivered successfully",
+  "done": "Done"
 }

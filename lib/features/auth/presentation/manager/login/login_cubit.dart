@@ -2,7 +2,6 @@ import 'package:flower_driver/config/driver/domain/entities/driver_entity.dart';
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/driver/manager/driver_events.dart';
 import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
-import 'package:flower_driver/features/orders/domain/entities/order_entity.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/get_active_order_use_case.dart';
 import 'package:flower_driver/config/driver/domain/use_cases/get_driver_data_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,8 +62,7 @@ class LoginCubit extends Cubit<LoginState> {
             );
 
             bool hasActiveOrder = false;
-            if (activeOrderResult is Success<OrderEntity?> &&
-                activeOrderResult.data != null) {
+            if (activeOrderResult is Success) {
               hasActiveOrder = true;
             }
 

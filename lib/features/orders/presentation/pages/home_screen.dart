@@ -1,5 +1,6 @@
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/route_manager/routes.dart';
+import 'package:flower_driver/core/shared_widgets/custom_error_widget.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,43 +34,67 @@ class _HomeScreenState extends State<HomeScreen> {
         buildWhen: (previous, current) =>
             previous.pendingOrdersState != current.pendingOrdersState,
         builder: (BuildContext context, HomeState state) {
-          if (state.pendingOrdersState.isLoading) {
+          if (state.pendingOrdersState.isLoading &&
+              state.pendingOrdersState.data == null) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state.pendingOrdersState.errorMessage != null) {
-            return Center(child: Text(state.pendingOrdersState.errorMessage!));
+
+          if (state.pendingOrdersState.errorMessage != null &&
+              state.pendingOrdersState.data == null) {
+            return CustomErrorWidget(
+              errorMessage: state.pendingOrdersState.errorMessage!,
+              haveTryAgain: true,
+              onPressed: () => _homeCubit.doIntent(GetPendingOrders()),
+            );
           }
-          final orders = state.pendingOrdersState.data?.orders;
-          if (orders == null || orders.isEmpty) {
-            return const Center(child: Text('No pending orders available'));
-          }
+
           return SafeArea(
-            child: ListView.builder(
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                final order = orders[index];
-                return OrderCard(
-                  storeName: order.store.name,
-                  storeAddress: order.shippingAddress.address,
-                  userName: order.user.firstName,
-                  userAddress: '20th st, Sheikh Zayed, Giza',
-                  price: order.totalPrice.toString(),
-                  onAccept: () {
-                    final driverId = context
-                        .read<DriverCubit>()
-                        .state
-                        .driver
-                        ?.id;
-                    _homeCubit.doIntent(
-                      SelectOrder(
-                        selectedOrder: order,
-                        driverId: driverId ?? "",
-                      ),
-                    );
-                  },
-                  onReject: () {},
-                );
-              },
+            child: RefreshIndicator(
+              onRefresh: () => _homeCubit.doIntent(GetPendingOrders()),
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: state.pendingOrdersState.data?.orders.length ?? 0,
+                itemBuilder: (context, index) {
+                  return OrderCard(
+                    storeName:
+                        state.pendingOrdersState.data!.orders[index].store.name,
+                    storeAddress: state
+                        .pendingOrdersState
+                        .data!
+                        .orders[index]
+                        .shippingAddress
+                        .address,
+                    userName: state
+                        .pendingOrdersState
+                        .data!
+                        .orders[index]
+                        .user
+                        .firstName,
+                    userAddress: '20th st, Sheikh Zayed, Giza',
+                    price: state
+                        .pendingOrdersState
+                        .data!
+                        .orders[index]
+                        .totalPrice
+                        .toString(),
+                    onAccept: () {
+                      final driverId = context
+                          .read<DriverCubit>()
+                          .state
+                          .driver
+                          ?.id;
+                      _homeCubit.doIntent(
+                        SelectOrder(
+                          selectedOrder:
+                              state.pendingOrdersState.data!.orders[index],
+                          driverId: driverId ?? "",
+                        ),
+                      );
+                    },
+                    onReject: () {},
+                  );
+                },
+              ),
             ),
           );
         },
