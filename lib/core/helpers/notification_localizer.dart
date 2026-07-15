@@ -49,6 +49,9 @@ class NotificationLocalizer {
         return localizations.arrived;
       case OrderStatusEnum.delivered:
         return localizations.delivered;
+      case OrderStatusEnum.completed:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 }

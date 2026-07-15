@@ -19,12 +19,12 @@ class HomeCubit extends Cubit<HomeState> {
 
   final AcceptOrderUseCase _acceptOrderUseCase;
 
-  void doIntent(HomeEvent event) {
+  Future<void> doIntent(HomeEvent event) async {
     switch (event) {
       case GetPendingOrders():
-        _getPendingOrders();
+        await _getPendingOrders();
       case SelectOrder():
-        _selectOrder(event.selectedOrder, event.driverId);
+        await _selectOrder(event.selectedOrder, event.driverId);
     }
   }
 

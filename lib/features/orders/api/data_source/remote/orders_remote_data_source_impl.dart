@@ -15,4 +15,11 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   Future<Result<OrdersResponse>> getAllPendingOrders(int page, int limit) {
     return executeApi(() => _apiClient.getAllPendingOrders(page, limit));
   }
+
+  @override
+  Future<Result<void>> updateOrderState(String orderId, String state) {
+    return executeApi(
+      () => _apiClient.updateOrderState(orderId, {"state": state}),
+    );
+  }
 }

@@ -16,6 +16,8 @@ extension OrderStatusPresentationExtension on OrderStatusEnum {
         return localizations.arrived;
       case OrderStatusEnum.delivered:
         return localizations.delivered;
+      case OrderStatusEnum.completed:
+        return "Completed";
     }
   }
 
@@ -30,6 +32,8 @@ extension OrderStatusPresentationExtension on OrderStatusEnum {
       case OrderStatusEnum.arrived:
         return 4;
       case OrderStatusEnum.delivered:
+        return 5;
+      case OrderStatusEnum.completed:
         return 5;
       default:
         return 1;
