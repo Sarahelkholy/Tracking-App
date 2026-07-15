@@ -43,28 +43,28 @@ void main() {
   group("Get All Pending Orders UseCase", () {
     test("success", () async {
       when(
-        mockRepo.getAllPendingOrders(),
+        mockRepo.getAllPendingOrders(any, any),
       ).thenAnswer((_) async => Success<OrdersEntity>(data: tOrdersEntity));
 
-      final result = await useCase();
+      final result = await useCase(1, 10);
 
       expect(result, isA<Success<OrdersEntity>>());
       expect((result as Success<OrdersEntity>).data, tOrdersEntity);
 
-      verify(mockRepo.getAllPendingOrders()).called(1);
+      verify(mockRepo.getAllPendingOrders(any, any)).called(1);
     });
 
     test("failure", () async {
-      when(mockRepo.getAllPendingOrders()).thenAnswer(
+      when(mockRepo.getAllPendingOrders(any, any)).thenAnswer(
         (_) async => Failure<OrdersEntity>(errorMessage: errorMessage),
       );
 
-      final result = await useCase();
+      final result = await useCase(1, 10);
 
       expect(result, isA<Failure<OrdersEntity>>());
       expect((result as Failure<OrdersEntity>).errorMessage, errorMessage);
 
-      verify(mockRepo.getAllPendingOrders()).called(1);
+      verify(mockRepo.getAllPendingOrders(any, any)).called(1);
     });
   });
 }

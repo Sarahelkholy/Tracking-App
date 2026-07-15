@@ -3,7 +3,8 @@ import '../../domain/entities/order_entity.dart';
 sealed class HomeEvent {}
 
 class GetPendingOrders extends HomeEvent {
-  GetPendingOrders();
+  final bool isRefresh;
+  GetPendingOrders({this.isRefresh = false});
 }
 
 class SelectOrder extends HomeEvent {

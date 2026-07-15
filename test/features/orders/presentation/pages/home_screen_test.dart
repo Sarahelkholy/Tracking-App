@@ -16,14 +16,12 @@ class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
 
 class MockDriverCubit extends MockCubit<DriverState> implements DriverCubit {}
 
-class FakeHomeEvent extends Fake implements HomeEvent {}
-
 void main() {
   late MockHomeCubit mockHomeCubit;
   late MockDriverCubit mockDriverCubit;
 
   setUpAll(() {
-    registerFallbackValue(FakeHomeEvent());
+    registerFallbackValue(GetPendingOrders());
   });
 
   setUp(() {
@@ -33,7 +31,7 @@ void main() {
     // Default states
     when(() => mockDriverCubit.state).thenReturn(DriverState());
     when(() => mockHomeCubit.state).thenReturn(const HomeState());
-    when(() => mockHomeCubit.doIntent(any())).thenReturn(null);
+    when(() => mockHomeCubit.doIntent(any())).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest() {

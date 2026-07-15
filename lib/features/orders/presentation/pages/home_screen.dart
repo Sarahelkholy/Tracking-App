@@ -51,8 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _rejectedOrderIds.clear();
     });
-    // Note: HomeCubit needs to support resetting page count for a true refresh.
-    _homeCubit.doIntent(GetPendingOrders());
+    _homeCubit.doIntent(GetPendingOrders(isRefresh: true));
   }
 
   @override
@@ -116,7 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => _homeCubit.doIntent(GetPendingOrders()),
+                    onPressed: () =>
+                        _homeCubit.doIntent(GetPendingOrders(isRefresh: true)),
                     child: const Text("Retry"),
                   ),
                 ],

@@ -22,17 +22,27 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> doIntent(HomeEvent event) async {
     switch (event) {
       case GetPendingOrders():
-        await _getPendingOrders();
+        await _getPendingOrders(isRefresh: event.isRefresh);
       case SelectOrder():
         await _selectOrder(event.selectedOrder, event.driverId);
     }
   }
 
-  Future<void> _getPendingOrders() async {
+  Future<void> _getPendingOrders({bool isRefresh = false}) async {
+    if (state.pendingOrdersState.isLoading) return;
+
+    if (isRefresh) {
+      emit(state.copyWith(
+        pendingOrdersPage: 0,
+        totalPages: 1,
+        pendingOrdersState: const BaseState<OrdersEntity>(),
+      ));
+    }
+
     final int pageToFetch = state.pendingOrdersPage + 1;
-    final num totalPages =
-        state.pendingOrdersState.data?.metadata.totalPages ?? 1;
-    if (pageToFetch > totalPages) {
+
+    // Allow the first page to always be fetched, otherwise check against totalPages
+    if (state.pendingOrdersPage != 0 && pageToFetch > state.totalPages) {
       return;
     }
 
@@ -49,11 +59,11 @@ class HomeCubit extends Cubit<HomeState> {
       ),
     );
 
-    var response = await _getAllPendingOrdersUseCase(pageToFetch, 3);
+    var response = await _getAllPendingOrdersUseCase(pageToFetch, 10);
     switch (response) {
       case Success<OrdersEntity>():
         final List<OrderEntity> allOrders = [
-          ...(currentData?.orders ?? []),
+          ...(isRefresh ? [] : (currentData?.orders ?? [])),
           ...response.data.orders,
         ];
 
@@ -70,6 +80,7 @@ class HomeCubit extends Cubit<HomeState> {
               isLoading: false,
             ),
             pendingOrdersPage: pageToFetch,
+            totalPages: response.data.metadata.totalPages.toInt(),
           ),
         );
       case Failure<OrdersEntity>():
