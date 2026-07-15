@@ -1,3 +1,4 @@
+import 'package:flower_driver/config/notification_services/save_user_info_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,11 +9,14 @@ import 'driver_state.dart';
 
 @lazySingleton
 class DriverCubit extends Cubit<DriverState> {
-  DriverCubit(this._getDriverDataUseCase) : super(DriverState());
+  DriverCubit(this._getDriverDataUseCase, this.saveUserInfoService)
+    : super(DriverState());
 
   final GetDriverDataUseCase _getDriverDataUseCase;
+  final SaveUserInfoService saveUserInfoService;
 
   bool _handledUnauthorized = false;
+  bool _deviceInitialized = false;
 
   /// events
   void doEvent(DriverEvents event) {
@@ -46,7 +50,21 @@ class DriverCubit extends Cubit<DriverState> {
 
     switch (response) {
       case Success():
-        emit(state.copyWith(isLoading: false, driver: response.data));
+        final driver = response.data;
+
+        emit(state.copyWith(isLoading: false, driver: driver));
+        if (driver != null && !_deviceInitialized) {
+          _deviceInitialized = true;
+
+          await saveUserInfoService.initUserDevice(
+            userId: driver.id ?? '',
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            email: driver.email,
+            phone: driver.phone,
+          );
+        }
+
         break;
 
       case Failure():
