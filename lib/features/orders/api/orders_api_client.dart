@@ -13,7 +13,11 @@ abstract class OrdersApiClient {
   factory OrdersApiClient(Dio dio) = _OrdersApiClient;
 
   @GET(ApiEndPoints.pendingOrders)
-  Future<OrdersResponse> getAllPendingOrders();
+  Future<OrdersResponse> getAllPendingOrders(
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
+
 
   @PUT("${ApiEndPoints.updateOrderState}{orderId}")
   Future<void> updateOrderState(

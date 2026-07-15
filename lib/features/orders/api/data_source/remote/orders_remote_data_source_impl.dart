@@ -12,8 +12,8 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   OrdersRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<Result<OrdersResponse>> getAllPendingOrders() {
-    return executeApi(() => _apiClient.getAllPendingOrders());
+  Future<Result<OrdersResponse>> getAllPendingOrders(int page, int limit) {
+    return executeApi(() => _apiClient.getAllPendingOrders(page, limit));
   }
 
   @override
