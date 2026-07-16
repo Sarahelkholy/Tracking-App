@@ -63,7 +63,7 @@ class LoginCubit extends Cubit<LoginState> {
 
             bool hasActiveOrder = false;
             if (activeOrderResult is Success) {
-              hasActiveOrder = true;
+              hasActiveOrder = (activeOrderResult as Success).data != null;
             }
 
             emit(
