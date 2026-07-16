@@ -35,28 +35,11 @@ class OrdersRepoImpl implements OrdersRepo {
   );
 
   @override
-  Future<Result<void>> updateOrderLocation(
-    String orderId, {
-    required double latitude,
-    required double longitude,
-  }) async {
-    final result = await _ordersFirebaseDataSource.updateOrderStatus(orderId, {
-      FireStoreFieldName.currentLocation: {
-        'latitude': latitude,
-        'longitude': longitude,
-      },
-    });
-    switch (result) {
-      case Success():
-        return Success<void>(data: null);
-      case Failure():
-        return Failure<void>(errorMessage: result.errorMessage);
-    }
-  }
-
-  @override
   Future<Result<OrdersEntity>> getAllPendingOrders(int page, int limit) async {
-    final response = await _ordersRemoteDataSource.getAllPendingOrders(page, limit);
+    final response = await _ordersRemoteDataSource.getAllPendingOrders(
+      page,
+      limit,
+    );
 
     switch (response) {
       case Success<OrdersResponse>():

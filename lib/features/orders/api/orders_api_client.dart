@@ -18,7 +18,6 @@ abstract class OrdersApiClient {
     @Query('limit') int limit,
   );
 
-
   @PUT("${ApiEndPoints.updateOrderState}{orderId}")
   Future<void> updateOrderState(
     @Path("orderId") String orderId,

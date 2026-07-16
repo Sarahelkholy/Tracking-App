@@ -46,14 +46,16 @@ void main() {
     );
   }
 
-  testWidgets('renders No pending orders found when state is empty',
-      (WidgetTester tester) async {
+  testWidgets('renders No pending orders found when state is empty', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(createWidgetUnderTest());
     expect(find.text('No pending orders found.'), findsOneWidget);
   });
 
-  testWidgets('renders loading indicator when state is loading',
-      (WidgetTester tester) async {
+  testWidgets('renders loading indicator when state is loading', (
+    WidgetTester tester,
+  ) async {
     when(() => mockHomeCubit.state).thenReturn(
       const HomeState().copyWith(
         pendingOrdersState: const BaseState<OrdersEntity>(isLoading: true),

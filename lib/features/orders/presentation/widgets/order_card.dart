@@ -35,7 +35,7 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeCubit = context.read<HomeCubit>();
+    context.read<HomeCubit>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

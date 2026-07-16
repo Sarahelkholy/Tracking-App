@@ -32,11 +32,13 @@ class HomeCubit extends Cubit<HomeState> {
     if (state.pendingOrdersState.isLoading) return;
 
     if (isRefresh) {
-      emit(state.copyWith(
-        pendingOrdersPage: 0,
-        totalPages: 1,
-        pendingOrdersState: const BaseState<OrdersEntity>(),
-      ));
+      emit(
+        state.copyWith(
+          pendingOrdersPage: 0,
+          totalPages: 1,
+          pendingOrdersState: const BaseState<OrdersEntity>(),
+        ),
+      );
     }
 
     final int pageToFetch = state.pendingOrdersPage + 1;

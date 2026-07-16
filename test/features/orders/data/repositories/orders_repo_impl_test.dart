@@ -210,7 +210,9 @@ void main() {
       final result = await repo.updateDriverLocation("order_id", 30.0, 31.0);
 
       expect(result, isA<Success<void>>());
-      verify(mockFirebaseDataSource.updateOrderStatus("order_id", any)).called(1);
+      verify(
+        mockFirebaseDataSource.updateOrderStatus("order_id", any),
+      ).called(1);
     });
   });
 

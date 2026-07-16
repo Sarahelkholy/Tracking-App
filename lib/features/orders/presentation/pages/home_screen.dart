@@ -133,8 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(16),
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: visibleOrders.length +
-          (state.pendingOrdersState.isLoading ? 1 : 0),
+      itemCount:
+          visibleOrders.length + (state.pendingOrdersState.isLoading ? 1 : 0),
       separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         if (index == visibleOrders.length) {
@@ -160,10 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onAccept: () {
         final driverId = context.read<DriverCubit>().state.driver?.id;
         _homeCubit.doIntent(
-          SelectOrder(
-            selectedOrder: order,
-            driverId: driverId ?? "",
-          ),
+          SelectOrder(selectedOrder: order, driverId: driverId ?? ""),
         );
       },
       onReject: () {

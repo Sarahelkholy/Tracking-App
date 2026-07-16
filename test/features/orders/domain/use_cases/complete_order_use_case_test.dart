@@ -18,8 +18,9 @@ void main() {
   const tOrderId = 'order_123';
 
   test('should call completeOrder on repository', () async {
-    when(mockRepo.completeOrder(any))
-        .thenAnswer((_) async => Success(data: null));
+    when(
+      mockRepo.completeOrder(tOrderId),
+    ).thenAnswer((_) async => Success(data: null));
 
     final result = await useCase(tOrderId);
 
@@ -29,8 +30,9 @@ void main() {
   });
 
   test('should return failure from repository', () async {
-    when(mockRepo.completeOrder(any))
-        .thenAnswer((_) async => Failure(errorMessage: 'Error'));
+    when(
+      mockRepo.completeOrder(tOrderId),
+    ).thenAnswer((_) async => Failure(errorMessage: 'Error'));
 
     final result = await useCase(tOrderId);
 

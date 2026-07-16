@@ -53,7 +53,7 @@ class DriverCubit extends Cubit<DriverState> {
         final driver = response.data;
 
         emit(state.copyWith(isLoading: false, driver: driver));
-        if (driver != null && !_deviceInitialized) {
+        if (!_deviceInitialized) {
           _deviceInitialized = true;
 
           await saveUserInfoService.initUserDevice(

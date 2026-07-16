@@ -65,23 +65,31 @@ void main() {
         mockApiClient.updateOrderState(any, any),
       ).thenAnswer((_) async => Future.value());
 
-      final result = await remoteDataSource.updateOrderState("order_id", "state");
+      final result = await remoteDataSource.updateOrderState(
+        "order_id",
+        "state",
+      );
 
       expect(result, isA<Success<void>>());
 
-      verify(mockApiClient.updateOrderState("order_id", {"state": "state"}))
-          .called(1);
+      verify(
+        mockApiClient.updateOrderState("order_id", {"state": "state"}),
+      ).called(1);
     });
 
     test("should return failure", () async {
       when(mockApiClient.updateOrderState(any, any)).thenThrow(Exception());
 
-      final result = await remoteDataSource.updateOrderState("order_id", "state");
+      final result = await remoteDataSource.updateOrderState(
+        "order_id",
+        "state",
+      );
 
       expect(result, isA<Failure<void>>());
 
-      verify(mockApiClient.updateOrderState("order_id", {"state": "state"}))
-          .called(1);
+      verify(
+        mockApiClient.updateOrderState("order_id", {"state": "state"}),
+      ).called(1);
     });
   });
 }

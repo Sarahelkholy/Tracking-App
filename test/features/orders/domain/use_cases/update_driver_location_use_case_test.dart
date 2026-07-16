@@ -20,8 +20,9 @@ void main() {
   const tLong = 31.0;
 
   test('should call updateDriverLocation on repository', () async {
-    when(mockRepo.updateDriverLocation(any, any, any))
-        .thenAnswer((_) async => Success(data: null));
+    when(
+      mockRepo.updateDriverLocation(tOrderId, tLat, tLong),
+    ).thenAnswer((_) async => Success(data: null));
 
     final result = await useCase(tOrderId, tLat, tLong);
 
@@ -31,8 +32,9 @@ void main() {
   });
 
   test('should return failure from repository', () async {
-    when(mockRepo.updateDriverLocation(any, any, any))
-        .thenAnswer((_) async => Failure(errorMessage: 'Error'));
+    when(
+      mockRepo.updateDriverLocation(tOrderId, tLat, tLong),
+    ).thenAnswer((_) async => Failure(errorMessage: 'Error'));
 
     final result = await useCase(tOrderId, tLat, tLong);
 
