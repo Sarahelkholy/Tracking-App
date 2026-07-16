@@ -3,6 +3,7 @@ import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/features/orders/api/orders_api_client.dart';
 import 'package:flower_driver/features/orders/api/data_source/remote/orders_remote_data_source_impl.dart';
+import 'package:flower_driver/features/orders/data/models/responses/orders_response/driver_order_response.dart';
 import 'package:flower_driver/features/orders/data/models/responses/orders_response/orders_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,6 +57,40 @@ void main() {
       expect(result, isA<Failure<OrdersResponse>>());
 
       verify(mockApiClient.getAllPendingOrders(any, any)).called(1);
+    });
+  });
+
+  group("Get All Driver Orders Tests", () {
+    test("should return success", () async {
+      final response = DriverOrderResponse(
+        message: "Success",
+        metadata: null,
+        orders: [],
+      );
+
+      when(
+        mockApiClient.getAllDriverOrders(any, any),
+      ).thenAnswer((_) async => response);
+
+      final result = await remoteDataSource.getAllDriverOrders(1, 10);
+
+      expect(result, isA<Success<DriverOrderResponse>>());
+      expect(
+        (result as Success<DriverOrderResponse>).data.message,
+        response.message,
+      );
+
+      verify(mockApiClient.getAllDriverOrders(any, any)).called(1);
+    });
+
+    test("should return failure", () async {
+      when(mockApiClient.getAllDriverOrders(any, any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.getAllDriverOrders(1, 10);
+
+      expect(result, isA<Failure<DriverOrderResponse>>());
+
+      verify(mockApiClient.getAllDriverOrders(any, any)).called(1);
     });
   });
 

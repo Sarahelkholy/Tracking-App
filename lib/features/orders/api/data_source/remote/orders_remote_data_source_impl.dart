@@ -1,7 +1,9 @@
 import 'package:injectable/injectable.dart';
+
 import '../../../../../config/error_handling/execute_api.dart';
 import '../../../../../config/error_handling/result.dart';
 import '../../../../orders/data/data_source/remote/orders_remote_data_source.dart';
+import '../../../../orders/data/models/responses/orders_response/driver_order_response.dart';
 import '../../../../orders/data/models/responses/orders_response/orders_response.dart';
 import '../../orders_api_client.dart';
 
@@ -14,6 +16,11 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   @override
   Future<Result<OrdersResponse>> getAllPendingOrders(int page, int limit) {
     return executeApi(() => _apiClient.getAllPendingOrders(page, limit));
+  }
+
+  @override
+  Future<Result<DriverOrderResponse>> getAllDriverOrders(int page, int limit) {
+    return executeApi(() => _apiClient.getAllDriverOrders(page, limit));
   }
 
   @override

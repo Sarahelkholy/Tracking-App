@@ -24,11 +24,6 @@ import 'package:mockito/mockito.dart';
 
 import 'active_order_cubit_test.mocks.dart';
 
-class MockUpdateDriverLocationUseCase extends Mock
-    implements UpdateDriverLocationUseCase {}
-
-class MockCompleteOrderUseCase extends Mock implements CompleteOrderUseCase {}
-
 @GenerateMocks([
   GetActiveOrderUseCase,
   ListenToActiveOrderUseCase,

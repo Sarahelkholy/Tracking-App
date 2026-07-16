@@ -1,16 +1,17 @@
 import 'package:flower_driver/config/di/di.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
+import 'package:flower_driver/features/orders/presentation/mangers/orders_cubit.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../features/orders/presentation/pages/home_screen.dart';
-import '../../features/orders/presentation/pages/orders_screen.dart';
-import '../../features/profile/presentation/pages/profile_screen.dart';
-import '../shared_widgets/svg_wrapper.dart';
-import '../utils/app_assets.dart';
-import '../utils/app_colors.dart';
+import 'package:flower_driver/features/orders/presentation/pages/home_screen.dart';
+import 'package:flower_driver/features/orders/presentation/pages/orders_screen.dart';
+import 'package:flower_driver/features/profile/presentation/pages/profile_screen.dart';
+import 'package:flower_driver/core/shared_widgets/svg_wrapper.dart';
+import 'package:flower_driver/core/utils/app_assets.dart';
+import 'package:flower_driver/core/utils/app_colors.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key, this.initialIndex = 0});
@@ -37,7 +38,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         create: (context) => getIt<HomeCubit>(),
         child: const HomeScreen(),
       ),
-      const OrdersScreen(),
+      BlocProvider(
+        create: (context) => getIt<OrdersCubit>(),
+        child: const OrdersScreen(),
+      ),
       BlocProvider(
         create: (_) => getIt<ProfileCubit>(),
         child: const ProfileScreen(),

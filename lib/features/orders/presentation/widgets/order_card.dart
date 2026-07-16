@@ -1,10 +1,9 @@
-import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
+import 'package:flower_driver/core/shared_widgets/cached_network_image_wrapper.dart';
+import 'package:flower_driver/core/shared_widgets/svg_wrapper.dart';
+import 'package:flower_driver/core/utils/app_assets.dart';
+import 'package:flower_driver/core/utils/app_colors.dart';
+import 'package:flower_driver/features/orders/domain/entities/enums/order_status_enum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/shared_widgets/cached_network_image_wrapper.dart';
-import '../../../../core/utils/app_colors.dart';
-import '../mangers/home_cubit.dart';
 
 class OrderCard extends StatelessWidget {
   final String storeName;
@@ -17,8 +16,11 @@ class OrderCard extends StatelessWidget {
 
   final String price;
 
+  final OrderStatusEnum? status;
+
   final VoidCallback onAccept;
   final VoidCallback onReject;
+  final bool isLoading;
 
   const OrderCard({
     super.key,
@@ -29,13 +31,14 @@ class OrderCard extends StatelessWidget {
     required this.userAddress,
     this.userImage,
     required this.price,
+    this.status,
     required this.onAccept,
     required this.onReject,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final homeCubit = context.read<HomeCubit>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -46,9 +49,20 @@ class OrderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Flower order",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Flower order",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              ),
+              if (status != null)
+                SvgWrapper(
+                  path: status == OrderStatusEnum.completed
+                      ? AppAssets.completeIcon
+                      : AppAssets.cancelIcon,
+                ),
+            ],
           ),
 
           const SizedBox(height: 16),
@@ -87,48 +101,44 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
 
-                const Spacer(),
-
-                OutlinedButton(
-                  onPressed: onReject,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.pink,
-                    side: const BorderSide(color: Colors.pink),
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 14,
+                if (status == null) ...[
+                  const Spacer(),
+                  OutlinedButton(
+                    onPressed: onReject,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.pink,
+                      side: const BorderSide(color: Colors.pink),
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
                     ),
+                    child: const Text("Reject"),
                   ),
-                  child: const Text("Reject"),
-                ),
-
-                const SizedBox(width: 12),
-
-                FilledButton(
-                  onPressed: onAccept,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.pink,
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 14,
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    onPressed: onAccept,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
                     ),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: AppColors.baseWhite,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text("Accept"),
                   ),
-                  child: BlocBuilder<HomeCubit, HomeState>(
-                    buildWhen: (previous, current) =>
-                        previous.selectedOrder != current.selectedOrder,
-                    builder: (BuildContext context, HomeState state) {
-                      if (state.selectedOrder.isLoading) {
-                        return const CircularProgressIndicator(
-                          color: AppColors.baseWhite,
-                          strokeWidth: 2,
-                        );
-                      }
-                      return const Text("Accept");
-                    },
-                  ),
-                ),
+                ],
               ],
             ),
           ),

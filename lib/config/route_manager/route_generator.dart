@@ -23,8 +23,8 @@ import '../../features/auth/presentation/manager/splash_cubit/splash_cubit.dart'
 import '../../features/auth/presentation/pages/apply/apply_page.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
 import '../../features/profile/presentation/manager/change_password_cubit/change_password_cubit.dart';
-import '../../features/profile/presentation/pages/change_password/change_password_screen.dart';
 import '../../features/profile/presentation/manager/profile/profile_cubit.dart';
+import '../../features/profile/presentation/pages/change_password/change_password_screen.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
 
 abstract class RouteGenerator {
@@ -116,18 +116,15 @@ abstract class RouteGenerator {
             ),
           );
 
-         /// Change password
-         case Routes.changPasswordRoute:
-           return MaterialPageRoute(
-             builder: (_) => BlocProvider(
-               create: (_) => getIt<ChangePasswordCubit>(),
-               child: const ChangePasswordScreen(),
-             ),
-           );
+        /// Change password
+        case Routes.changPasswordRoute:
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (_) => getIt<ChangePasswordCubit>(),
+              child: const ChangePasswordScreen(),
+            ),
+          );
 
-        /// orders
-        case Routes.ordersRoute:
-          return MaterialPageRoute(builder: (_) => const OrdersScreen());
 
         /// active order details
         case Routes.activeOrderDetails:

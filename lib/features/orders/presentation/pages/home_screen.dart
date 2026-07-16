@@ -5,9 +5,9 @@ import 'package:flower_driver/features/orders/presentation/mangers/home_state.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../mangers/home_cubit.dart';
-import '../mangers/home_event.dart';
-import '../widgets/order_card.dart';
+import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
+import 'package:flower_driver/features/orders/presentation/mangers/home_event.dart';
+import 'package:flower_driver/features/orders/presentation/widgets/order_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -143,12 +143,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(child: CircularProgressIndicator()),
           );
         }
-        return _buildOrderCard(context, visibleOrders[index]);
+        return _buildOrderCard(context, visibleOrders[index], state);
       },
     );
   }
 
-  Widget _buildOrderCard(BuildContext context, OrderEntity order) {
+  Widget _buildOrderCard(
+      BuildContext context, OrderEntity order, HomeState state) {
     return OrderCard(
       storeImage: order.store.image,
       userImage: order.user.photo,
@@ -157,6 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
       userName: order.user.firstName,
       userAddress: '20th st, Sheikh Zayed, Giza',
       price: order.totalPrice.toString(),
+      isLoading: state.selectedOrder.isLoading &&
+          state.selectedOrder.data?.id == order.id,
       onAccept: () {
         final driverId = context.read<DriverCubit>().state.driver?.id;
         _homeCubit.doIntent(
