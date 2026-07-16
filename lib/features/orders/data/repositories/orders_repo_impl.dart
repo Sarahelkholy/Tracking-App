@@ -55,8 +55,8 @@ class OrdersRepoImpl implements OrdersRepo {
   }
 
   @override
-  Future<Result<OrdersEntity>> getAllPendingOrders() async {
-    final response = await _ordersRemoteDataSource.getAllPendingOrders();
+  Future<Result<OrdersEntity>> getAllPendingOrders(int page, int limit) async {
+    final response = await _ordersRemoteDataSource.getAllPendingOrders(page, limit);
 
     switch (response) {
       case Success<OrdersResponse>():

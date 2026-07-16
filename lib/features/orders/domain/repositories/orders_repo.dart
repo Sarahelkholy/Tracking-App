@@ -5,7 +5,7 @@ import '../entities/orders_entity.dart';
 import '../use_cases/update_order_status_use_case.dart';
 
 abstract interface class OrdersRepo {
-  Future<Result<OrdersEntity>> getAllPendingOrders();
+  Future<Result<OrdersEntity>> getAllPendingOrders(int page, int limit);
 
   Future<Result<bool>> acceptOrder(OrderEntity selectedOrder, String driverId);
 
