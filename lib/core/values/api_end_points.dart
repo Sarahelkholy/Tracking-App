@@ -11,11 +11,13 @@ abstract class ApiEndPoints {
   static const String getDriverData = "/drivers/profile-data";
 
   ///? Chang password
-  static const String changePassword ="/drivers/change-password";
+  static const String changePassword = "/drivers/change-password";
 
   static const String editProfile = "/drivers/editProfile";
+  static const String uploadPhoto = "/drivers/upload-photo";
   static const String updateVehicle = '/vehicle';
   static const String pendingOrders = "/orders/pending-orders";
+  static const String updateOrderState = "/orders/state/";
 
   static const String fcmBaseUrl = 'https://fcm.googleapis.com';
   static const String fcmSendPath = '/v1/projects/{projectId}/messages:send';

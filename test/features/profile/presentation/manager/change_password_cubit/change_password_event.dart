@@ -1,3 +1,1 @@
 sealed class ChangePasswordEvent {}
-
-

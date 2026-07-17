@@ -87,7 +87,6 @@ class OrderEntity extends Equatable {
     );
   }
 
-
   OrderDataResponse toModel() {
     return OrderDataResponse(
       id: id,
@@ -108,7 +107,6 @@ class OrderEntity extends Equatable {
       orderStatus: orderStatus.name,
     );
   }
-
 
   @override
   List<Object?> get props => [

@@ -2,6 +2,7 @@ import 'package:flower_driver/features/orders/presentation/mangers/home_state.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/shared_widgets/cached_network_image_wrapper.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../mangers/home_cubit.dart';
 
@@ -34,7 +35,7 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeCubit = context.read<HomeCubit>();
+    // final homeCubit = context.read<HomeCubit>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -159,10 +160,20 @@ class AddressTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundImage: image != null ? AssetImage(image!) : null,
-            child: image == null ? const Icon(Icons.person) : null,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: image != null && image!.isNotEmpty
+                ? CachedNetworkImageWrapper(
+                    imagePath: image!,
+                    width: 48,
+                    height: 48,
+                  )
+                : Container(
+                    width: 48,
+                    height: 48,
+                    color: Colors.grey.shade200,
+                    child: const Icon(Icons.person, color: Colors.grey),
+                  ),
           ),
 
           const SizedBox(width: 12),

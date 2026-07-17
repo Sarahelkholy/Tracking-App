@@ -13,5 +13,4 @@ class VerifyOtpResponse {
       _$VerifyOtpResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$VerifyOtpResponseToJson(this);
-
 }

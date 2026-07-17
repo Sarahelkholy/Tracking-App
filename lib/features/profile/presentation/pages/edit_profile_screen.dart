@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
+import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_button.dart';
 import 'package:flower_driver/core/shared_widgets/custom_text_form_field.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
@@ -10,6 +13,7 @@ import 'package:flower_driver/features/profile/presentation/manager/profile/prof
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -29,8 +33,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _vehicleTypeController = TextEditingController();
   final _vehicleNumberController = TextEditingController();
 
-  String _selectedGender = 'Male';
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +49,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _phoneController.text = driver?.phone ?? '';
       _vehicleTypeController.text = driver?.vehicleType ?? '';
       _vehicleNumberController.text = driver?.vehicleNumber ?? '';
-      _selectedGender = driver?.gender ?? 'Male';
     }
   }
 
@@ -77,10 +78,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = Theme.of(context);
+    final local = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Edit profile', style: AppTextStyles.bold20(context)),
+        title: Text(
+          local.editProfile,
+          style: appTheme.textTheme.headlineSmall?.copyWith(
+            color: AppColors.black100,
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () {
@@ -117,13 +125,47 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Center(
                     child: Stack(
                       children: [
-                        const CircleAvatar(
-                          radius: 40,
-                          backgroundColor: AppColors.grayLight,
-                          child: Icon(
-                            Icons.person,
-                            size: 50,
-                            color: AppColors.grayMedium,
+                        InkWell(
+                          onTap: () async {
+                            final result = await ImagePicker().pickImage(
+                              source: ImageSource.gallery,
+                            );
+                            if (result != null) {
+                              final file = File(result.path);
+                              if (!context.mounted) return;
+                              context.read<ProfileCubit>().handleIntent(
+                                UploadProfilePhotoIntent(file),
+                              );
+                            }
+                          },
+                          child: CircleAvatar(
+                            backgroundImage:
+                                (state is ProfileLoaded &&
+                                    state.driverData.driver?.photo != null)
+                                ? (state.driverData.driver!.photo!.startsWith(
+                                        'http',
+                                      )
+                                      ? NetworkImage(
+                                          state.driverData.driver!.photo!,
+                                        )
+                                      : FileImage(
+                                          File(state.driverData.driver!.photo!),
+                                        ))
+                                : null,
+                            radius: 40,
+                            backgroundColor: AppColors.grayLight,
+                            child: (state is UploadProfilePhotoLoading)
+                                ? const CircularProgressIndicator(
+                                    color: AppColors.primaryColor,
+                                  )
+                                : (state is ProfileLoaded &&
+                                      state.driverData.driver?.photo != null)
+                                ? null
+                                : const Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: AppColors.grayMedium,
+                                  ),
                           ),
                         ),
                         Positioned(
@@ -152,18 +194,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Expanded(
                         child: CustomTextFormField(
                           controller: _firstNameController,
-                          label: 'First name',
-                          hint: 'First name',
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
+                          label: local.firstName,
+                          hint: local.firstName,
+                          validator: (v) => v!.isEmpty ? local.required : null,
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: CustomTextFormField(
                           controller: _lastNameController,
-                          label: 'Last name',
-                          hint: 'Last name',
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
+                          label: local.lastName,
+                          hint: local.lastName,
+                          validator: (v) => v!.isEmpty ? local.required : null,
                         ),
                       ),
                     ],
@@ -171,115 +213,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _emailController,
-                    label: 'Email',
-                    hint: 'Email',
-                    validator: (v) => v!.isEmpty ? 'Required' : null,
+                    label: local.email,
+                    hint: local.email,
+                    validator: (v) => v!.isEmpty ? local.required : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _phoneController,
-                    label: 'Phone number',
-                    hint: 'Phone number',
-                    validator: (v) => v!.isEmpty ? 'Required' : null,
+                    label: local.phoneNumber,
+                    hint: local.phoneNumber,
+                    validator: (v) => v!.isEmpty ? local.required : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
                     controller: _passwordController,
-                    label: 'Password',
-                    hint: '******',
+                    label: local.password,
+                    hint: local.password,
                     obscureText: true,
                     suffixIcon: TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, Routes.changPasswordRoute);
                       },
                       child: Text(
-                        'Change',
+                        local.changePassword,
                         style: AppTextStyles.regular14(
                           context,
                         ).copyWith(color: AppColors.primaryColor),
                       ),
                     ),
-                    validator: (v) => null, // Optional unless changing
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Text('Gender', style: AppTextStyles.semiBold14(context)),
-                      const Spacer(),
-                      Radio<String>(
-                        value: 'Female',
-                        groupValue: _selectedGender,
-                        activeColor: AppColors.primaryColor,
-                        onChanged: (v) => setState(() => _selectedGender = v!),
-                      ),
-                      Text('Female', style: AppTextStyles.regular14(context)),
-                      const SizedBox(width: 16),
-                      Radio<String>(
-                        value: 'Male',
-                        groupValue: _selectedGender,
-                        activeColor: AppColors.primaryColor,
-                        onChanged: (v) => setState(() => _selectedGender = v!),
-                      ),
-                      Text('Male', style: AppTextStyles.regular14(context)),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  CustomTextFormField(
-                    controller: _vehicleTypeController,
-                    label: 'Vehicle type',
-                    hint: 'Vehicle type',
-                    readOnly: true,
-                    suffixIcon: const Icon(Icons.keyboard_arrow_down),
                     validator: (v) => null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextFormField(
-                    controller: _vehicleNumberController,
-                    label: 'Vehicle number',
-                    hint: 'Vehicle number',
-                    validator: (v) => null,
-                  ),
-                  const SizedBox(height: 16),
-                  // Vehicle license mock
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.grayLight),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Vehicle license',
-                              style: AppTextStyles.regular14(context).copyWith(
-                                color: AppColors.grayDark,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Photo_12345678',
-                              style: AppTextStyles.regular14(context),
-                            ),
-                          ],
-                        ),
-                        const Icon(
-                          Icons.upload_outlined,
-                          color: AppColors.black100,
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(height: 32),
                   CustomButton(
-                    title: 'Update',
+                    title: local.updateProfile,
                     isLoading: state is EditProfileLoading,
                     onPressed: _submitForm,
                   ),

@@ -15,9 +15,6 @@ class ChangePasswordUseCase {
     required String password,
     required String newPassword,
   }) {
-    return _repo.changePassword(
-      password: password,
-      newPassword: newPassword,
-    );
+    return _repo.changePassword(password: password, newPassword: newPassword);
   }
 }

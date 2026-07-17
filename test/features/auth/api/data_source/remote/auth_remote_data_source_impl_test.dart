@@ -122,12 +122,10 @@ void main() {
 
     test("should return failure", () async {
       when(mockApiClient.addNewPassword(any)).thenThrow(Exception());
-
       final result = await remoteDataSource.addNewPassword(
         email: "test@test.com",
         newPassword: "12345678",
       );
-
       expect(result, isA<Failure<NewPasswordResponse>>());
 
       verify(mockApiClient.addNewPassword(any)).called(1);

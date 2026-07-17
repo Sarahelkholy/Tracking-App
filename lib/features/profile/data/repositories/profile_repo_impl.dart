@@ -1,17 +1,20 @@
+import 'dart:io';
+
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/features/profile/data/data_source/remote/profile_remote_data_source.dart';
+import 'package:flower_driver/features/profile/data/models/request/edit_profile_request.dart';
+import 'package:flower_driver/features/profile/data/models/response/driver_data_response.dart';
+import 'package:flower_driver/features/profile/data/models/response/edit_profile_response.dart';
+import 'package:flower_driver/features/profile/data/models/response/upload_profile_photo_response.dart';
+import 'package:flower_driver/features/profile/domain/entities/profile/driver_data_entity.dart';
+import 'package:flower_driver/features/profile/domain/entities/profile/edit_profile_entity.dart';
 import 'package:flower_driver/features/profile/data/models/response/change_password_response.dart';
 import 'package:flower_driver/features/profile/domain/entities/change_password/change_password_request_entity.dart';
 import 'package:flower_driver/features/profile/domain/repositories/profile_repo.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../config/cache/secure_cache/secure_cache_helper.dart';
 import '../../../../config/secure_cache/secure_cache/cache_keys.dart';
-import '../../domain/entities/profile/driver_data_entity.dart';
-import '../../domain/entities/profile/edit_profile_entity.dart';
 import '../mapper/change_password_response_mapper.dart';
-import '../models/request/edit_profile_request.dart';
-import '../models/response/driver_data_response.dart';
-import '../models/response/edit_profile_response.dart';
 
 @Injectable(as: ProfileRepo)
 class ProfileRepoImpl implements ProfileRepo {
@@ -78,9 +81,9 @@ class ProfileRepoImpl implements ProfileRepo {
 
   @override
   Future<Result<ProfileDriverEntity>> updateVehicle(
-      String id,
-      dynamic body,
-      ) async {
+    String id,
+    dynamic body,
+  ) async {
     final result = await _dataSource.updateVehicle(id, body);
     switch (result) {
       case Success<DriverDataResponse>():
@@ -91,6 +94,19 @@ class ProfileRepoImpl implements ProfileRepo {
           ),
         );
       case Failure<DriverDataResponse>():
+        return Failure(errorMessage: result.errorMessage);
+    }
+  }
+
+  @override
+  Future<Result<UploadProfilePhotoResponse>> uploadPhoto(File photo) async {
+    final result = await _dataSource.uploadPhoto(photo);
+    switch (result) {
+      case Success<UploadProfilePhotoResponse>():
+        return Success(
+          data: UploadProfilePhotoResponse(message: result.data.message),
+        );
+      case Failure<UploadProfilePhotoResponse>():
         return Failure(errorMessage: result.errorMessage);
     }
   }

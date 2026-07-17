@@ -34,10 +34,10 @@ void main() {
       );
 
       when(
-        mockApiClient.getAllPendingOrders(),
+        mockApiClient.getAllPendingOrders(any, any),
       ).thenAnswer((_) async => response);
 
-      final result = await remoteDataSource.getAllPendingOrders();
+      final result = await remoteDataSource.getAllPendingOrders(1, 10);
 
       expect(result, isA<Success<OrdersResponse>>());
       expect(
@@ -45,17 +45,51 @@ void main() {
         response.message,
       );
 
-      verify(mockApiClient.getAllPendingOrders()).called(1);
+      verify(mockApiClient.getAllPendingOrders(any, any)).called(1);
     });
 
     test("should return failure", () async {
-      when(mockApiClient.getAllPendingOrders()).thenThrow(Exception());
+      when(mockApiClient.getAllPendingOrders(any, any)).thenThrow(Exception());
 
-      final result = await remoteDataSource.getAllPendingOrders();
+      final result = await remoteDataSource.getAllPendingOrders(1, 10);
 
       expect(result, isA<Failure<OrdersResponse>>());
 
-      verify(mockApiClient.getAllPendingOrders()).called(1);
+      verify(mockApiClient.getAllPendingOrders(any, any)).called(1);
+    });
+  });
+
+  group("Update Order State Tests", () {
+    test("should return success", () async {
+      when(
+        mockApiClient.updateOrderState(any, any),
+      ).thenAnswer((_) async => Future.value());
+
+      final result = await remoteDataSource.updateOrderState(
+        "order_id",
+        "state",
+      );
+
+      expect(result, isA<Success<void>>());
+
+      verify(
+        mockApiClient.updateOrderState("order_id", {"state": "state"}),
+      ).called(1);
+    });
+
+    test("should return failure", () async {
+      when(mockApiClient.updateOrderState(any, any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.updateOrderState(
+        "order_id",
+        "state",
+      );
+
+      expect(result, isA<Failure<void>>());
+
+      verify(
+        mockApiClient.updateOrderState("order_id", {"state": "state"}),
+      ).called(1);
     });
   });
 }
