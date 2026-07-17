@@ -9,7 +9,7 @@ class GetAllPendingOrdersUseCase {
 
   GetAllPendingOrdersUseCase(this._repo);
 
-  Future<Result<OrdersEntity>> call() {
-    return _repo.getAllPendingOrders();
+  Future<Result<OrdersEntity>> call(int page, int limit) {
+    return _repo.getAllPendingOrders(page, limit);
   }
 }

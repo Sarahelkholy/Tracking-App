@@ -8,7 +8,6 @@ import 'package:flower_driver/features/orders/presentation/mangers/home_event.da
 import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
 import '../../../../core/helpers/location_helper.dart';
 
 @injectable
@@ -23,42 +22,74 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> doIntent(HomeEvent event) async {
     switch (event) {
       case GetPendingOrders():
-        await _getPendingOrders();
+        await _getPendingOrders(isRefresh: event.isRefresh);
       case SelectOrder():
         await _selectOrder(event.selectedOrder, event.driverId);
     }
   }
 
-  Future<void> _getPendingOrders() async {
+  Future<void> _getPendingOrders({bool isRefresh = false}) async {
+    if (state.pendingOrdersState.isLoading) return;
+
+    if (isRefresh) {
+      emit(
+        state.copyWith(
+          pendingOrdersPage: 0,
+          totalPages: 1,
+          pendingOrdersState: const BaseState<OrdersEntity>(),
+        ),
+      );
+    }
+
+    final int pageToFetch = state.pendingOrdersPage + 1;
+
+    // Allow the first page to always be fetched, otherwise check against totalPages
+    if (state.pendingOrdersPage != 0 && pageToFetch > state.totalPages) {
+      return;
+    }
+
+    final OrdersEntity? currentData = state.pendingOrdersState.data;
+
     emit(
       state.copyWith(
-        pendingOrdersState: const BaseState(
-          isLoading: true,
-          isSuccess: false,
-          data: null,
+        pendingOrdersState: BaseState<OrdersEntity>(
+          data: currentData,
           errorMessage: null,
+          isSuccess: false,
+          isLoading: true,
         ),
       ),
     );
 
-    var response = await _getAllPendingOrdersUseCase();
+    var response = await _getAllPendingOrdersUseCase(pageToFetch, 10);
     switch (response) {
       case Success<OrdersEntity>():
+        final List<OrderEntity> allOrders = [
+          ...(isRefresh ? [] : (currentData?.orders ?? [])),
+          ...response.data.orders,
+        ];
+
         emit(
           state.copyWith(
-            pendingOrdersState: BaseState(
-              data: response.data,
+            pendingOrdersState: BaseState<OrdersEntity>(
+              data: OrdersEntity(
+                message: response.data.message,
+                metadata: response.data.metadata,
+                orders: allOrders,
+              ),
               errorMessage: null,
               isSuccess: true,
               isLoading: false,
             ),
+            pendingOrdersPage: pageToFetch,
+            totalPages: response.data.metadata.totalPages.toInt(),
           ),
         );
       case Failure<OrdersEntity>():
         emit(
           state.copyWith(
-            pendingOrdersState: BaseState(
-              data: null,
+            pendingOrdersState: BaseState<OrdersEntity>(
+              data: currentData,
               errorMessage: response.errorMessage,
               isSuccess: false,
               isLoading: false,
@@ -71,7 +102,7 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> _selectOrder(OrderEntity selectedOrder, String driverId) async {
     emit(
       state.copyWith(
-        selectedOrder: BaseState(
+        selectedOrder: BaseState<OrderEntity>(
           data: selectedOrder,
           errorMessage: null,
           isSuccess: false,
@@ -88,10 +119,10 @@ class HomeCubit extends Cubit<HomeState> {
     var response = await _acceptOrderUseCase(editedOrder, driverId);
 
     switch (response) {
-      case Success<void>():
+      case Success<bool>():
         emit(
           state.copyWith(
-            selectedOrder: BaseState(
+            selectedOrder: BaseState<OrderEntity>(
               data: editedOrder,
               errorMessage: null,
               isSuccess: true,
@@ -99,9 +130,17 @@ class HomeCubit extends Cubit<HomeState> {
             ),
           ),
         );
-      case Failure<void>():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      case Failure<bool>():
+        emit(
+          state.copyWith(
+            selectedOrder: BaseState<OrderEntity>(
+              data: null,
+              errorMessage: response.errorMessage,
+              isSuccess: false,
+              isLoading: false,
+            ),
+          ),
+        );
     }
   }
 }

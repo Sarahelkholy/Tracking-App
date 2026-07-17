@@ -9,9 +9,11 @@ import 'package:flower_driver/features/orders/domain/entities/order_store_entity
 import 'package:flower_driver/features/orders/domain/entities/order_user_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/shipping_address_entity.dart';
 import 'package:flower_driver/features/orders/domain/entities/user_notification_entity.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/complete_order_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/get_active_order_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/listen_to_active_order_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/listen_to_user_notification_use_case.dart';
+import 'package:flower_driver/features/orders/domain/use_cases/update_driver_location_use_case.dart';
 import 'package:flower_driver/features/orders/domain/use_cases/update_order_status_use_case.dart';
 import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
 import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_event.dart';
@@ -20,13 +22,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'active_order_cubit_test.mocks.dart';
+import '../../../../auth/presentation/manager/login/login_cubit_test.mocks.dart';
+import 'active_order_cubit_test.mocks.dart' hide MockGetActiveOrderUseCase;
 
 @GenerateMocks([
   GetActiveOrderUseCase,
   ListenToActiveOrderUseCase,
   UpdateOrderStatusUseCase,
   ListenToUserNotificationUseCase,
+  UpdateDriverLocationUseCase,
+  CompleteOrderUseCase,
 ])
 void main() {
   late ActiveOrderCubit cubit;
@@ -35,6 +40,8 @@ void main() {
   late MockListenToActiveOrderUseCase mockListenToActiveOrderUseCase;
   late MockUpdateOrderStatusUseCase mockUpdateOrderStatusUseCase;
   late MockListenToUserNotificationUseCase mockListenToUserNotificationUseCase;
+  late MockUpdateDriverLocationUseCase mockUpdateDriverLocationUseCase;
+  late MockCompleteOrderUseCase mockCompleteOrderUseCase;
 
   late String errorMessage;
 
@@ -123,12 +130,16 @@ void main() {
     mockListenToActiveOrderUseCase = MockListenToActiveOrderUseCase();
     mockUpdateOrderStatusUseCase = MockUpdateOrderStatusUseCase();
     mockListenToUserNotificationUseCase = MockListenToUserNotificationUseCase();
+    mockUpdateDriverLocationUseCase = MockUpdateDriverLocationUseCase();
+    mockCompleteOrderUseCase = MockCompleteOrderUseCase();
 
     cubit = ActiveOrderCubit(
       mockGetActiveOrderUseCase,
       mockListenToActiveOrderUseCase,
       mockUpdateOrderStatusUseCase,
       mockListenToUserNotificationUseCase,
+      mockUpdateDriverLocationUseCase,
+      mockCompleteOrderUseCase,
     );
   });
 
