@@ -1,5 +1,9 @@
+import 'dart:core';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flower_driver/core/values/api_end_points.dart';
+import 'package:flower_driver/features/profile/data/models/response/upload_profile_photo_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -15,6 +19,11 @@ part 'api_profile.g.dart';
 abstract class ApiProfile {
   @factoryMethod
   factory ApiProfile(Dio dio) = _ApiProfile;
+
+  @PUT(ApiEndPoints.uploadPhoto)
+  Future<UploadProfilePhotoResponse> uploadPhoto(
+    @Part(name: "photo") File photo,
+  );
 
   ///? Change password
   @PATCH(ApiEndPoints.changePassword)

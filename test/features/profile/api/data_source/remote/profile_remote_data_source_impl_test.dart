@@ -1,28 +1,64 @@
-import 'dart:ui';
 import 'package:flower_driver/config/error_handling/result.dart';
-import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
-import 'package:flower_driver/core/values/app_strings.dart';
+import 'package:flower_driver/features/profile/data/models/response/driver_data_response.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flower_driver/features/profile/api/data_source/api_profile.dart';
 import 'package:flower_driver/features/profile/api/data_source/remote/profile_remote_data_source_impl.dart';
+import 'dart:ui';
+import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
+import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/features/profile/data/models/request/change_password_request.dart';
 import 'package:flower_driver/features/profile/data/models/response/change_password_response.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'profile_remote_data_source_impl_test.mocks.dart';
 
 @GenerateMocks([ApiProfile])
+late ProfileRemoteDataSourceImpl dataSource;
+late MockApiProfile apiProfile;
 void main() {
-  late ProfileRemoteDataSourceImpl remoteDataSource;
-  late MockApiProfile mockApiClient;
-
   setUpAll(() {
     AppStrings.current = lookupAppLocalizations(const Locale('en'));
   });
 
   setUp(() {
-    mockApiClient = MockApiProfile();
-    remoteDataSource = ProfileRemoteDataSourceImpl(mockApiClient);
+    apiProfile = MockApiProfile();
+    dataSource = ProfileRemoteDataSourceImpl(apiProfile);
+  });
+
+  group('ProfileRemoteDataSourceImpl', () {
+    test('return success from driver when api call is successfull', () async {
+      final driverResponse = DriverDataResponse(
+        driver: Driver(
+          id: '1',
+          firstName: 'test',
+          lastName: 'test',
+          vehicleType: 'test',
+          vehicleNumber: 'test',
+          vehicleLicense: 'test',
+          nid: 'test',
+          nidImg: 'test',
+          email: 'test',
+          gender: 'test',
+          phone: 'test',
+          photo: 'test',
+          role: 'test',
+          createdAt: DateTime.now(),
+          country: 'test',
+        ),
+        message: 'Success',
+      );
+      when(apiProfile.getDriverData()).thenAnswer((_) async => driverResponse);
+      final result = await dataSource.getDriverData();
+      expect(result, isA<Success<DriverDataResponse>>());
+    });
+    test('return failiure when editProfile api call is failiure', () async {
+      when(
+        apiProfile.getDriverData(),
+      ).thenAnswer((_) async => throw Exception());
+      final result = await dataSource.getDriverData();
+      expect(result, isA<Failure<DriverDataResponse>>());
+      verify(() => apiProfile.getDriverData()).called(1);
+    });
   });
 
   group("Change Password Test", () {
@@ -32,9 +68,34 @@ void main() {
         token: "123456",
       );
 
-      when(mockApiClient.changePassword(any)).thenAnswer((_) async => response);
+      when(apiProfile.changePassword(any)).thenAnswer((_) async => response);
 
-      final result = await remoteDataSource.changePassword(
+      final result = await dataSource.changePassword(
+        password: "oldPassword",
+        newPassword: "newPassword",
+      );
+
+      expect(result, isA<Success<ChangePasswordResponse>>());
+
+      final success = result as Success<ChangePasswordResponse>;
+
+      expect(success.data.message, "Password changed successfully");
+
+      verify(
+        apiProfile.changePassword(
+          argThat(
+            isA<ChangePasswordRequest>()
+                .having((e) => e.password, 'password', 'oldPassword')
+                .having((e) => e.newPassword, 'newPassword', 'newPassword'),
+          ),
+        ),
+      ).called(1);
+    });
+
+    test("Should return Failure when API throws Exception", () async {
+      when(apiProfile.changePassword(any)).thenThrow(Exception());
+
+      final result = await dataSource.changePassword(
         password: "oldPassword",
         newPassword: "newPassword",
       );
@@ -54,6 +115,9 @@ void main() {
           ),
         ),
       ).called(1);
+      expect(result, isA<Failure<ChangePasswordResponse>>());
+
+      verify(apiProfile.changePassword(any)).called(1);
     });
 
     test("Should return Failure when API throws Exception", () async {

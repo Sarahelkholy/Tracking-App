@@ -4,6 +4,7 @@ import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.da
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flower_driver/features/auth/presentation/manager/logout/logout_cubit.dart';
 
 import '../../features/orders/presentation/pages/home_screen.dart';
 import '../../features/orders/presentation/pages/orders_screen.dart';
@@ -38,8 +39,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         child: const HomeScreen(),
       ),
       const OrdersScreen(),
-      BlocProvider(
-        create: (_) => getIt<ProfileCubit>(),
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => getIt<ProfileCubit>()),
+          BlocProvider(create: (_) => getIt<LogoutCubit>()),
+        ],
         child: const ProfileScreen(),
       ),
     ];

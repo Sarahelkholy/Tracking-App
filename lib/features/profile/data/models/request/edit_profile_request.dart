@@ -12,8 +12,16 @@ class EditProfileRequest {
   final String? phone;
   @JsonKey(name: "email")
   final String? email;
+  @JsonKey(name: "photo")
+  final String? photo;
 
-  EditProfileRequest({this.lastName, this.firstName, this.phone, this.email});
+  EditProfileRequest({
+    this.lastName,
+    this.firstName,
+    this.phone,
+    this.email,
+    this.photo,
+  });
 
   EditProfileRequest copyWith({
     String? lastName,

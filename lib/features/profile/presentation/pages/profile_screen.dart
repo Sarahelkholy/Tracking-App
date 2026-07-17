@@ -1,12 +1,17 @@
 import 'package:flower_driver/config/route_manager/routes.dart';
 import 'package:flower_driver/core/helpers/app_snack_bar.dart';
+import 'package:flower_driver/core/local_cubit/locale_cubit.dart';
+import 'package:flower_driver/core/theme/app_theme.dart';
 import 'package:flower_driver/core/utils/app_colors.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
+import 'package:flower_driver/features/auth/presentation/manager/logout/logout_cubit.dart';
+import 'package:flower_driver/features/auth/presentation/manager/logout/logout_events.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_intent.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/localization/l10n/app_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,10 +29,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = AppTheme.appTheme(context);
+    final local = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: appTheme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Profile', style: AppTextStyles.bold20(context)),
+        title: Text(local.profile, style: AppTextStyles.bold20(context)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () {
@@ -44,64 +51,120 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: BlocConsumer<ProfileCubit, ProfileState>(
+      body: BlocListener<LogoutCubit, LogoutState>(
         listener: (context, state) {
-          if (state is ProfileError) {
-            AppSnackBar.error(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is ProfileLoading || state is ProfileInitial) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProfileLoaded) {
-            final driver = state.driverData.driver;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _buildProfileCard(context, driver),
-                  const SizedBox(height: 16),
-                  _buildVehicleCard(context, driver),
-                  const SizedBox(height: 32),
-                  _buildSettingsOption(
-                    context: context,
-                    icon: Icons.language,
-                    title: 'Language',
-                    trailing: Text(
-                      'English',
-                      style: AppTextStyles.regular14(
-                        context,
-                      ).copyWith(color: AppColors.primaryColor),
-                    ),
-                    onTap: () {},
-                  ),
-                  const SizedBox(height: 16),
-                  _buildSettingsOption(
-                    context: context,
-                    icon: Icons.logout,
-                    title: 'Logout',
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      context.read<ProfileCubit>().handleIntent(
-                        const LogoutIntent(),
-                      );
-                    },
-                  ),
-                ],
-              ),
+          if (state is LogoutSuccess) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              Routes.loginRoute,
+              (route) => false,
             );
-          } else {
-            return const Center(child: Text('Failed to load profile.'));
+          } else if (state is LogoutFailure) {
+            AppSnackBar.error(context, state.errorMessage);
+          } else if (state is LogoutLoading) {
+            // Optional: show a loading indicator overlay
           }
         },
+        child: BlocConsumer<ProfileCubit, ProfileState>(
+          listener: (context, state) {
+            if (state is ProfileError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is ProfileLoading || state is ProfileInitial) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is ProfileLoaded) {
+              final driver = state.driverData.driver;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    _buildProfileCard(context, driver),
+                    const SizedBox(height: 16),
+                    _buildVehicleCard(context, driver),
+                    const SizedBox(height: 32),
+                    _buildSettingsOption(
+                      context: context,
+                      icon: Icons.language,
+                      title: local.changeLanguage,
+                      trailing: Text(
+                        local.currentLang == local.arabic
+                            ? local.english
+                            : local.arabic,
+                        style: AppTextStyles.regular14(
+                          context,
+                        ).copyWith(color: AppColors.primaryColor),
+                      ),
+                      onTap: () {
+                        context.read<LocaleCubit>().toggleLanguage();
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildSettingsOption(
+                      context: context,
+                      icon: Icons.logout,
+                      title: local.logout,
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text(
+                              local.logout,
+                              style: AppTextStyles.bold18(context),
+                            ),
+                            content: Text(
+                              local.areYouSureYouWantToLogout,
+                              style: AppTextStyles.regular16(
+                                context,
+                              ).copyWith(color: AppColors.black90),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  local.cancel,
+                                  style: AppTextStyles.regular16(
+                                    context,
+                                  ).copyWith(color: AppColors.black90),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                  context.read<LogoutCubit>().doEvents(
+                                    LogoutEvent(),
+                                  );
+                                },
+                                child: Text(
+                                  local.logout,
+                                  style: AppTextStyles.regular16(
+                                    context,
+                                  ).copyWith(color: AppColors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Center(child: Text(local.failedToLoadProfile));
+            }
+          },
+        ),
       ),
     );
   }
 
   Widget _buildProfileCard(BuildContext context, dynamic driver) {
-    final name = '${driver?.firstName ?? 'John'} ${driver?.lastName ?? 'Doe'}';
-    final email = driver?.email ?? 'JohnDoe@gmail.com';
-    final phone = driver?.phone ?? '012113456789';
+    final name = '${driver?.firstName} ${driver?.lastName}';
+    final email = driver?.email;
+    final phone = driver?.phone;
 
     return GestureDetector(
       onTap: () => Navigator.pushNamed(
@@ -148,8 +211,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildVehicleCard(BuildContext context, dynamic driver) {
-    final vehicleType = driver?.vehicleType ?? 'Bike';
-    final vehicleNumber = driver?.vehicleNumber ?? 'UP16DL0007';
+    final local = AppLocalizations.of(context)!;
+
+    final vehicleType = driver?.vehicleType ?? local.vehicleType;
+    final vehicleNumber = driver?.vehicleNumber ?? local.enterVehicleNumber;
 
     return GestureDetector(
       onTap: () {}, // Might navigate to vehicle edit in the future
@@ -167,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Vehicle info',
+                    local.vehicleInformation,
                     style: AppTextStyles.semiBold16(context),
                   ),
                   const SizedBox(height: 8),

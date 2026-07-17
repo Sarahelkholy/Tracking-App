@@ -4,12 +4,14 @@ import 'package:flower_driver/core/helpers/custom_logger.dart';
 import 'package:flower_driver/core/shared_widgets/custom_bottom_nav.dart';
 import 'package:flower_driver/core/utils/app_text_styles.dart';
 import 'package:flower_driver/features/auth/presentation/manager/login/login_cubit.dart';
+import 'package:flower_driver/features/auth/presentation/manager/logout/logout_cubit.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_enter_email_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_reset_password_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/features/auth/presentation/widgets/apply/apply_success_screen.dart';
+import 'package:flower_driver/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flower_driver/features/orders/presentation/manager/active_order_cubit/active_order_cubit.dart';
 import 'package:flower_driver/features/orders/presentation/pages/active_order_details/active_order_details_screen.dart';
 import 'package:flower_driver/features/orders/presentation/pages/active_order_details/order_success_screen.dart';
@@ -104,6 +106,22 @@ abstract class RouteGenerator {
           return MaterialPageRoute(
             builder: (_) =>
                 CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
+          );
+
+        case Routes.profileRoute:
+          return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.profileRoute),
+            builder: (_) => MultiBlocProvider(
+              providers: [
+                BlocProvider<ProfileCubit>(
+                  create: (context) => getIt<ProfileCubit>(),
+                ),
+                BlocProvider<LogoutCubit>(
+                  create: (context) => getIt<LogoutCubit>(),
+                ),
+              ],
+              child: const ProfileScreen(),
+            ),
           );
 
         /// Edit Profile Screen
