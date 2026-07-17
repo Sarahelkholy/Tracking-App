@@ -150,6 +150,11 @@ void main() {
     });
   });
 
+  setUpAll(() {
+    provideDummy<Result<ActiveOrderFirestoreResponse?>>(Success(data: null));
+    provideDummy<ActiveOrderFirestoreResponse>(ActiveOrderFirestoreResponse());
+  });
+
   group("Get Active Order Tests", () {
     test("success", () async {
       when(mockFirebaseDataSource.getActiveOrder(any)).thenAnswer(
@@ -157,9 +162,9 @@ void main() {
             Success(data: ActiveOrderFirestoreResponse(id: "order_123")),
       );
 
-      final result = repo.getActiveOrder("driver_123");
+      final result = await repo.getActiveOrder("driver_123");
 
-      expect(result, isA<Success<OrderEntity>>());
+      expect(result, isA<Success<OrderEntity?>>());
       verify(mockFirebaseDataSource.getActiveOrder("driver_123")).called(1);
     });
   });

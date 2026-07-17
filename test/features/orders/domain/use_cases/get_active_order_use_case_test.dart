@@ -92,6 +92,7 @@ void main() {
   setUpAll(() {
     errorMessage = "Something went wrong";
 
+    provideDummy<Result<OrderEntity?>>(Success<OrderEntity?>(data: null));
     provideDummy<Result<OrderEntity>>(Success<OrderEntity>(data: tOrder));
   });
 
@@ -106,23 +107,21 @@ void main() {
         mockRepo.getActiveOrder(any),
       ).thenAnswer((_) async => Success<OrderEntity>(data: tOrder));
 
-      final result = useCase("driver_id");
+      final result = await useCase("driver_id");
 
-      expect(result, isA<Success<OrderEntity>>());
-      expect((result as Success<OrderEntity>).data, tOrder);
+      expect(result, isA<Success<OrderEntity?>>());
+      expect((result as Success<OrderEntity?>).data, tOrder);
 
       verify(mockRepo.getActiveOrder("driver_id")).called(1);
     });
 
     test("failure", () async {
-      when(mockRepo.getActiveOrder(any)).thenAnswer(
-        (_) async => Failure<OrderEntity>(errorMessage: errorMessage),
-      );
+      when(mockRepo.getActiveOrder(any)).thenAnswer((_) async => Failure<OrderEntity>(errorMessage: errorMessage));
 
-      final result = useCase("driver_id");
+      final result = await useCase("driver_id");
 
-      expect(result, isA<Failure<OrderEntity>>());
-      expect((result as Failure<OrderEntity>).errorMessage, errorMessage);
+      expect(result, isA<Failure<OrderEntity?>>());
+      expect((result as Failure<OrderEntity?>).errorMessage, errorMessage);
 
       verify(mockRepo.getActiveOrder("driver_id")).called(1);
     });

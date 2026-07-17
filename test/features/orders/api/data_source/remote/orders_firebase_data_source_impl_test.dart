@@ -45,11 +45,11 @@ void main() {
         ),
       ).thenAnswer((_) async => [response]);
 
-      final result = dataSource.getActiveOrder("driver_123");
+      final result = await dataSource.getActiveOrder("driver_123");
 
-      expect(result, isA<Success<ActiveOrderFirestoreResponse>>());
+      expect(result, isA<Success<ActiveOrderFirestoreResponse?>>());
       expect(
-        (result as Success<ActiveOrderFirestoreResponse>).data.id,
+        (result as Success<ActiveOrderFirestoreResponse?>).data?.id,
         "order_123",
       );
     });
@@ -64,12 +64,12 @@ void main() {
         ),
       ).thenAnswer((_) async => []);
 
-      final result = dataSource.getActiveOrder("driver_123");
+      final result = await dataSource.getActiveOrder("driver_123");
 
-      expect(result, isA<Failure<ActiveOrderFirestoreResponse>>());
+      expect(result, isA<Success<ActiveOrderFirestoreResponse?>>());
       expect(
-        (result as Failure).errorMessage,
-        AppStrings.current.unexpectedErrorMessage,
+        (result as Success<ActiveOrderFirestoreResponse?>).data,
+        isNull,
       );
     });
   });

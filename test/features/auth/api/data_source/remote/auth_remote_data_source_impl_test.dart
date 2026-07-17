@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flower_driver/features/auth/data/models/requests/apply_request.dart';
+import 'package:flower_driver/features/auth/data/models/responses/apply_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flower_driver/config/error_handling/result.dart';
 import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
@@ -29,10 +31,33 @@ void main() {
   });
 
   test('auth remote data source impl ...', () async {
+    //arrange
+    final file1 = File('dummy_license.jpg')..writeAsStringSync('dummy');
+    final file2 = File('dummy_nid.jpg')..writeAsStringSync('dummy');
+    when(mockApiClient.apply(
+      country: anyNamed('country'),
+      firstName: anyNamed('firstName'),
+      lastName: anyNamed('lastName'),
+      vehicleType: anyNamed('vehicleType'),
+      vehicleNumber: anyNamed('vehicleNumber'),
+      vehicleLicense: anyNamed('vehicleLicense'),
+      nid: anyNamed('nid'),
+      nidImg: anyNamed('nidImg'),
+      email: anyNamed('email'),
+      password: anyNamed('password'),
+      rePassword: anyNamed('rePassword'),
+      gender: anyNamed('gender'),
+      phone: anyNamed('phone'),
+    )).thenAnswer((_) async => ApplyResponse()); 
     //act
-    final result = await remoteDataSource.apply(ApplyRequest());
+    final result = await remoteDataSource.apply(ApplyRequest(
+      vehicleLicense: 'dummy_license.jpg',
+      nidImg: 'dummy_nid.jpg',
+    ));
     //assert
     expect(result, isA<Success>());
+    file1.deleteSync();
+    file2.deleteSync();
   });
 
   group("Enter Email Tests", () {

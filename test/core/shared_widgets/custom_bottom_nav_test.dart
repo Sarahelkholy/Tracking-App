@@ -2,9 +2,28 @@ import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/shared_widgets/custom_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mockito/mockito.dart';
+import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
+import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
+import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
+import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+class MockHomeCubit extends Mock implements HomeCubit {}
+class MockProfileCubit extends Mock implements ProfileCubit {}
+
 void main() {
+  final getIt = GetIt.instance;
+
+  setUp(() {
+    getIt.registerFactory<HomeCubit>(() => MockHomeCubit());
+    getIt.registerFactory<ProfileCubit>(() => MockProfileCubit());
+  });
+
+  tearDown(() {
+    getIt.reset();
+  });
   Widget createWidgetUnderTest() {
     return const MaterialApp(
       localizationsDelegates: [
