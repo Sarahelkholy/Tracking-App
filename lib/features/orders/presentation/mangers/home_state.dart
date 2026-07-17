@@ -8,18 +8,34 @@ class HomeState extends Equatable {
   const HomeState({
     this.pendingOrdersState = const BaseState<OrdersEntity>(),
     this.selectedOrder = const BaseState<OrderEntity>(),
+    this.pendingOrdersPage = 0,
+    this.totalPages = 1,
   });
 
   final BaseState<OrdersEntity> pendingOrdersState;
   final BaseState<OrderEntity> selectedOrder;
+  final int pendingOrdersPage;
+  final int totalPages;
 
-  HomeState copyWith({BaseState<OrdersEntity>? pendingOrdersState , BaseState<OrderEntity>? selectedOrder}) {
+  HomeState copyWith({
+    BaseState<OrdersEntity>? pendingOrdersState,
+    BaseState<OrderEntity>? selectedOrder,
+    int? pendingOrdersPage,
+    int? totalPages,
+  }) {
     return HomeState(
       pendingOrdersState: pendingOrdersState ?? this.pendingOrdersState,
       selectedOrder: selectedOrder ?? this.selectedOrder,
+      pendingOrdersPage: pendingOrdersPage ?? this.pendingOrdersPage,
+      totalPages: totalPages ?? this.totalPages,
     );
   }
 
   @override
-  List<Object?> get props => [pendingOrdersState, selectedOrder];
+  List<Object?> get props => [
+    pendingOrdersState,
+    selectedOrder,
+    pendingOrdersPage,
+    totalPages,
+  ];
 }

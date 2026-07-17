@@ -28,6 +28,9 @@ class NetworkException {
 
         case DioExceptionType.unknown:
           return AppStrings.current.unknownErrorMessage;
+        case DioExceptionType.transformTimeout:
+          // TODO: Handle this case.
+          throw UnimplementedError();
       }
     } else {
       return AppStrings.current.unexpectedErrorMessage;

@@ -20,10 +20,12 @@ class LoginCubit extends Cubit<LoginState> {
   final GetActiveOrderUseCase _getActiveOrderUseCase;
   final DriverCubit _driverCubit;
 
-  LoginCubit(this._loginUseCase,
-      this._getDriverDataUseCase,
-      this._getActiveOrderUseCase,
-      this._driverCubit,) : super(const LoginInitial());
+  LoginCubit(
+    this._loginUseCase,
+    this._getDriverDataUseCase,
+    this._getActiveOrderUseCase,
+    this._driverCubit,
+  ) : super(const LoginInitial());
 
   void doEvents(LoginEvents event) {
     switch (event) {
@@ -55,8 +57,9 @@ class LoginCubit extends Cubit<LoginState> {
           case Success<DriverEntity>():
             _driverCubit.doEvent(SetDriverDataEvent(driver: driverResult.data));
 
-            final activeOrderResult =
-            await _getActiveOrderUseCase.call(driverResult.data.id ?? "");
+            final activeOrderResult = await _getActiveOrderUseCase.call(
+              driverResult.data.id ?? "",
+            );
 
             bool hasActiveOrder = false;
             if (activeOrderResult is Success) {

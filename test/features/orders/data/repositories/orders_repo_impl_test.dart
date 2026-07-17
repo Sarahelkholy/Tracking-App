@@ -125,25 +125,25 @@ void main() {
 
   group("Get All Pending Orders Tests", () {
     test("success", () async {
-      when(mockRemoteDataSource.getAllPendingOrders()).thenAnswer(
+      when(mockRemoteDataSource.getAllPendingOrders(any, any)).thenAnswer(
         (_) async => Success(
           data: OrdersResponse(message: "Success", orders: []),
         ),
       );
 
-      final result = await repo.getAllPendingOrders();
+      final result = await repo.getAllPendingOrders(1, 10);
 
       expect(result, isA<Success<OrdersEntity>>());
       expect((result as Success).data.message, "Success");
-      verify(mockRemoteDataSource.getAllPendingOrders()).called(1);
+      verify(mockRemoteDataSource.getAllPendingOrders(any, any)).called(1);
     });
 
     test("failure", () async {
       when(
-        mockRemoteDataSource.getAllPendingOrders(),
+        mockRemoteDataSource.getAllPendingOrders(any, any),
       ).thenAnswer((_) async => Failure(errorMessage: errorMessage));
 
-      final result = await repo.getAllPendingOrders();
+      final result = await repo.getAllPendingOrders(1, 10);
 
       expect(result, isA<Failure<OrdersEntity>>());
       expect((result as Failure).errorMessage, errorMessage);
@@ -198,6 +198,34 @@ void main() {
 
       expect(result, isA<Success<bool>>());
       expect((result as Success).data, true);
+    });
+  });
+
+  group("Update Driver Location Tests", () {
+    test("success", () async {
+      when(
+        mockFirebaseDataSource.updateOrderStatus(any, any),
+      ).thenAnswer((_) async => Success(data: null));
+
+      final result = await repo.updateDriverLocation("order_id", 30.0, 31.0);
+
+      expect(result, isA<Success<void>>());
+      verify(
+        mockFirebaseDataSource.updateOrderStatus("order_id", any),
+      ).called(1);
+    });
+  });
+
+  group("Complete Order Tests", () {
+    test("success", () async {
+      when(
+        mockRemoteDataSource.updateOrderState(any, any),
+      ).thenAnswer((_) async => Success(data: null));
+
+      final result = await repo.completeOrder("order_id");
+
+      expect(result, isA<Success<void>>());
+      verify(mockRemoteDataSource.updateOrderState("order_id", any)).called(1);
     });
   });
 
