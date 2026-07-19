@@ -39,7 +39,7 @@ class HomeCubit extends Cubit<HomeState> {
       ));
     }
 
-    final int pageToFetch = state.pendingOrdersPage + 1;
+    final int pageToFetch = state.pendingOrdersPage ;
 
     // Allow the first page to always be fetched, otherwise check against totalPages
     if (state.pendingOrdersPage != 0 && pageToFetch > state.totalPages) {
@@ -59,7 +59,7 @@ class HomeCubit extends Cubit<HomeState> {
       ),
     );
 
-    var response = await _getAllPendingOrdersUseCase(pageToFetch, 10);
+    var response = await _getAllPendingOrdersUseCase(pageToFetch, 2);
     switch (response) {
       case Success<OrdersEntity>():
         final List<OrderEntity> allOrders = [
@@ -109,36 +109,49 @@ class HomeCubit extends Cubit<HomeState> {
       ),
     );
 
-    final currentLocation = await LocationHelper.getCurrentLocation();
-    final editedOrder = selectedOrder.copyWith(
-      currentLocation: currentLocation,
-    );
+    try {
+      final currentLocation = await LocationHelper.getCurrentLocation();
+      final editedOrder = selectedOrder.copyWith(
+        currentLocation: currentLocation,
+      );
 
-    var response = await _acceptOrderUseCase(editedOrder, driverId);
+      var response = await _acceptOrderUseCase(editedOrder, driverId);
 
-    switch (response) {
-      case Success<bool>():
-        emit(
-          state.copyWith(
-            selectedOrder: BaseState<OrderEntity>(
-              data: editedOrder,
-              errorMessage: null,
-              isSuccess: true,
-              isLoading: false,
+      switch (response) {
+        case Success():
+          emit(
+            state.copyWith(
+              selectedOrder: BaseState<OrderEntity>(
+                data: editedOrder,
+                errorMessage: null,
+                isSuccess: true,
+                isLoading: false,
+              ),
             ),
-          ),
-        );
-      case Failure<bool>():
-        emit(
-          state.copyWith(
-            selectedOrder: BaseState<OrderEntity>(
-              data: null,
-              errorMessage: response.errorMessage,
-              isSuccess: false,
-              isLoading: false,
+          );
+        case Failure():
+          emit(
+            state.copyWith(
+              selectedOrder: BaseState<OrderEntity>(
+                data: null,
+                errorMessage: response.errorMessage,
+                isSuccess: false,
+                isLoading: false,
+              ),
             ),
+          );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          selectedOrder: BaseState<OrderEntity>(
+            data: null,
+            errorMessage: e.toString(),
+            isSuccess: false,
+            isLoading: false,
           ),
-        );
+        ),
+      );
     }
   }
 }

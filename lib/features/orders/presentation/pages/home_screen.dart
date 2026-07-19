@@ -67,10 +67,18 @@ class _HomeScreenState extends State<HomeScreen> {
               Routes.activeOrderDetails,
               (route) => false,
             );
+          } else if (state.selectedOrder.errorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.selectedOrder.errorMessage!),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
         buildWhen: (previous, current) =>
-            previous.pendingOrdersState != current.pendingOrdersState,
+            previous.pendingOrdersState != current.pendingOrdersState ||
+            previous.selectedOrder != current.selectedOrder,
         builder: (context, state) {
           final orders = state.pendingOrdersState.data?.orders ?? [];
           final visibleOrders = orders
