@@ -2,6 +2,7 @@ import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'config/di/di.dart';
 import 'config/driver/manager/driver_state.dart';
@@ -23,6 +24,7 @@ void main() async {
   configureDependencies();
 
   Bloc.observer = CustomBlocObserver();
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // GetAllPendingOrdersUseCase useCase = getIt<GetAllPendingOrdersUseCase>()..call();
   runApp(const MyApp());

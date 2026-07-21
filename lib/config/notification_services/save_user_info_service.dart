@@ -30,7 +30,12 @@ class SaveUserInfoService {
     String? email,
     String? phone,
   }) async {
-    final fcmToken = await firebaseMessaging.getToken();
+    String? fcmToken;
+    try {
+      fcmToken = await firebaseMessaging.getToken();
+    } catch (e) {
+      // Ignore if FCM is not available
+    }
     final language = PlatformDispatcher.instance.locale.languageCode;
 
     await _saveToFirestore(

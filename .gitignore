@@ -59,6 +59,7 @@ app.*.map.json
 /lib/core/localization/l10n/app_localizations_en.dart
 /lib/firebase_options.dart
 **/google-services.json
-/lib/secret_keys.dart
 /firebase.json
 C:\flutter_projects\Tracking-App\android\app\google-services.json
+# Secrets
+/lib/secret_keys.dart
