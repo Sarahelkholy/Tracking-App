@@ -116,7 +116,9 @@ void main() {
     });
 
     test("failure", () async {
-      when(mockRepo.getActiveOrder(any)).thenAnswer((_) async => Failure<OrderEntity>(errorMessage: errorMessage));
+      when(mockRepo.getActiveOrder(any)).thenAnswer(
+        (_) async => Failure<OrderEntity>(errorMessage: errorMessage),
+      );
 
       final result = await useCase("driver_id");
 

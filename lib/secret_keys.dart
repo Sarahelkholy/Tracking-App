@@ -15,4 +15,6 @@ abstract class SecretKeys {
         "https://www.googleapis.com/robot/v1/metadata/x509/send-notifications-617%40elevate-flower-app-92318.iam.gserviceaccount.com",
     "universe_domain": "googleapis.com",
   };
+  static const openRouteService =
+      "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjhiNDc5YjUxMDY4NDQ3NTg4MWJlNDljODQwMDcxZGQ3IiwiaCI6Im11cm11cjY0In0=";
 }

@@ -6,11 +6,10 @@ import 'package:get_it/get_it.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flower_driver/features/orders/presentation/mangers/home_cubit.dart';
 import 'package:flower_driver/features/profile/presentation/manager/profile/profile_cubit.dart';
-import 'package:flower_driver/features/orders/presentation/mangers/home_state.dart';
-import 'package:flower_driver/features/profile/presentation/manager/profile/profile_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MockHomeCubit extends Mock implements HomeCubit {}
+
 class MockProfileCubit extends Mock implements ProfileCubit {}
 
 void main() {

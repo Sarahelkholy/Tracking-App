@@ -67,10 +67,7 @@ void main() {
       final result = await dataSource.getActiveOrder("driver_123");
 
       expect(result, isA<Success<ActiveOrderFirestoreResponse?>>());
-      expect(
-        (result as Success<ActiveOrderFirestoreResponse?>).data,
-        isNull,
-      );
+      expect((result as Success<ActiveOrderFirestoreResponse?>).data, isNull);
     });
   });
 
