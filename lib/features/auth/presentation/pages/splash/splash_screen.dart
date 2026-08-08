@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flower_driver/config/driver/manager/driver_cubit.dart';
 import 'package:flower_driver/config/driver/manager/driver_state.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../config/di/di.dart';
 import '../../../../../config/driver/manager/driver_events.dart';
 import '../../../../../config/route_manager/routes.dart';

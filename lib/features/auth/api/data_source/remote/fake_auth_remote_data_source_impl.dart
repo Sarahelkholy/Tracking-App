@@ -1,3 +1,5 @@
+import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
+import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../config/error_handling/result.dart';
@@ -6,7 +8,6 @@ import '../../../data/models/responses/enter_email_response.dart';
 import '../../../data/models/responses/new_password_response.dart';
 import '../../../data/models/responses/verify_otp_response.dart';
 
-@Injectable(as: AuthRemoteDataSource)
 class FakeAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Result<EnterEmailResponse>> enterEmail({required String email}) async {
@@ -36,5 +37,11 @@ class FakeAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return Success(
       data: NewPasswordResponse(message: "Password Changed Successfully"),
     );
+  }
+
+  @override
+  Future<Result<AuthResponse>> signIn(LoginRequest loginRequest) {
+    // TODO: implement signIn
+    throw UnimplementedError();
   }
 }

@@ -8,8 +8,10 @@ import 'package:flower_driver/features/auth/presentation/pages/forget_password/p
 import 'package:flower_driver/features/auth/presentation/pages/forget_password/password_verify_otp_screen.dart';
 import 'package:flower_driver/features/auth/presentation/pages/onboarding/onboarding_screen.dart';
 import 'package:flower_driver/login_screen.dart';
+import 'package:flower_driver/features/auth/presentation/manager/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../core/localization/l10n/app_localizations.dart';
 import '../../features/auth/presentation/manager/forget_password_cubit/forget_password_cubit.dart';
 import '../../features/auth/presentation/pages/splash/splash_screen.dart';
@@ -68,11 +70,17 @@ abstract class RouteGenerator {
                 CustomBottomNavBar(initialIndex: args?['initialIndex'] ?? 0),
           );
 
+        /// Login
+        case Routes.loginRoute:
+          return MaterialPageRoute(
+            builder: (_) => BlocProvider<LoginCubit>.value(
+              value: getIt<LoginCubit>(),
+              child: const LoginScreen(),
+            ),
+          );
+
         case Routes.onboardingRoute:
           return MaterialPageRoute(builder: (_) => const OnboardingScreen());
-
-        case Routes.loginRoute:
-          return MaterialPageRoute(builder: (_) => const LoginScreen());
 
         case Routes.applyRoute:
           return MaterialPageRoute(builder: (_) => const ApplyScreen());

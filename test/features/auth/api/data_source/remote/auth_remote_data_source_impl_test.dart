@@ -4,6 +4,8 @@ import 'package:flower_driver/core/localization/l10n/app_localizations.dart';
 import 'package:flower_driver/core/values/app_strings.dart';
 import 'package:flower_driver/features/auth/api/auth_api_client.dart';
 import 'package:flower_driver/features/auth/api/data_source/remote/auth_remote_data_source_impl.dart';
+import 'package:flower_driver/features/auth/data/models/requests/login_request.dart';
+import 'package:flower_driver/features/auth/data/models/responses/auth_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/enter_email_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/new_password_response.dart';
 import 'package:flower_driver/features/auth/data/models/responses/verify_otp_response.dart';
@@ -27,6 +29,35 @@ void main() {
     remoteDataSource = AuthRemoteDataSourceImpl(mockApiClient);
   });
 
+  group("SignIn Tests", () {
+    const tLoginRequest = LoginRequest(
+      email: 'test@test.com',
+      password: 'password123',
+    );
+    final tAuthResponse = AuthResponse(token: 'fake_token', message: 'Success');
+
+    test("should return success when ApiClient returns AuthResponse", () async {
+      when(mockApiClient.signIn(any)).thenAnswer((_) async => tAuthResponse);
+
+      final result = await remoteDataSource.signIn(tLoginRequest);
+
+      expect(result, isA<Success<AuthResponse>>());
+      expect((result as Success<AuthResponse>).data.token, tAuthResponse.token);
+
+      verify(mockApiClient.signIn(tLoginRequest)).called(1);
+    });
+
+    test("should return failure when ApiClient throws", () async {
+      when(mockApiClient.signIn(any)).thenThrow(Exception());
+
+      final result = await remoteDataSource.signIn(tLoginRequest);
+
+      expect(result, isA<Failure<AuthResponse>>());
+
+      verify(mockApiClient.signIn(tLoginRequest)).called(1);
+    });
+  });
+
   group("Enter Email Tests", () {
     test("should return success", () async {
       final response = EnterEmailResponse(
@@ -39,7 +70,6 @@ void main() {
       final result = await remoteDataSource.enterEmail(email: "test@test.com");
 
       expect(result, isA<Success<EnterEmailResponse>>());
-
       expect(
         (result as Success<EnterEmailResponse>).data.message,
         response.message,
@@ -68,7 +98,6 @@ void main() {
       final result = await remoteDataSource.verifyOtp(otp: "123456");
 
       expect(result, isA<Success<VerifyOtpResponse>>());
-
       expect(
         (result as Success<VerifyOtpResponse>).data.status,
         response.status,
@@ -103,7 +132,6 @@ void main() {
       );
 
       expect(result, isA<Success<NewPasswordResponse>>());
-
       expect(
         (result as Success<NewPasswordResponse>).data.token,
         response.token,
